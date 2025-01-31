@@ -9,9 +9,22 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
  - Backend (Java con Spring boot)
  - Frontend (JavaScript,Css, Html, React).
  
-## Plan de desarrollo 
- - Configuración del control de versiones con Git.
+## Plan de desarrollo Backend
+ - Configuración del control de versiones con Git y Github.
+ - Configuración del sistema para MySQL
+	a. Descarga SQL 
+	b. Descarga MySQL workbench
+ - Configuración del entorno de desarrollo para Java
+	a. Descarga del JDK(Java development kit)
+	b. Descarga Maven
+	c. Variables de entorno.
+	d. Instalación IDE intellij versión community.
  - Creación de la base de datos inicial.
+ - Creación del proyecto Usando Spring Initialzr agregando librerias necesarias (SPRING BOOT).
+ - Estructura del proyecto usando arquitectura hexagonal.
+ - Conexión a la base de datos MySql.
+ - Creación de las clases modelos de la base de datos.
+ - 
  - Implementación del backend (Java con Spring boot).
  - Desarrollo del frontend  (React- JavaScript).
  - Pruebas y despliegue. 

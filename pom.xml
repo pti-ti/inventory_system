@@ -13,21 +13,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>inventory-system</name>
 	<description>Sistema de inventario de equipos TI</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<version.mapstruct>1.5.5.Final</version.mapstruct>
+		<version.lombok>1.18.32</version.lombok>
+		<version.mapstruct-lombok>0.2.0</version.mapstruct-lombok>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -60,8 +50,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${version.mapstruct}</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok-mapstruct-binding</artifactId>
+			<version>${version.mapstruct-lombok}</version>
+
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -72,6 +73,11 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>${version.mapstruct-lombok}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
