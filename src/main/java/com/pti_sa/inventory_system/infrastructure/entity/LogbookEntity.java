@@ -1,9 +1,6 @@
 package com.pti_sa.inventory_system.infrastructure.entity;
 
-import com.pti_sa.inventory_system.domain.model.Device;
-import com.pti_sa.inventory_system.domain.model.Location;
-import com.pti_sa.inventory_system.domain.model.Status;
-import com.pti_sa.inventory_system.domain.model.User;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,37 +16,34 @@ import java.time.LocalDateTime;
 public class LogbookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+
+    @Column(name = "id_device", nullable = false)
+    private Integer deviceId;
+
+    @Column(name = "id_user", nullable = false)
+    private Integer userId;
 
     @ManyToOne
-    @JoinColumn(name = "id_device", referencedColumnName = "id")
-    private Device device;
+    @JoinColumn(name = "status_id", nullable = false)
+    private StatusEntity status;
 
-    @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id")
-    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "id_status", referencedColumnName = "id")
-    private Status status;
+    @Column(name = "location_id", nullable = false)
+    private Integer locationId;
 
-    @ManyToOne
-    @JoinColumn(name = "id_location", referencedColumnName = "id")
-    private Location location;
-
+    @Column(name = "note")
     private String note;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private User createdBy;
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private Integer createdBy;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private User updatedBy;
+    @Column(name = "updated_by")
+    private Integer updatedBy;
 }

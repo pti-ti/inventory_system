@@ -10,13 +10,8 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(source = "idUser", target = "id")
-    @Mapping(source = "idRol", target = "roledId")
-    @Mapping(source = "idLocation", target = "locationId")
-    User toDomain(UserEntity entity);
+    User toModel(UserEntity entity);
+    UserEntity toEntity(User model);
 
-    @Mapping(source = "id", target = "idUser")
-    @Mapping(source = "roleId", target = "idRol")
-    @Mapping(source = "locationId", target = "idLocation")
-    UserEntity toEntity(User domain);
+
 }

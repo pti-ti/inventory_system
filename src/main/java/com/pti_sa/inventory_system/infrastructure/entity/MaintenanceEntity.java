@@ -17,31 +17,32 @@ import java.time.LocalDateTime;
 public class MaintenanceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_device", referencedColumnName = "id")
-    private Device device;
+    @Column(name = "id_device", nullable = false)
+    private Integer deviceId;
 
-    @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
 
-    @Column(name = "maintenance_type")
+    @Column(name = "maintenance_type", nullable = false)
     private String maintenanceType;
 
-    @Column(name = "maintenance_date")
-    private String maintenanceDate;
+    @Column(name = "maintenance_date", nullable = false)
+    private LocalDateTime maintenanceDate;
 
+    @Column(name = "comment")
     private String comment;
 
-    @Column(name = "createdAt")
+    @Column(name = "createdAt", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private User updatedBy;
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private Integer createdBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
 }

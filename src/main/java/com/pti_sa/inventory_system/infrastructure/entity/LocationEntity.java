@@ -16,23 +16,21 @@ import java.time.LocalDateTime;
 public class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(name = "location_name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private User createdBy;
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private Integer createdBy;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
+    @Column(name = "updated_by")
+    private Integer updatedBy;
 
 }

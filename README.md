@@ -14,10 +14,16 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
  - Configuración del sistema para MySQL
 	a. Descarga PostgreSQL y PgAdmin
  - Configuración del entorno de desarrollo para Java
+
 	a. Descarga del JDK(Java development kit)
+     
 	b. Descarga Maven
+	
 	c. Variables de entorno.
+
 	d. Instalación IDE intellij versión community.
+
+
  - Creación de la base de datos inicial.
  - Creación del proyecto Usando Spring Initialzr agregando librerias necesarias (SPRING BOOT).
  - Estructura del proyecto usando arquitectura hexagonal.
@@ -25,8 +31,11 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
  - Creación de las clases modelos de la base de datos.
  - Creación de las interfaces de los repositorios"
  - Creación de los puertos (comunicadores con la capa de infraestructura)
- - Creación de las entidades
+ - Creación de las clases de persistencia.
+ - Creación de las entidades (Entities)
+ - Creación de los adaptadores (interfaces de la implementación). 
  - Creación de los Mappers
+ - Creación de las clases de la persistencia JPA y su implementación 
  - Implementación del backend (Java con Spring boot).
  - Desarrollo del frontend  (React- JavaScript).
  - Pruebas y despliegue. 

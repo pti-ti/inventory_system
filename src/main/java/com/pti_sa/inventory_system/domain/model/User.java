@@ -14,7 +14,6 @@ public class User {
     private String email;
     private String password;
     private UserType userType;
-    private Integer roleId;
     private Integer locationId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

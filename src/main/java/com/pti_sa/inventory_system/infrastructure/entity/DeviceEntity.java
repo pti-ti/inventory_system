@@ -17,35 +17,36 @@ import java.time.LocalDateTime;
 public class DeviceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(name = "cod_device")
+    @Column(name = "code", nullable = false, unique = true)
     private String code;
 
-    @Column(name = "name_device")
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "serial", nullable = false, unique = true)
     private String serial;
 
+    @Column(name = "specification")
     private String specification;
 
     @ManyToOne
-    @JoinColumn(name = "id_status", referencedColumnName = "id")
-    private Status status;
+    @JoinColumn(name = "status_id", nullable = false)
+    private StatusEntity status;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private User createdBy;
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private Integer createdBy;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private User updatedBy;
+
+    @Column(name = "updated_by")
+    private Integer updatedBy;
 
 
 }
