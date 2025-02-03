@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface IDeviceRepository {
     Device save(Device device);
-    Optional<Device>findById(Long id);
+    Device update(Device device);
+    Optional<Device>findById(Integer id);
+    Optional<Device>findByCode(String code);
     List<Device> findAll();
-    void deleteById(Long id);
+    void deleteById(Integer id);
 }

@@ -7,7 +7,11 @@ import java.util.Optional;
 
 public interface ILogbookRepository {
     Logbook save(Logbook logbook);
-    Optional<Logbook> findById(Long id);
+    Logbook update(Logbook logbook);
+    Optional<Logbook> findById(Integer id);
+    void deleteById(Integer id);
     List<Logbook> findAll();
-    void deleteById(Long id);
+    List<Logbook> findByDeviceId(Integer deviceId);
+    List<Logbook> findByUserId(Integer userId);
+    List<Logbook> findByLocationId(Integer locationId);
 }

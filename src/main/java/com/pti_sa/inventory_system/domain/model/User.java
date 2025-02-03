@@ -10,13 +10,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private Long id;
+    private Integer id;
     private String email;
     private String password;
-    private Long roleId;
-    private Long locationId;
+    private UserType userType;
+    private Integer roleId;
+    private Integer locationId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long createdBy;
-    private Long updatedBy;
+    private Integer createdBy;
+    private Integer updatedBy;
+
+    public void updateAudit(Integer updatedBy) {
+        this.updatedAt = LocalDateTime.now();
+        this.updatedBy = updatedBy;
+    }
+
+    public void createAudit(Integer createdBy) {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+        this.createdBy = createdBy;
+        this.updatedBy = createdBy;
+    }
 }

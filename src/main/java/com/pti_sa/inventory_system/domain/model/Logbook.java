@@ -10,14 +10,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Logbook {
-    private Long id;
-    private Long deviceId;
-    private Long userId;
-    private Long statusId;
-    private Long locationId;
+    private Integer id;
+    private Integer deviceId;
+    private Integer userId;
+    private Status status;
+    private Integer locationId;
     private String note;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long createdBy;
-    private Long updatedBy;
+    private Integer createdBy;
+    private Integer updatedBy;
+
+    public void createAudit(Integer createdBy){
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+        this.createdBy = createdBy;
+        this.updatedBy = createdBy;
+    }
+
+    public void updateAudit(Integer updatedBy) {
+        this.updatedAt = LocalDateTime.now();
+        this.updatedBy = updatedBy;
+    }
 }

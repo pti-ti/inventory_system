@@ -5,15 +5,14 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
 
 ## Tecnologías 
  - Git
- - Base de datos (MySQL) 
+ - Base de datos (PostgreSQL) 
  - Backend (Java con Spring boot)
  - Frontend (JavaScript,Css, Html, React).
  
 ## Plan de desarrollo Backend
  - Configuración del control de versiones con Git y Github.
  - Configuración del sistema para MySQL
-	a. Descarga SQL 
-	b. Descarga MySQL workbench
+	a. Descarga PostgreSQL y PgAdmin
  - Configuración del entorno de desarrollo para Java
 	a. Descarga del JDK(Java development kit)
 	b. Descarga Maven
@@ -22,9 +21,12 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
  - Creación de la base de datos inicial.
  - Creación del proyecto Usando Spring Initialzr agregando librerias necesarias (SPRING BOOT).
  - Estructura del proyecto usando arquitectura hexagonal.
- - Conexión a la base de datos MySql.
+ - Conexión a la base de datos PostgreSQL.
  - Creación de las clases modelos de la base de datos.
- - 
+ - Creación de las interfaces de los repositorios"
+ - Creación de los puertos (comunicadores con la capa de infraestructura)
+ - Creación de las entidades
+ - Creación de los Mappers
  - Implementación del backend (Java con Spring boot).
  - Desarrollo del frontend  (React- JavaScript).
  - Pruebas y despliegue. 

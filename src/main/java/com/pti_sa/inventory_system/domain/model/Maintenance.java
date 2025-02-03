@@ -10,14 +10,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Maintenance {
-    private Long id;
-    private Long deviceId;
-    private Long userId;
+    private Integer id;
+    private Integer deviceId;
+    private Integer userId;
     private String maintenanceType;
     private LocalDateTime maintenanceDate;
     private String comment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long createdBy;
-    private Long updatedBy;
+    private Integer createdBy;
+    private Integer updatedBy;
+
+    public void createAudit(Integer createdBy){
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+        this.createdBy = createdBy;
+        this.updatedBy = createdBy;
+    }
+
+    public void updateAudit(Integer updatedBy) {
+        this.updatedAt = LocalDateTime.now();
+        this.updatedBy = updatedBy;
+    }
 }

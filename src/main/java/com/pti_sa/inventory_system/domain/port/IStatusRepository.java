@@ -7,7 +7,8 @@ import java.util.Optional;
 
 public interface IStatusRepository {
     Status save(Status status);
-    Optional<Status>findById(Long id);
+    Status update(Status status);
+    Optional<Status>findById(Integer id);
+    void deleteById(Integer id);
     List<Status>findAll();
-    void deleteById(Long id);
 }

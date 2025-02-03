@@ -7,7 +7,10 @@ import java.util.Optional;
 
 public interface ILocationRepository {
     Location save(Location location);
-    Optional<Location>findById(Long id);
-    List<Location> findAll();
-    void deleteById(Long id);
+    Location update(Location location);
+    Optional<Location>findById(Integer id);
+    Optional<Location>findByName(String name);
+    void deleteById(Integer id);
+    boolean existsByName(String name);
+    List<Location>findAll();
 }

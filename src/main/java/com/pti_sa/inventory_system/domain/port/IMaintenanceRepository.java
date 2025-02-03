@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface IMaintenanceRepository {
     Maintenance save(Maintenance maintenance);
-    Optional<Maintenance> findById(Long id);
+    Maintenance update(Maintenance maintenance);
+    Optional<Maintenance> findById(Integer id);
+    void deleteById(Integer id);
     List<Maintenance> findAll();
-    void deleteById(Long id);
+    List<Maintenance> findByDeviceId(Integer deviceId);
 }
