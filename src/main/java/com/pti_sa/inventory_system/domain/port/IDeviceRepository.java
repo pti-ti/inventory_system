@@ -10,6 +10,8 @@ public interface IDeviceRepository {
     Device update(Device device);
     Optional<Device>findById(Integer id);
     Optional<Device>findByCode(String code);
+    Optional<Device>findBySerial(String serial);
+    List<Device>findByStatusId(Integer statusId);
     List<Device> findAll();
     void deleteById(Integer id);
 }

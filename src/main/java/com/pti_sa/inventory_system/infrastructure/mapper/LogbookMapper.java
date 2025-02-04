@@ -10,9 +10,7 @@ import org.mapstruct.factory.Mappers;
 public interface LogbookMapper {
     LogbookMapper INSTANCE = Mappers.getMapper(LogbookMapper.class);
 
-    @Mapping(source = "idLogbook", target = "id")
-    Logbook toDomain(LogbookEntity entity);
+    Logbook toModel(LogbookEntity entity);
 
-    @Mapping(source = "id", target = "idLogbook")
-    LogbookEntity toEntity(Logbook domain);
+    LogbookEntity toEntity(Logbook model);
 }

@@ -37,6 +37,17 @@ public class DeviceService {
         return iDeviceRepository.findByCode(code);
     }
 
+    // Buscar un dispositivo por serial
+    public Optional<Device> findDeviceBySerial(String serial){
+        return iDeviceRepository.findBySerial(serial);
+    }
+
+    // Buscar un dispositivo por su estado
+    public List<Device> findDevicesByStatus(Integer statusId){
+        return iDeviceRepository.findByStatusId(statusId);
+    }
+
+
     // Obtener todos los dispositivos
     public List<Device> findAllDevices(){
         return iDeviceRepository.findAll();
