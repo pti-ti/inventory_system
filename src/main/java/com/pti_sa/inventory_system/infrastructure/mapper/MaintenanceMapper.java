@@ -9,7 +9,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface MaintenanceMapper {
 
-    MaintenanceMapper INSTANCE = Mappers.getMapper(MaintenanceMapper.class);
     Maintenance toModel(MaintenanceEntity entity);
     MaintenanceEntity toEntity(Maintenance model);
 }

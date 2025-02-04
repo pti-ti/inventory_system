@@ -7,7 +7,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface LocationMapper {
-    LocationMapper INSTANCE = Mappers.getMapper(LocationMapper.class);
 
     Location toModel(LocationEntity entity);
     LocationEntity toEntity(Location model);

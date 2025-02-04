@@ -1,6 +1,6 @@
 package com.pti_sa.inventory_system.infrastructure.entity;
 
-import com.pti_sa.inventory_system.domain.model.User;
+
 import com.pti_sa.inventory_system.domain.model.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,11 +26,12 @@ public class UserEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private UserType userType;
 
-    @Column(name = "location_id", nullable = false)
-    private Integer locationId;
+    @ManyToOne
+    @JoinColumn(name = "location_id")//, nullable = false)
+    private LocationEntity location;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -38,10 +39,10 @@ public class UserEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "created_by", nullable = false, updatable = false)
+    @Column(name = "created_by", updatable = false) // nullable = false,
     private Integer createdBy;
 
     @Column(name = "updated_by")
-    private User updatedBy;
+    private Integer updatedBy;
 
 }

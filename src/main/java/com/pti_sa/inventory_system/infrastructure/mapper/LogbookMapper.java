@@ -8,7 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface LogbookMapper {
-    LogbookMapper INSTANCE = Mappers.getMapper(LogbookMapper.class);
 
     Logbook toModel(LogbookEntity entity);
 

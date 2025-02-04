@@ -27,6 +27,12 @@ public class UserJpaRepositoryImpl implements IUserRepository {
     }
 
     @Override
+    public User update(User user) {
+        UserEntity userEntity = userMapper.toEntity(user);
+        return userMapper.toModel(iUserJpaRepository.save(userEntity));
+    }
+
+    @Override
     public Optional<User> findById(Integer id) {
         return iUserJpaRepository.findById(id).map(userMapper::toModel);
     }

@@ -18,19 +18,21 @@ public class LogbookEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "id_device", nullable = false)
-    private Integer deviceId;
+    @ManyToOne
+    @JoinColumn(name = "id_device", nullable = false)
+    private DeviceEntity device;
 
-    @Column(name = "id_user", nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "id_user", nullable = false)
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
 
-
-    @Column(name = "location_id", nullable = false)
-    private Integer locationId;
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = false)
+    private LocationEntity location;
 
     @Column(name = "note")
     private String note;

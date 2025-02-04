@@ -2,6 +2,7 @@ package com.pti_sa.inventory_system.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -18,8 +19,10 @@ public class Device {
     private Integer statusId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @Getter
     private Integer createdBy;
     private Integer updatedBy;
+
 
     public void createAudit(Integer createdBy){
         LocalDateTime now = LocalDateTime.now();
@@ -33,4 +36,5 @@ public class Device {
         this.updatedAt = LocalDateTime.now();
         this.updatedBy = updatedBy;
     }
+
 }

@@ -1,7 +1,6 @@
 package com.pti_sa.inventory_system.infrastructure.entity;
 
-import com.pti_sa.inventory_system.domain.model.Device;
-import com.pti_sa.inventory_system.domain.model.User;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,11 +18,13 @@ public class MaintenanceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "id_device", nullable = false)
-    private Integer deviceId;
+    @ManyToOne
+    @JoinColumn(name = "id_device", nullable = false)
+    private DeviceEntity device;
 
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @Column(name = "maintenance_type", nullable = false)
     private String maintenanceType;

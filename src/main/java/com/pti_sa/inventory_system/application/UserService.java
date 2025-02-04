@@ -19,10 +19,21 @@ public class UserService {
     public User saveUser(User user){
         //Agregar validaciones despúes
         if(iUserRepository.existsByEmail(user.getEmail())){
-            throw new IllegalArgumentException("El correo ya está registrado.");
+            throw new RuntimeException("El correo ya está registrado.");
         }
         user.createAudit(user.getCreatedBy()); // Auditoría al crear el usuario
         return iUserRepository.save(user);
+    }
+
+    // Actualizar usuario
+    public User updateUser(User user){
+        Optional<User> existingUser = iUserRepository.findById(user.getId());
+        if(existingUser.isEmpty()){
+            throw new RuntimeException("Usuario no encontrado");
+        }
+
+        user.updateAudit(user.getUpdatedBy()); // Auditoría al actualizar
+        return iUserRepository.update(user);
     }
 
     // Buscar usuario por ID
