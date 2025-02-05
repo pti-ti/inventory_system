@@ -4,6 +4,7 @@ import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +36,15 @@ public class LocationService {
     // Buscar una ubicación por su nombre
     public Optional<Location> findLocationByName(String name){
         return iLocationRepository.findByName(name);
+    }
+
+    // Obtener todas las ubicaciones
+    public List<Location> findAllLocations(){
+        return iLocationRepository.findAll();
+    }
+
+    // Eliminar una ubicación por ID
+    public void deleteLocationById(Integer id){
+        iLocationRepository.deleteById(id);
     }
 }

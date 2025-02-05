@@ -1,6 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pti_sa.inventory_system.domain.model.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class UserEntity {
     private LocationEntity location;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
@@ -44,5 +45,16 @@ public class UserEntity {
 
     @Column(name = "updated_by")
     private Integer updatedBy;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdBy == null) {
+            this.createdBy = 1;  // Asigna el valor del ID de un usuario predeterminado (ejemplo 1).
+        }
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+
 
 }
