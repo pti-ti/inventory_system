@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Maintenance {
     private Integer id;
-    private Integer deviceId;
-    private Integer userId;
+    private Device device;
+    private User user;
     private String maintenanceType;
     private LocalDateTime maintenanceDate;
     private String comment;

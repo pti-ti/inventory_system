@@ -48,7 +48,7 @@ public class MaintenanceController {
     }
 
     // Eliminar un mantenimiento
-    @DeleteMapping("/{id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMaintenance(@PathVariable Integer id){
         maintenanceService.deleteMaintenanceById(id);
         return ResponseEntity.noContent().build();

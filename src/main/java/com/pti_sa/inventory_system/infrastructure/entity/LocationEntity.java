@@ -33,4 +33,14 @@ public class LocationEntity {
     @Column(name = "updated_by")
     private Integer updatedBy;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.createdBy == null) {
+            this.createdBy = 1;  // Asigna el valor del ID de un usuario predeterminado (ejemplo 1).
+        }
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+
 }

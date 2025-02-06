@@ -39,7 +39,7 @@ public class StatusController {
         Optional<Status> status = statusService.findStatusById(id);
         return status.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-    
+
     // Obtener todos los Status
     @GetMapping
     public ResponseEntity<List<Status>> getAllStatuses(){

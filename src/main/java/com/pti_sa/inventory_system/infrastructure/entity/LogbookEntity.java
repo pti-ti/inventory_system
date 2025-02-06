@@ -34,6 +34,9 @@ public class LogbookEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private LocationEntity location;
 
+    @Column(name = "type")
+    private String type;
+
     @Column(name = "note")
     private String note;
 

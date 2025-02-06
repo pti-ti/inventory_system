@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Logbook {
     private Integer id;
-    private Integer deviceId;
-    private Integer userId;
+    private Device device;
+    private User user;
     private Status status;
-    private Integer locationId;
+    private Location location;
+    private String type;
     private String note;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

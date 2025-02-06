@@ -2,7 +2,6 @@ package com.pti_sa.inventory_system.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -15,11 +14,11 @@ public class Device {
     private String code;
     private String name;
     private String serial;
+    private String Type;
     private String specification;
-    private Integer statusId;
+    private Status status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @Getter
     private Integer createdBy;
     private Integer updatedBy;
 
