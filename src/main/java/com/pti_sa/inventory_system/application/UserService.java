@@ -1,18 +1,23 @@
 package com.pti_sa.inventory_system.application;
 
+import com.pti_sa.inventory_system.application.dto.UserResponseDTO;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
+import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final IUserRepository iUserRepository;
+    private final UserMapper userMapper;
 
-    public UserService(IUserRepository iUserRepository) {
+    public UserService(IUserRepository iUserRepository, UserMapper userMapper) {
         this.iUserRepository = iUserRepository;
+        this.userMapper = userMapper;
     }
 
     // Guardar usuario
@@ -37,19 +42,25 @@ public class UserService {
     }
 
     // Buscar usuario por ID
-    public Optional<User> findUserById(Integer id){
-        return iUserRepository.findById(id);
+    public Optional<UserResponseDTO> findUserById(Integer id){
+        return iUserRepository.findById(id)
+                .map(userMapper::toResponseDTO);
     }
 
     // Buscar usuario por email
-    public Optional<User>findUserByEmail(String email){
-        return iUserRepository.findByEmail(email);
+    public Optional<UserResponseDTO>findUserByEmail(String email){
+        return iUserRepository.findByEmail(email)
+                .map(userMapper::toResponseDTO);
     }
 
     // Obtener todos los usuarios
-    public List<User> findAllUsers(){
-        return iUserRepository.findAll();
+    public List<UserResponseDTO> findAllUsers(){
+        return iUserRepository.findAll()
+                .stream()
+                .map(userMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
+
 
     // Eliminar un usuario por su ID
     public void deleteUserById(Integer id){

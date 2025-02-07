@@ -1,12 +1,15 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.MaintenanceService;
+import com.pti_sa.inventory_system.application.dto.MaintenanceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
+import com.pti_sa.inventory_system.infrastructure.mapper.MaintenanceMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/maintenances")
@@ -20,36 +23,36 @@ public class MaintenanceController {
 
     // Crear Mantenimiento
     @PostMapping
-    public ResponseEntity<Maintenance> createMaintenance(@RequestBody Maintenance maintenance){
-        Maintenance createdMaintenance = maintenanceService.saveMaintenance(maintenance);
+    public ResponseEntity<MaintenanceResponseDTO> createMaintenance(@RequestBody Maintenance maintenance) {
+        MaintenanceResponseDTO createdMaintenance = maintenanceService.saveMaintenance(maintenance);
         return ResponseEntity.ok(createdMaintenance);
     }
 
-    // Actualizar mantenimiento
+        // Actualizar mantenimiento
     @PutMapping("/{id}")
-    public ResponseEntity<Maintenance> updateMaintenance(@PathVariable Integer id, @RequestBody Maintenance maintenance){
+    public ResponseEntity<MaintenanceResponseDTO> updateMaintenance(@PathVariable Integer id, @RequestBody Maintenance maintenance) {
         maintenance.setId(id);
-        Maintenance updatedMaintenance = maintenanceService.updateMaintenance(maintenance);
+        MaintenanceResponseDTO updatedMaintenance = maintenanceService.updateMaintenance(maintenance);
         return ResponseEntity.ok(updatedMaintenance);
     }
 
-    // Obtener Mantenimiento por id
-    @GetMapping("{id}")
-    public ResponseEntity<Maintenance> getMaintenanceById(@PathVariable Integer id){
-        Optional<Maintenance> maintenance = maintenanceService.findMaintenanceById(id);
-        return maintenance.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    // Obtener Mantenimiento por ID
+    @GetMapping("/device/{deviceId}")
+    public ResponseEntity<List<MaintenanceResponseDTO>> getMaintenancesByDeviceId(@PathVariable Integer deviceId) {
+        List<MaintenanceResponseDTO> maintenances = maintenanceService.findMaintenancesByDeviceId(deviceId);
+        return ResponseEntity.ok(maintenances);
     }
 
     // Obtener todos los mantenimientos
     @GetMapping
-    public ResponseEntity<List<Maintenance>> getAllMaintenances(){
-        List<Maintenance> maintenances = maintenanceService.findAllMaintenances();
+    public ResponseEntity<List<MaintenanceResponseDTO>> getAllMaintenances() {
+        List<MaintenanceResponseDTO> maintenances = maintenanceService.findAllMaintenances();
         return ResponseEntity.ok(maintenances);
     }
 
     // Eliminar un mantenimiento
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMaintenance(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteMaintenance(@PathVariable Integer id) {
         maintenanceService.deleteMaintenanceById(id);
         return ResponseEntity.noContent().build();
     }

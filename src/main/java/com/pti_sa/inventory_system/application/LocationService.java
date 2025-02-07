@@ -1,46 +1,56 @@
 package com.pti_sa.inventory_system.application;
 
+import com.pti_sa.inventory_system.application.dto.LocationResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
+import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationService {
 
     private final ILocationRepository iLocationRepository;
+    private final LocationMapper locationMapper;
 
-    public LocationService(ILocationRepository iLocationRepository) {
+    public LocationService(ILocationRepository iLocationRepository, LocationMapper locationMapper) {
         this.iLocationRepository = iLocationRepository;
+        this.locationMapper = locationMapper;
     }
 
     // Guardar una ubicación
-    public Location saveLocation(Location location){
+    public LocationResponseDTO saveLocation(Location location){
         location.createAudit(location.getCreatedBy());
-        return iLocationRepository.save(location);
+        Location savedLocation = iLocationRepository.save(location);
+        return locationMapper.toDTO(savedLocation);
     }
 
     // Actualizar ubicación
-    public Location updateLocation(Location location){
+    public LocationResponseDTO updateLocation(Location location){
         location.createAudit(location.getUpdatedBy());
-        return iLocationRepository.update(location);
+        Location updatedLocation = iLocationRepository.update(location);
+        return locationMapper.toDTO(updatedLocation);
     }
 
     // Buscar ubicación por ID
-    public Optional<Location> findLocationById(Integer id){
-        return iLocationRepository.findById(id);
+    public Optional<LocationResponseDTO> findLocationById(Integer id){
+        return iLocationRepository.findById(id).map(locationMapper::toDTO);
     }
 
     // Buscar una ubicación por su nombre
-    public Optional<Location> findLocationByName(String name){
-        return iLocationRepository.findByName(name);
+    public Optional<LocationResponseDTO> findLocationByName(String name){
+        return iLocationRepository.findByName(name).map(locationMapper::toDTO);
     }
 
     // Obtener todas las ubicaciones
-    public List<Location> findAllLocations(){
-        return iLocationRepository.findAll();
+    public List<LocationResponseDTO> findAllLocations(){
+        return iLocationRepository.findAll()
+                .stream()
+                .map(locationMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     // Eliminar una ubicación por ID

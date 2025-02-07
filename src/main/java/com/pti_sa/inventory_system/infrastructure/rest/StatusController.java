@@ -1,6 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.StatusService;
+import com.pti_sa.inventory_system.application.dto.StatusResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Status;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,10 @@ public class StatusController {
 
     // Crear un nuevo Status
     @PostMapping
-    public ResponseEntity<Status> createStatus(@RequestBody Status status){
+    public ResponseEntity<StatusResponseDTO> createStatus(@RequestBody Status status){
         Status createdStatus = statusService.saveStatus(status);
-        return ResponseEntity.ok(createdStatus);
+        StatusResponseDTO responseDTO = new StatusResponseDTO(createdStatus.getName());
+        return ResponseEntity.ok(responseDTO);
     }
 
     // Actualizar un Status
@@ -34,16 +36,16 @@ public class StatusController {
     }
 
     // Obtener Status por ID
-    @GetMapping("{id}")
-    public ResponseEntity<Status> getStatusById(@PathVariable Integer id){
-        Optional<Status> status = statusService.findStatusById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<StatusResponseDTO>getStatusById(@PathVariable Integer id){
+        Optional<StatusResponseDTO> status = statusService.findStatusById(id);
         return status.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Obtener todos los Status
     @GetMapping
-    public ResponseEntity<List<Status>> getAllStatuses(){
-        List<Status> statuses = statusService.findAllStatuses();
+    public ResponseEntity<List<StatusResponseDTO>> getAllStatuses(){
+        List<StatusResponseDTO> statuses = statusService.findAllStatuses();
         return ResponseEntity.ok(statuses);
     }
 

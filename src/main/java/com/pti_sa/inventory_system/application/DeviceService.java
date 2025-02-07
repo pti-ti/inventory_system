@@ -1,60 +1,76 @@
 package com.pti_sa.inventory_system.application;
 
+import com.pti_sa.inventory_system.application.dto.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
+import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceService {
     private final IDeviceRepository iDeviceRepository;
+    private final DeviceMapper deviceMapper;
 
-    public DeviceService(IDeviceRepository iDeviceRepository) {
+    public DeviceService(IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper) {
         this.iDeviceRepository = iDeviceRepository;
+        this.deviceMapper = deviceMapper;
     }
 
     // Guardar un dispositivo
-    public Device saveDevice(Device device){
-        device.createAudit(device.getCreatedBy()); // Auditoría al crear el dispositivo
-        return iDeviceRepository.save(device);
+    public DeviceResponseDTO saveDevice(Device device) {
+        device.createAudit(device.getCreatedBy());
+        Device savedDevice = iDeviceRepository.save(device);
+        return deviceMapper.toResponseDTO(savedDevice);
     }
 
     // Actualizar un dispositivo
-    public Device updateDevice(Device device){
-        device.updateAudit(device.getUpdatedBy()); // Auditoría al actualizar el dispositivo
-        return iDeviceRepository.update(device);
+    public DeviceResponseDTO updateDevice(Device device) {
+        device.updateAudit(device.getUpdatedBy());
+        Device updatedDevice = iDeviceRepository.update(device);
+        return deviceMapper.toResponseDTO(updatedDevice);
     }
 
     // Buscar un dispositivo por ID
-    public Optional<Device> findDeviceById(Integer id){
-        return iDeviceRepository.findById(id);
+    public Optional<DeviceResponseDTO> findDeviceById(Integer id) {
+        return iDeviceRepository.findById(id)
+                .map(deviceMapper::toResponseDTO);
     }
 
     // Buscar un dispositivo por código
-    public Optional<Device> findDeviceByCode(String code){
-        return iDeviceRepository.findByCode(code);
+    public Optional<DeviceResponseDTO> findDeviceByCode(String code) {
+        return iDeviceRepository.findByCode(code)
+                .map(deviceMapper::toResponseDTO);
     }
 
     // Buscar un dispositivo por serial
-    public Optional<Device> findDeviceBySerial(String serial){
-        return iDeviceRepository.findBySerial(serial);
+    public Optional<DeviceResponseDTO> findDeviceBySerial(String serial) {
+        return iDeviceRepository.findBySerial(serial)
+                .map(deviceMapper::toResponseDTO);
     }
 
     // Buscar un dispositivo por su estado
-    public List<Device> findDevicesByStatus(Integer statusId){
-        return iDeviceRepository.findByStatusId(statusId);
+    public List<DeviceResponseDTO> findDevicesByStatus(Integer statusId) {
+        return iDeviceRepository.findByStatusId(statusId)
+                .stream()
+                .map(deviceMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
 
     // Obtener todos los dispositivos
-    public List<Device> findAllDevices(){
-        return iDeviceRepository.findAll();
+    public List<DeviceResponseDTO> findAllDevices() {
+        return iDeviceRepository.findAll()
+                .stream()
+                .map(deviceMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     // Eliminar un dispositivo por su ID
-    public void deleteDeviceById(Integer id){
+    public void deleteDeviceById(Integer id) {
         iDeviceRepository.deleteById(id);
     }
 }

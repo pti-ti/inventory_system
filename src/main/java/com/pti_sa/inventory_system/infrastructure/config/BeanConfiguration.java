@@ -2,6 +2,7 @@ package com.pti_sa.inventory_system.infrastructure.config;
 
 import com.pti_sa.inventory_system.application.*;
 import com.pti_sa.inventory_system.domain.port.*;
+import com.pti_sa.inventory_system.infrastructure.mapper.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,32 +10,32 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfiguration {
 
     @Bean
-    public UserService userService(IUserRepository iUserRepository){
-        return new UserService(iUserRepository);
+    public UserService userService(IUserRepository iUserRepository, UserMapper userMapper){
+        return new UserService(iUserRepository, userMapper);
     }
 
     @Bean
-    public DeviceService deviceService(IDeviceRepository iDeviceRepository){
-        return new DeviceService(iDeviceRepository);
+    public DeviceService deviceService(IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper){
+        return new DeviceService(iDeviceRepository, deviceMapper);
     }
 
     @Bean
-    public LocationService locationService(ILocationRepository iLocationRepository){
-        return new LocationService(iLocationRepository);
+    public LocationService locationService(ILocationRepository iLocationRepository, LocationMapper locationMapper){
+        return new LocationService(iLocationRepository, locationMapper);
     }
 
     @Bean
-    public LogbookService logbookService(ILogbookRepository iLogbookRepository){
-        return new LogbookService(iLogbookRepository);
+    public LogbookService logbookService(ILogbookRepository iLogbookRepository, LogbookMapper logbookMapper){
+        return new LogbookService(iLogbookRepository, logbookMapper);
     }
 
     @Bean
-    public MaintenanceService maintenanceService(IMaintenanceRepository iMaintenanceRepository){
-        return new MaintenanceService(iMaintenanceRepository);
+    public MaintenanceService maintenanceService(IMaintenanceRepository iMaintenanceRepository, MaintenanceMapper maintenanceMapper){
+        return new MaintenanceService(iMaintenanceRepository, maintenanceMapper);
     }
 
     @Bean
-    public StatusService statusService(IStatusRepository iStatusRepository){
-        return new StatusService(iStatusRepository);
+    public StatusService statusService(IStatusRepository iStatusRepository, StatusMapper statusMapper){
+        return new StatusService(iStatusRepository, statusMapper);
     }
 }

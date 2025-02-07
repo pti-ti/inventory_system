@@ -1,6 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.DeviceService;
+import com.pti_sa.inventory_system.application.dto.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,31 +21,37 @@ public class DeviceController {
 
     // Crear dispositivo
     @PostMapping
-    public ResponseEntity<Device> createDevice(@RequestBody Device device){
-        Device createdDevice = deviceService.saveDevice(device);
-        return ResponseEntity.ok(createdDevice);
+    public ResponseEntity<DeviceResponseDTO> createDevice(@RequestBody Device device) {
+        return ResponseEntity.ok(deviceService.saveDevice(device));
     }
 
     // Actualizar dispositivo
     @PutMapping("/{id}")
-    public ResponseEntity<Device> updateDevice(@PathVariable Integer id, @RequestBody Device device){
+    public ResponseEntity<DeviceResponseDTO>updateDevice(@PathVariable Integer id, @RequestBody Device device){
         device.setId(id);
-        Device updateDevice = deviceService.updateDevice(device);
-        return ResponseEntity.ok(updateDevice);
+        return ResponseEntity.ok(deviceService.updateDevice(device));
     }
 
     // Obtener dispositivo por id
     @GetMapping("/{id}")
-    public ResponseEntity<Device> getDeviceByIid(@PathVariable Integer id){
-        Optional<Device> device = deviceService.findDeviceById(id);
-        return device.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<DeviceResponseDTO> getDeviceById(@PathVariable Integer id) {
+        return deviceService.findDeviceById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Obtener todos los dispositivos
     @GetMapping
-    public ResponseEntity<List<Device>> getAllDevices(){
-        List<Device> devices = deviceService.findAllDevices();
-        return ResponseEntity.ok(devices);
+    public ResponseEntity<List<DeviceResponseDTO>> getAllDevices() {
+        List<DeviceResponseDTO> devices = deviceService.findAllDevices();
+        return devices.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(devices);
+    }
+
+    // Obtener dispositivos por estado
+    @GetMapping("/status/{statusId}")
+    public ResponseEntity<List<DeviceResponseDTO>> getDevicesByStatus(@PathVariable Integer statusId) {
+        List<DeviceResponseDTO> devices = deviceService.findDevicesByStatus(statusId);
+        return devices.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(devices);
     }
 
     // Eliminar un dispositivo
