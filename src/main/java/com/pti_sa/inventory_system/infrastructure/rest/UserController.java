@@ -1,14 +1,14 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.UserService;
-import com.pti_sa.inventory_system.application.dto.UserResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -26,9 +26,8 @@ public class UserController {
 
     // Crear usuario
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody User user) {
-        User createdUser = userService.saveUser(user);
-        return ResponseEntity.ok(userMapper.toResponseDTO(createdUser));
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody User user) {
+        return ResponseEntity.ok(userService.saveUser(user));
     }
 
     // Actualizar usuario
@@ -36,7 +35,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Integer id, @RequestBody User user) {
         user.setId(id);
         User updatedUser = userService.updateUser(user);
-        return ResponseEntity.ok(userMapper.toResponseDTO(updatedUser)); // 🔹 Convertimos con el mapper
+        return ResponseEntity.ok(userMapper.toResponseDTO(updatedUser));
     }
 
     // Obtener todos los usuarios

@@ -1,7 +1,6 @@
 package com.pti_sa.inventory_system.infrastructure.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pti_sa.inventory_system.domain.model.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,7 +30,7 @@ public class UserEntity {
     private UserType userType;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")//, nullable = false)
+    @JoinColumn(name = "location_id", nullable = false)
     private LocationEntity location;
 
     @Column(name = "created_at")

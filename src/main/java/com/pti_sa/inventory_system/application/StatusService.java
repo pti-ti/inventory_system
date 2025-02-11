@@ -1,6 +1,6 @@
 package com.pti_sa.inventory_system.application;
 
-import com.pti_sa.inventory_system.application.dto.StatusResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.StatusResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Status;
 import com.pti_sa.inventory_system.domain.port.IStatusRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.StatusMapper;

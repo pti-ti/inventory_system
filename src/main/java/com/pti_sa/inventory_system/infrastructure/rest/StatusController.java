@@ -1,7 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.StatusService;
-import com.pti_sa.inventory_system.application.dto.StatusResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.StatusResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Status;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

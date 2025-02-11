@@ -1,7 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.LogbookService;
-import com.pti_sa.inventory_system.application.dto.LogbookResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Logbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,8 +1,12 @@
 package com.pti_sa.inventory_system.application;
 
-import com.pti_sa.inventory_system.application.dto.UserResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
+import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.model.User;
+import com.pti_sa.inventory_system.domain.port.ILocationRepository;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
+import com.pti_sa.inventory_system.infrastructure.entity.LocationEntity;
+import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +17,44 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final IUserRepository iUserRepository;
+    private final ILocationRepository iLocationRepository;
     private final UserMapper userMapper;
+    private final LocationMapper locationMapper;
 
-    public UserService(IUserRepository iUserRepository, UserMapper userMapper) {
+    public UserService(IUserRepository iUserRepository, ILocationRepository iLocationRepository, UserMapper userMapper, LocationMapper locationMapper) {
         this.iUserRepository = iUserRepository;
+        this.iLocationRepository = iLocationRepository;
         this.userMapper = userMapper;
+        this.locationMapper = locationMapper;
     }
 
     // Guardar usuario
-    public User saveUser(User user){
-        //Agregar validaciones despúes
-        if(iUserRepository.existsByEmail(user.getEmail())){
+    public UserResponseDTO saveUser(User user) {
+        // Validar si el email ya está registrado
+        if (iUserRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("El correo ya está registrado.");
         }
-        user.createAudit(user.getCreatedBy()); // Auditoría al crear el usuario
-        return iUserRepository.save(user);
+
+        // Validar si la ubicación está presente
+        if (user.getLocation() == null || user.getLocation().getId() == null) {
+            throw new RuntimeException("El ID de la ubicación del usuario no puede ser nulo.");
+        }
+
+        // Buscar la ubicación en la base de datos
+        Location location = iLocationRepository.findById(user.getLocation().getId())
+                .orElseThrow(() -> new RuntimeException("Ubicación no encontrada con ID: " + user.getLocation().getId()));
+
+        // Asignar la ubicación validada al usuario
+        user.setLocation(location);
+
+        // Agregar datos de auditoría
+        user.createAudit(user.getCreatedBy());
+
+        // Guardar el usuario en la base de datos
+        User savedUser = iUserRepository.save(user);
+
+        // Convertir a DTO de respuesta y retornarlo
+        return userMapper.toResponseDTO(savedUser);
     }
 
     // Actualizar usuario

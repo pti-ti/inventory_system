@@ -1,6 +1,6 @@
 package com.pti_sa.inventory_system.application;
 
-import com.pti_sa.inventory_system.application.dto.LocationResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.LocationResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;

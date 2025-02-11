@@ -1,6 +1,6 @@
 package com.pti_sa.inventory_system.application;
 
-import com.pti_sa.inventory_system.application.dto.DeviceResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;

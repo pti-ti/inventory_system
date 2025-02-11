@@ -10,8 +10,11 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfiguration {
 
     @Bean
-    public UserService userService(IUserRepository iUserRepository, UserMapper userMapper){
-        return new UserService(iUserRepository, userMapper);
+    public UserService userService(IUserRepository iUserRepository,
+                                   ILocationRepository iLocationRepository,
+                                   UserMapper userMapper,
+                                   LocationMapper locationMapper) {
+        return new UserService(iUserRepository, iLocationRepository, userMapper, locationMapper);
     }
 
     @Bean

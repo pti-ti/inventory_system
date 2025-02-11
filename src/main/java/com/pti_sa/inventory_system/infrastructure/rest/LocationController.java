@@ -1,7 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.LocationService;
-import com.pti_sa.inventory_system.application.dto.LocationResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.LocationResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Location;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

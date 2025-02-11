@@ -1,15 +1,12 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.MaintenanceService;
-import com.pti_sa.inventory_system.application.dto.MaintenanceResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.MaintenanceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
-import com.pti_sa.inventory_system.infrastructure.mapper.MaintenanceMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/maintenances")

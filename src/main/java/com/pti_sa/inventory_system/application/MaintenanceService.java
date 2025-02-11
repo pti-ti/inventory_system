@@ -1,6 +1,6 @@
 package com.pti_sa.inventory_system.application;
 
-import com.pti_sa.inventory_system.application.dto.MaintenanceResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.MaintenanceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
 import com.pti_sa.inventory_system.domain.port.IMaintenanceRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.MaintenanceMapper;
