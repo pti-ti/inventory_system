@@ -33,6 +33,9 @@ public class UserEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private LocationEntity location;
 
+    @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean deleted = false; // Eliminación lógica
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 

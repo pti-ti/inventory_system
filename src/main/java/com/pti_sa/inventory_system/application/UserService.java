@@ -5,8 +5,7 @@ import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
-import com.pti_sa.inventory_system.infrastructure.entity.LocationEntity;
-import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
+
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +18,11 @@ public class UserService {
     private final IUserRepository iUserRepository;
     private final ILocationRepository iLocationRepository;
     private final UserMapper userMapper;
-    private final LocationMapper locationMapper;
 
-    public UserService(IUserRepository iUserRepository, ILocationRepository iLocationRepository, UserMapper userMapper, LocationMapper locationMapper) {
+    public UserService(IUserRepository iUserRepository, ILocationRepository iLocationRepository, UserMapper userMapper) {
         this.iUserRepository = iUserRepository;
         this.iLocationRepository = iLocationRepository;
         this.userMapper = userMapper;
-        this.locationMapper = locationMapper;
     }
 
     // Guardar usuario
@@ -91,7 +88,11 @@ public class UserService {
 
     // Eliminar un usuario por su ID
     public void deleteUserById(Integer id){
-        iUserRepository.deleteById(id);
+        User user = iUserRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setDeleted(true);
+        iUserRepository.save(user);
     }
 
     // Verificar si el correo electrónico existe

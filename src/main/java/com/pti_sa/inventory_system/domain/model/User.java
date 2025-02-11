@@ -19,6 +19,7 @@ public class User {
     private LocalDateTime updatedAt;
     private Integer createdBy;
     private Integer updatedBy;
+    private boolean deleted = false;
 
     public void updateAudit(Integer updatedBy) {
         this.updatedAt = LocalDateTime.now();

@@ -12,9 +12,8 @@ public class BeanConfiguration {
     @Bean
     public UserService userService(IUserRepository iUserRepository,
                                    ILocationRepository iLocationRepository,
-                                   UserMapper userMapper,
-                                   LocationMapper locationMapper) {
-        return new UserService(iUserRepository, iLocationRepository, userMapper, locationMapper);
+                                   UserMapper userMapper) {
+        return new UserService(iUserRepository, iLocationRepository, userMapper);
     }
 
     @Bean
