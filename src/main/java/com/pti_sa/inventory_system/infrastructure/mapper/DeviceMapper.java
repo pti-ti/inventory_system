@@ -7,12 +7,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface DeviceMapper {
     Device toModel(DeviceEntity entity);
     DeviceEntity toEntity(Device device);
 
     @Mapping(target = "status", source = "status.name")
     DeviceResponseDTO toResponseDTO(Device device);
-
 }

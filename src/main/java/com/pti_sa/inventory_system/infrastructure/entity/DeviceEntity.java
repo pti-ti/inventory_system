@@ -35,6 +35,10 @@ public class DeviceEntity {
     private String type;
 
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private UserEntity user;
+
+    @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
 

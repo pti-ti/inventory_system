@@ -14,4 +14,5 @@ public interface IUserRepository {
     List<User> findAll();
     void deleteById(Integer id);
     boolean existsByEmail(String email);
+    List<User> findByLocationId(Integer locationId);
 }

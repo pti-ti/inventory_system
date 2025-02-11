@@ -1,14 +1,18 @@
 package com.pti_sa.inventory_system.application;
 
 import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
+import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.model.User;
+import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
 
+import com.pti_sa.inventory_system.infrastructure.entity.UserEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,11 +21,13 @@ import java.util.stream.Collectors;
 public class UserService {
     private final IUserRepository iUserRepository;
     private final ILocationRepository iLocationRepository;
+    private final IDeviceRepository iDeviceRepository;
     private final UserMapper userMapper;
 
-    public UserService(IUserRepository iUserRepository, ILocationRepository iLocationRepository, UserMapper userMapper) {
+    public UserService(IUserRepository iUserRepository, ILocationRepository iLocationRepository, IDeviceRepository iDeviceRepository, UserMapper userMapper) {
         this.iUserRepository = iUserRepository;
         this.iLocationRepository = iLocationRepository;
+        this.iDeviceRepository = iDeviceRepository;
         this.userMapper = userMapper;
     }
 
@@ -40,17 +46,9 @@ public class UserService {
         // Buscar la ubicación en la base de datos
         Location location = iLocationRepository.findById(user.getLocation().getId())
                 .orElseThrow(() -> new RuntimeException("Ubicación no encontrada con ID: " + user.getLocation().getId()));
-
-        // Asignar la ubicación validada al usuario
         user.setLocation(location);
-
-        // Agregar datos de auditoría
         user.createAudit(user.getCreatedBy());
-
-        // Guardar el usuario en la base de datos
         User savedUser = iUserRepository.save(user);
-
-        // Convertir a DTO de respuesta y retornarlo
         return userMapper.toResponseDTO(savedUser);
     }
 
@@ -84,6 +82,45 @@ public class UserService {
                 .map(userMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    // Obtener los usuarios por localidad
+    public List<User> getUsersByLocation(Integer locationId){
+        return iUserRepository.findByLocationId(locationId);
+    }
+
+    // Obtener los usuarios por id
+    public Optional<User> getUserById(Integer id){
+        return iUserRepository.findById(id);
+    }
+    // Asignar dispositivos a un usuario
+    public UserResponseDTO assignDevicesToUser(Integer userId, List<Integer> deviceIds) {
+        User user = iUserRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + userId));
+
+        List<Device> devices = iDeviceRepository.findAllById(deviceIds);
+
+        if (devices.size() != deviceIds.size()) {
+            throw new RuntimeException("Algunos dispositivos no existen.");
+        }
+
+        // Crear una nueva lista para evitar modificar la original
+        List<Device> updatedDevices = user.getDevices() != null ? new ArrayList<>(user.getDevices()) : new ArrayList<>();
+
+        // Agregar solo dispositivos que no estén ya asignados
+        for (Device device : devices) {
+            if (!updatedDevices.contains(device)) {
+                updatedDevices.add(device);
+            }
+        }
+
+        user.setDevices(updatedDevices);
+        user.updateAudit(user.getUpdatedBy()); // Registrar auditoría
+
+        User updatedUser = iUserRepository.update(user);
+        return userMapper.toResponseDTO(updatedUser);
+    }
+
+
 
 
     // Eliminar un usuario por su ID

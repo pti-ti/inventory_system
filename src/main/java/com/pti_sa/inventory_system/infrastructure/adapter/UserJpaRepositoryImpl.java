@@ -34,7 +34,8 @@ public class UserJpaRepositoryImpl implements IUserRepository {
 
     @Override
     public Optional<User> findById(Integer id) {
-        return iUserJpaRepository.findById(id).map(userMapper::toModel);
+        return iUserJpaRepository.findByIdWithDevices(id)
+                .map(userMapper::toModel);
     }
 
     @Override
@@ -55,5 +56,13 @@ public class UserJpaRepositoryImpl implements IUserRepository {
     @Override
     public boolean existsByEmail(String email) {
         return iUserJpaRepository.existsByEmail(email);
+    }
+
+    @Override
+    public List<User> findByLocationId(Integer locationId) {
+        return iUserJpaRepository.findByLocationId(locationId) // Busca los usuarios por ID de localidad
+                .stream()
+                .map(userMapper::toModel) // Convierte `UserEntity` a `User`
+                .collect(Collectors.toList()); // Retorna la lista convertida
     }
 }

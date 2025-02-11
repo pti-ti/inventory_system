@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +16,7 @@ public class User {
     private String password;
     private UserType userType;
     private Location location;
+    private List<Device> devices;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer createdBy;

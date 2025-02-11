@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name= "users")
@@ -35,6 +36,9 @@ public class UserEntity {
 
     @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean deleted = false; // Eliminación lógica
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeviceEntity> devices;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

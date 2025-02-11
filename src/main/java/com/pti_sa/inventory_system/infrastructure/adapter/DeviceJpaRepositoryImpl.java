@@ -66,6 +66,14 @@ public class DeviceJpaRepositoryImpl implements IDeviceRepository {
     }
 
     @Override
+    public List<Device> findAllById(List<Integer> ids) {
+        return iDeviceJpaRepository.findAllById(ids)
+                .stream()
+                .map(deviceMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteById(Integer id) {
         iDeviceJpaRepository.deleteById(id);
     }

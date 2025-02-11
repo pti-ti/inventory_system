@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -38,11 +39,39 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toResponseDTO(updatedUser));
     }
 
+    // Obtener usuario por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO>getUserById(@PathVariable Integer id){
+        return userService.getUserById(id)
+                .map(userMapper::toResponseDTO)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     // Obtener todos los usuarios
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users = userService.findAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    //
+
+    // Obtener los usuarios por Localidad
+    @GetMapping("/location/{locationId}")
+    public ResponseEntity<List<UserResponseDTO>> getUsersByLocation(@PathVariable Integer locationId) {
+        List<User> users = userService.getUsersByLocation(locationId);
+        List<UserResponseDTO> response = users.stream()
+                .map(userMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+    // Asignación de dispositivos
+    @PutMapping("/{userId}/assign-devices")
+    public ResponseEntity<UserResponseDTO> assignDevicesToUser(@PathVariable Integer userId, @RequestBody List<Integer> deviceIds){
+        UserResponseDTO updatedUser = userService.assignDevicesToUser(userId, deviceIds);
+        return ResponseEntity.ok(updatedUser);
     }
 
 
