@@ -14,6 +14,6 @@ public class UserResponseDTO {
     private String email;
     // private UserType userType; Muestra el tipo de usuario
     private LocationResponseDTO location;
-    private List<DeviceResponseDTO> devices;
+    //private List<DeviceResponseDTO> devices;
 
 }

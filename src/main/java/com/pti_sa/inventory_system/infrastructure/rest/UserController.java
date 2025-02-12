@@ -67,13 +67,13 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-    // Asignación de dispositivos
-    @PutMapping("/{userId}/assign-devices")
-    public ResponseEntity<UserResponseDTO> assignDevicesToUser(@PathVariable Integer userId, @RequestBody List<Integer> deviceIds){
-        UserResponseDTO updatedUser = userService.assignDevicesToUser(userId, deviceIds);
-        return ResponseEntity.ok(updatedUser);
-    }
 
+    // Buscar usuario por email
+    @GetMapping("/by-email")
+    public ResponseEntity<List<UserResponseDTO>> searchUsersByEmail(@RequestParam String email){
+        List<UserResponseDTO> users = userService.findUserByEmail(email);
+        return ResponseEntity.ok(users);
+    }
 
     // Eliminar un usuario
     @DeleteMapping("/{id}")

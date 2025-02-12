@@ -16,7 +16,7 @@ public class User {
     private String password;
     private UserType userType;
     private Location location;
-    private List<Device> devices;
+    //private List<Device> devices;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer createdBy;

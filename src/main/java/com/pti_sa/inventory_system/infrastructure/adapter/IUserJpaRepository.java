@@ -13,7 +13,7 @@ public interface IUserJpaRepository extends JpaRepository<UserEntity, Integer> {
     List<UserEntity> findAllByDeletedFalse(); // Solo usuarios activos
     Optional<UserEntity> findByIdAndDeletedFalse(Integer id); // Buscar activo por ID
     boolean existsByEmailAndDeletedFalse(String email); // Validar email solo en activos
-    Optional<UserEntity> findByEmail(String email);
+    List<UserEntity> findByEmailContainingIgnoreCase(String email);
     boolean existsByEmail(String email);
 
     @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.devices WHERE u.id = :id AND u.deleted = false")

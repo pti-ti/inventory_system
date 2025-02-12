@@ -8,7 +8,6 @@ import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
 
-import com.pti_sa.inventory_system.infrastructure.entity.UserEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
@@ -70,9 +69,11 @@ public class UserService {
     }
 
     // Buscar usuario por email
-    public Optional<UserResponseDTO>findUserByEmail(String email){
+    public List<UserResponseDTO>findUserByEmail(String email){
         return iUserRepository.findByEmail(email)
-                .map(userMapper::toResponseDTO);
+                .stream()
+                .map(userMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     // Obtener todos los usuarios
@@ -92,35 +93,6 @@ public class UserService {
     public Optional<User> getUserById(Integer id){
         return iUserRepository.findById(id);
     }
-    // Asignar dispositivos a un usuario
-    public UserResponseDTO assignDevicesToUser(Integer userId, List<Integer> deviceIds) {
-        User user = iUserRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + userId));
-
-        List<Device> devices = iDeviceRepository.findAllById(deviceIds);
-
-        if (devices.size() != deviceIds.size()) {
-            throw new RuntimeException("Algunos dispositivos no existen.");
-        }
-
-        // Crear una nueva lista para evitar modificar la original
-        List<Device> updatedDevices = user.getDevices() != null ? new ArrayList<>(user.getDevices()) : new ArrayList<>();
-
-        // Agregar solo dispositivos que no estén ya asignados
-        for (Device device : devices) {
-            if (!updatedDevices.contains(device)) {
-                updatedDevices.add(device);
-            }
-        }
-
-        user.setDevices(updatedDevices);
-        user.updateAudit(user.getUpdatedBy()); // Registrar auditoría
-
-        User updatedUser = iUserRepository.update(user);
-        return userMapper.toResponseDTO(updatedUser);
-    }
-
-
 
 
     // Eliminar un usuario por su ID

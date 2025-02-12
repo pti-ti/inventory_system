@@ -13,7 +13,7 @@ public interface UserMapper {
     User toModel(UserEntity entity);
     UserEntity toEntity(User model);
 
-    @Mapping(target = "devices", source = "devices")
+    //@Mapping(target = "devices", source = "devices")
     @Mapping(target = "location", source = "location")
     //@Mapping(target = "userType", source = "userType") Muestra el tipo de usuario
     UserResponseDTO toResponseDTO(User user);
