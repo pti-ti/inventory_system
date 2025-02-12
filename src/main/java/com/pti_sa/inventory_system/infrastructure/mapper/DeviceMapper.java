@@ -14,4 +14,7 @@ public interface DeviceMapper {
 
     @Mapping(target = "status", source = "status.name")
     DeviceResponseDTO toResponseDTO(Device device);
+
+    @Mapping(target = "status", source = "status.name")
+    DeviceResponseDTO toResponseDTO(DeviceEntity deviceEntity);
 }

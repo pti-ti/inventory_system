@@ -1,7 +1,6 @@
 package com.pti_sa.inventory_system.application;
 
 import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
-import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
@@ -20,13 +19,11 @@ import java.util.stream.Collectors;
 public class UserService {
     private final IUserRepository iUserRepository;
     private final ILocationRepository iLocationRepository;
-    private final IDeviceRepository iDeviceRepository;
     private final UserMapper userMapper;
 
-    public UserService(IUserRepository iUserRepository, ILocationRepository iLocationRepository, IDeviceRepository iDeviceRepository, UserMapper userMapper) {
+    public UserService(IUserRepository iUserRepository, ILocationRepository iLocationRepository, UserMapper userMapper) {
         this.iUserRepository = iUserRepository;
         this.iLocationRepository = iLocationRepository;
-        this.iDeviceRepository = iDeviceRepository;
         this.userMapper = userMapper;
     }
 
