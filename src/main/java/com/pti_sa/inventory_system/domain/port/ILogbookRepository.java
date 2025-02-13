@@ -2,6 +2,8 @@ package com.pti_sa.inventory_system.domain.port;
 
 import com.pti_sa.inventory_system.domain.model.Logbook;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,5 +16,6 @@ public interface ILogbookRepository {
     List<Logbook> findByDeviceId(Integer deviceId);
     List<Logbook> findByUserId(Integer userId);
     List<Logbook> findByLocationId(Integer locationId);
-    List<Logbook>findByStatusName(String statusName);
+    List<Logbook> findByStatusName(String statusName);
+    List<Logbook> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

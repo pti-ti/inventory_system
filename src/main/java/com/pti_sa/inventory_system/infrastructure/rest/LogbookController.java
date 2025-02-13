@@ -3,9 +3,11 @@ package com.pti_sa.inventory_system.infrastructure.rest;
 import com.pti_sa.inventory_system.application.LogbookService;
 import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Logbook;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,16 @@ public class LogbookController {
     @GetMapping("/status/{statusName}")
     public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByStatus(@PathVariable("statusName") String statusName){
         List<LogbookResponseDTO> logbooks = logbookService.findLogbooksByStatus(statusName);
+        return ResponseEntity.ok(logbooks);
+    }
+
+    // Buscar registros por rango de fechas
+    @GetMapping("/by-date-range")
+    public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        List<LogbookResponseDTO> logbooks = logbookService.findLogbooksByDateRange(startDate, endDate);
         return ResponseEntity.ok(logbooks);
     }
 

@@ -9,6 +9,8 @@ import com.pti_sa.inventory_system.domain.port.ILogbookRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.LogbookMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,6 +114,16 @@ public class LogbookService {
     // Buscar registros de bitácora por LocationId
     public List<LogbookResponseDTO> findLogbooksByLocationId(Integer locationId) {
         return iLogbookRepository.findByLocationId(locationId).stream()
+                .map(logbookMapper::toResponseDTO)
+                .toList();
+    }
+
+    // Buscar registros de bitácora entre dos fechas
+    public List<LogbookResponseDTO> findLogbooksByDateRange(LocalDate startDate, LocalDate endDate){
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        return iLogbookRepository.findByCreatedAtBetween(startDateTime, endDateTime).stream()
                 .map(logbookMapper::toResponseDTO)
                 .toList();
     }

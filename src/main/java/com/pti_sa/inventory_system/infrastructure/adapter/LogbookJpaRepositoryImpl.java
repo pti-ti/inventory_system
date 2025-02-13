@@ -6,6 +6,8 @@ import com.pti_sa.inventory_system.infrastructure.entity.LogbookEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.LogbookMapper;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,4 +80,13 @@ public class LogbookJpaRepositoryImpl implements ILogbookRepository {
                 .map(logbookMapper::toModel)
                 .toList();
     }
+
+    @Override
+    public List<Logbook> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        return iLogbookJpaRepository.findByCreatedAtBetween(startDate, endDate)
+                .stream()
+                .map(logbookMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
 }
