@@ -1,7 +1,10 @@
 package com.pti_sa.inventory_system.application;
 
 import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
+import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.model.Logbook;
+import com.pti_sa.inventory_system.domain.model.Status;
+import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.domain.port.ILogbookRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.LogbookMapper;
 import org.springframework.stereotype.Service;
@@ -12,19 +15,57 @@ import java.util.Optional;
 @Service
 public class LogbookService {
     private final ILogbookRepository iLogbookRepository;
+    private final IDeviceRepository iDeviceRepository;
     private final LogbookMapper logbookMapper;
 
-    public LogbookService(ILogbookRepository iLogbookRepository, LogbookMapper logbookMapper) {
+    public LogbookService(ILogbookRepository iLogbookRepository, IDeviceRepository iDeviceRepository, LogbookMapper logbookMapper) {
         this.iLogbookRepository = iLogbookRepository;
+        this.iDeviceRepository = iDeviceRepository;
         this.logbookMapper = logbookMapper;
     }
 
     // Guardar un registro de bitácora
     public LogbookResponseDTO saveLogbook(Logbook logbook) {
         logbook.createAudit(logbook.getCreatedBy()); // Auditoría
+
+        // Buscar el dispositivo asociado al logbook
+        Optional<Device> optionalDevice = iDeviceRepository.findById(logbook.getDevice().getId());
+
+        if (optionalDevice.isPresent()) {
+            Device device = optionalDevice.get();
+
+            // Actualizar el estado del dispositivo
+            device.updateStatus(logbook.getStatus());
+
+            // Guardar el dispositivo actualizado en la BD
+            iDeviceRepository.save(device);
+        } else {
+            throw new RuntimeException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId());
+        }
+
+        // Guardar el logbook en la BD
         Logbook savedLogbook = iLogbookRepository.save(logbook);
         return logbookMapper.toResponseDTO(savedLogbook);
     }
+
+
+//    public LogbookResponseDTO saveLogbook(Logbook logbook){
+//        Device device = iDeviceRepository.findById(logbook.getDevice().getId())
+//                .orElseThrow(() -> new IllegalArgumentException("El dispositivo no existe"));
+//
+//        if(logbook.getStatus() == null){
+//            logbook.setStatus(new Status(1));
+//        }
+//
+//        logbook.createAudit(logbook.getCreatedBy());
+//        Logbook savedLogbook = iLogbookRepository.save(logbook);
+//        return logbookMapper.toResponseDTO(savedLogbook);
+//    }
+//    public LogbookResponseDTO saveLogbook(Logbook logbook) {
+//        logbook.createAudit(logbook.getCreatedBy()); // Auditoría
+//        Logbook savedLogbook = iLogbookRepository.save(logbook);
+//        return logbookMapper.toResponseDTO(savedLogbook);
+//    }
 
     // Actualizar un registro de bitácora
     public LogbookResponseDTO updateLogbook(Logbook logbook) {
@@ -32,6 +73,9 @@ public class LogbookService {
         Logbook updatedLogbook = iLogbookRepository.update(logbook);
         return logbookMapper.toResponseDTO(updatedLogbook);
     }
+
+    // Actualizar el estado del dispositivo
+
 
     // Buscar un registro de bitácora por su id
     public Optional<LogbookResponseDTO> findLogbookById(Integer id) {
@@ -48,6 +92,12 @@ public class LogbookService {
     // Buscar registros de bitácora por DeviceId
     public List<LogbookResponseDTO> findLogbookByDeviceId(Integer deviceId) {
         return iLogbookRepository.findByDeviceId(deviceId).stream()
+                .map(logbookMapper::toResponseDTO)
+                .toList();
+    }
+
+    public List<LogbookResponseDTO> findLogbooksByStatus(String statusName){
+        return iLogbookRepository.findByStatusName(statusName).stream()
                 .map(logbookMapper::toResponseDTO)
                 .toList();
     }

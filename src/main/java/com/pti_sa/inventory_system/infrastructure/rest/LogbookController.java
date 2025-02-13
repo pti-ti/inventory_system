@@ -34,10 +34,17 @@ public class LogbookController {
         return ResponseEntity.ok(updatedLogbook);
     }
 
-    // Obtener todos los logbooks
+    // Obtener todas las bitácoras
     @GetMapping
     public ResponseEntity<List<LogbookResponseDTO>> getAllLogbooks() {
         List<LogbookResponseDTO> logbooks = logbookService.findAllLogbooks();
+        return ResponseEntity.ok(logbooks);
+    }
+
+    // Obtener las bitácoras por el status
+    @GetMapping("/status/{statusName}")
+    public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByStatus(@PathVariable("statusName") String statusName){
+        List<LogbookResponseDTO> logbooks = logbookService.findLogbooksByStatus(statusName);
         return ResponseEntity.ok(logbooks);
     }
 

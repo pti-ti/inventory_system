@@ -71,4 +71,11 @@ public class LogbookJpaRepositoryImpl implements ILogbookRepository {
     public List<Logbook> findByLocationId(Integer locationId) {
         return List.of();
     }
+
+    @Override
+    public List<Logbook> findByStatusName(String statusName) {
+        return iLogbookJpaRepository.findByStatusName(statusName).stream()
+                .map(logbookMapper::toModel)
+                .toList();
+    }
 }

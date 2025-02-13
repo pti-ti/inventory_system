@@ -17,6 +17,10 @@ public class Status {
     private Integer createdBy;
     private Integer updatedBy;
 
+    public Status(Integer id){
+        this.id = id;
+    }
+
     public void createAudit(Integer createdBy){
         LocalDateTime now = LocalDateTime.now();
         this.createdAt = now;

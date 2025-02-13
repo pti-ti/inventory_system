@@ -8,4 +8,5 @@ import java.util.List;
 public interface ILogbookJpaRepository extends JpaRepository<LogbookEntity, Integer> {
     List<LogbookEntity> findByDeviceId(Integer deviceId);
     List<LogbookEntity> findByUserId(Integer userId);
+    List<LogbookEntity> findByStatusName(String statusName);
 }

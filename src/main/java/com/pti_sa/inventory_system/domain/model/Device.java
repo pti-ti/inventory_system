@@ -36,4 +36,8 @@ public class Device {
         this.updatedBy = updatedBy;
     }
 
+    public void updateStatus(Status newStatus){
+        this.status = newStatus;
+    }
+
 }

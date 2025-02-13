@@ -2,6 +2,7 @@ package com.pti_sa.inventory_system.application;
 
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
+import com.pti_sa.inventory_system.domain.model.Status;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,21 @@ public class DeviceService {
         Device updatedDevice = iDeviceRepository.update(device);
         return deviceMapper.toResponseDTO(updatedDevice);
     }
+
+//    // Actualizar el status del dispositivo
+//    public DeviceResponseDTO updateStatus(Integer deviceId, Integer statusId, String updatedBy){
+//        Optional<Device> optionalDevice = iDeviceRepository.findById(deviceId);
+//
+//        if(optionalDevice.isPresent()){
+//            Device device = optionalDevice.get();
+//            device.setStatus(new Status(statusId));
+//            device.updateAudit(Integer.parseInt(updatedBy));
+//            Device updateDevice = iDeviceRepository.update(device);
+//            return deviceMapper.toResponseDTO(updateDevice);
+//        }
+//
+//        throw new RuntimeException("El dispositivo con el ID: " + deviceId);
+//    }
 
     // Buscar un dispositivo por ID
     public Optional<DeviceResponseDTO> findDeviceById(Integer id) {

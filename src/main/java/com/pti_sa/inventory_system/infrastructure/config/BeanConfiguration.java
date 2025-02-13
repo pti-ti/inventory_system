@@ -27,8 +27,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public LogbookService logbookService(ILogbookRepository iLogbookRepository, LogbookMapper logbookMapper){
-        return new LogbookService(iLogbookRepository, logbookMapper);
+    public LogbookService logbookService(ILogbookRepository iLogbookRepository, LogbookMapper logbookMapper, IDeviceRepository iDeviceRepository){
+        return new LogbookService(iLogbookRepository, iDeviceRepository, logbookMapper);
     }
 
     @Bean
