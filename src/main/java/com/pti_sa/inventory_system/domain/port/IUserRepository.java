@@ -10,6 +10,7 @@ public interface IUserRepository {
     User save(User user);
     User update(User user);
     Optional<User> findById(Integer id);
+    Optional<User> findByEmailLogin(String email);
     List<User> findByEmail(String email);
     List<User> findAll();
     void deleteById(Integer id);

@@ -6,6 +6,7 @@ import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,13 +15,15 @@ import java.util.stream.Collectors;
 
 @RestController
 // http://localhost:8085
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/security/users")
 public class UserController {
 
+    private final BCryptPasswordEncoder passwordEncoder;
     private final UserService userService;
     private final UserMapper userMapper;
 
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(BCryptPasswordEncoder passwordEncoder, UserService userService, UserMapper userMapper) {
+        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.userMapper = userMapper;
     }
@@ -28,6 +31,7 @@ public class UserController {
     // Crear usuario
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encriptación de la clave
         return ResponseEntity.ok(userService.saveUser(user));
     }
 

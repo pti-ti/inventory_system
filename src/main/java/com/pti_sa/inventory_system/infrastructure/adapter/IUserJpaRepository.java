@@ -15,7 +15,7 @@ public interface IUserJpaRepository extends JpaRepository<UserEntity, Integer> {
     boolean existsByEmailAndDeletedFalse(String email); // Validar email solo en activos
     List<UserEntity> findByEmailContainingIgnoreCase(String email);
     boolean existsByEmail(String email);
-
+    Optional<UserEntity> findByEmail(String email);
     @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.devices WHERE u.id = :id AND u.deleted = false")
     Optional<UserEntity> findByIdWithDevices(@Param("id") Integer id);
     Optional<UserEntity> findById(Integer id);

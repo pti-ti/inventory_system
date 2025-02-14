@@ -73,6 +73,13 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    // Buscar email para el login
+    public Optional<User> findByEmail(String email){
+        return iUserRepository.findByEmailLogin(email);
+
+    }
+
+
     // Obtener todos los usuarios
     public List<UserResponseDTO> findAllUsers(){
         return iUserRepository.findAll()
