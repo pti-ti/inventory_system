@@ -6,6 +6,8 @@ import com.pti_sa.inventory_system.domain.port.IMaintenanceRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.MaintenanceMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +55,25 @@ public class MaintenanceService {
                 .stream()
                 .map(maintenanceMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    // Buscar mantenimientos por el tipo
+    public List<MaintenanceResponseDTO> findMaintenancesByType(String type){
+        return iMaintenanceRepository.findByType(type)
+                .stream()
+                .map(maintenanceMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // Buscar mantenimientos por rango de fechas
+    public List<MaintenanceResponseDTO> findMaintenancesByDateRange(LocalDate startDate, LocalDate endDate){
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23,59, 59);
+
+        return iMaintenanceRepository.findByCreatedAtBetween(startDateTime, endDateTime)
+                .stream()
+                .map(maintenanceMapper::toDto)
+                .toList();
     }
 
     // Eliminar un mantenimiento por su ID

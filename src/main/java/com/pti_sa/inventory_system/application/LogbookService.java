@@ -123,7 +123,8 @@ public class LogbookService {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
 
-        return iLogbookRepository.findByCreatedAtBetween(startDateTime, endDateTime).stream()
+        return iLogbookRepository.findByCreatedAtBetween(startDateTime, endDateTime)
+                .stream()
                 .map(logbookMapper::toResponseDTO)
                 .toList();
     }

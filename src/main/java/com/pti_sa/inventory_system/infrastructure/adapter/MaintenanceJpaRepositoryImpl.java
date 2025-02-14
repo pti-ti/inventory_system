@@ -6,6 +6,7 @@ import com.pti_sa.inventory_system.infrastructure.entity.MaintenanceEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.MaintenanceMapper;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,6 +55,22 @@ public class MaintenanceJpaRepositoryImpl implements IMaintenanceRepository {
     @Override
     public List<Maintenance> findByDeviceId(Integer deviceId) {
         return iMaintenanceJpaRepository.findByDeviceId(deviceId)
+                .stream()
+                .map(maintenanceMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Maintenance> findByType(String type) {
+        return iMaintenanceJpaRepository.findByMaintenanceType(type)
+                .stream()
+                .map(maintenanceMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Maintenance> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        return iMaintenanceJpaRepository.findByCreatedAtBetween(startDate, endDate)
                 .stream()
                 .map(maintenanceMapper::toModel)
                 .collect(Collectors.toList());
