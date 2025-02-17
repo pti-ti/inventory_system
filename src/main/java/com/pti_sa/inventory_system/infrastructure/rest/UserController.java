@@ -5,12 +5,15 @@ import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -32,7 +35,7 @@ public class UserController {
     }
 
     // Crear usuario (ADMIN Y TECHNICIAN pueden usar este endpoint)
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN' , 'TECHNICIAN')")
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Encriptar de la clave
@@ -43,13 +46,37 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Integer id, @RequestBody User user) {
-        user.setId(id);
-        User updatedUser = userService.updateUser(user);
+        // Verificar si el usuario existe
+        Optional<User> existingUser = userService.getUserById(id);
+        if (existingUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User userToUpdate = existingUser.get();
+        userToUpdate.setEmail(user.getEmail());
+        userToUpdate.setLocation(user.getLocation());
+
+
+        String authenticatedUserName  = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> authenticatedUser = userService.findByEmail(authenticatedUserName);
+        userToUpdate.updateAudit(user.getUpdatedBy());
+
+        // Obtener el id del usuario autenticado
+        if (authenticatedUser.isPresent()) {
+            Integer updatedById = authenticatedUser.get().getId();
+            userToUpdate.updateAudit(updatedById);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User updatedUser = userService.updateUser(userToUpdate);
+
         return ResponseEntity.ok(userMapper.toResponseDTO(updatedUser));
     }
 
+
     // Eliminar usuario (Solo ADMIN)
-    @PreAuthorize("hasRole('ADMIN'")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
         userService.deleteUserById(id);

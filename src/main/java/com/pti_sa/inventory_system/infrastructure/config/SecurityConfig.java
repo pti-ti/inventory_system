@@ -30,13 +30,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf( csrf -> csrf.disable())
                 .authorizeHttpRequests(aut -> aut
-                        // Rutas accesibles solo por ADMIN
+                    // Rutas accesibles solo por ADMIN
+                    .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
                     .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        
+                    // Rutas accesibles por ADMIN y TECHNICIAN ( buscar y crear usuarios)
 
-                        // Rutas accesibles por ADMIN y TECHNICIAN ( buscar y crear usuarios)
-                    .requestMatchers("/api/v1/technician/users**").hasAnyRole("ADMIN", "TECHNICIAN")
-
-                        // Permitir que cualquiera (sin autenticación) pueda crear usuarios
+                    // Permitir que cualquiera (sin autenticación) pueda crear usuarios
                     //.requestMatchers("/api/v1/users").permitAll()
 
                         // Ruta pública para login

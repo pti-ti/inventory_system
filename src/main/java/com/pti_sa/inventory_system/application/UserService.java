@@ -50,13 +50,29 @@ public class UserService {
 
     // Actualizar usuario
     public User updateUser(User user){
-        Optional<User> existingUser = iUserRepository.findById(user.getId());
-        if(existingUser.isEmpty()){
-            throw new RuntimeException("Usuario no encontrado");
+        User existingUser = iUserRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (user.getLocation() == null || user.getLocation().getId() == null){
+            throw new RuntimeException("El ID de la ubicación del usuario no puede ser nulo ");
         }
 
-        user.updateAudit(user.getUpdatedBy()); // Auditoría al actualizar
+        // Buscar la ubicación en la base de datos
+        Location location = iLocationRepository.findById(user.getLocation().getId())
+                .orElseThrow(() -> new RuntimeException("Ubicación no encontrada con ID: " + user.getLocation().getId()));
+
+        user.setLocation(location);
+        user.updateAudit(user.getUpdatedBy());
+
         return iUserRepository.update(user);
+//    public User updateUser(User user){
+//        Optional<User> existingUser = iUserRepository.findById(user.getId());
+//        if(existingUser.isEmpty()){
+//            throw new RuntimeException("Usuario no encontrado");
+//        }
+//
+//        user.updateAudit(user.getUpdatedBy()); // Auditoría al actualizar
+//        return iUserRepository.update(user);
     }
 
     // Buscar usuario por ID
