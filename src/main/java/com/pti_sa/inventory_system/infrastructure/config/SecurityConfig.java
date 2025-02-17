@@ -1,5 +1,6 @@
 package com.pti_sa.inventory_system.infrastructure.config;
 
+import com.pti_sa.inventory_system.infrastructure.jwt.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,10 +9,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
+    public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter) {
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -20,9 +28,23 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf( csrf -> csrf.disable()).authorizeHttpRequests(
-            aut -> aut.requestMatchers("/api/v1/security/**").permitAll().anyRequest().authenticated()
-        );
+        httpSecurity.csrf( csrf -> csrf.disable())
+                .authorizeHttpRequests(aut -> aut
+                        // Rutas accesibles solo por ADMIN
+                    .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+
+                        // Rutas accesibles por ADMIN y TECHNICIAN ( buscar y crear usuarios)
+                    .requestMatchers("/api/v1/technician/users**").hasAnyRole("ADMIN", "TECHNICIAN")
+
+                        // Permitir que cualquiera (sin autenticación) pueda crear usuarios
+                    //.requestMatchers("/api/v1/users").permitAll()
+
+                        // Ruta pública para login
+                    .requestMatchers("/api/v1/security/login").permitAll()
+
+                        // Cualquier otra petición requiere autenticación
+                        .anyRequest().authenticated()
+        ).addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
