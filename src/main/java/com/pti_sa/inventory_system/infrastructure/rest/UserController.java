@@ -3,6 +3,7 @@ package com.pti_sa.inventory_system.infrastructure.rest;
 import com.pti_sa.inventory_system.application.UserService;
 import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
 import com.pti_sa.inventory_system.domain.model.User;
+import com.pti_sa.inventory_system.domain.model.UserType;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,18 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Encriptar de la clave
         return ResponseEntity.ok(userService.saveUser(user));
     }
+
+    // Registrar Usuario
+    @PreAuthorize("hasRole('ADMIN', 'TECHNICIAN')")
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> registerUser (@Valid @RequestBody User user){
+        String defaultPassword = "123";
+        String defaultUserType = "USER";
+        user.setPassword(passwordEncoder.encode(defaultPassword));
+        user.setUserType(UserType.USER);
+        return ResponseEntity.ok(userService.registerUser(user));
+    }
+
 
     // Actualizar usuario (Solo ADMIN)
     @PreAuthorize("hasRole('ADMIN')")

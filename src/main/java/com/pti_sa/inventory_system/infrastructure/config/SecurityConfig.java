@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -30,17 +31,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf( csrf -> csrf.disable())
                 .authorizeHttpRequests(aut -> aut
-                    // Rutas accesibles solo por ADMIN
+                    // Rutas accesibles solo por ADMIN o TECHNICIAN
                     .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
+                    .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
                     .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        
-                    // Rutas accesibles por ADMIN y TECHNICIAN ( buscar y crear usuarios)
-
-                    // Permitir que cualquiera (sin autenticación) pueda crear usuarios
-                    //.requestMatchers("/api/v1/users").permitAll()
-
-                        // Ruta pública para login
                     .requestMatchers("/api/v1/security/login").permitAll()
+
+                        // Rutas accesibles por ADMIN y TECHNICIAN ( buscar y crear usuarios)
+
+                        // Permitir que cualquiera (sin autenticación) pueda crear usuarios
+                        //.requestMatchers("/api/v1/users").permitAll()
+                        // Ruta pública para login
 
                         // Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
@@ -50,7 +51,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+
 }

@@ -3,11 +3,13 @@ package com.pti_sa.inventory_system.application;
 import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.model.User;
+import com.pti_sa.inventory_system.domain.model.UserType;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
 
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,6 +48,29 @@ public class UserService {
         user.createAudit(user.getCreatedBy());
         User savedUser = iUserRepository.save(user);
         return userMapper.toResponseDTO(savedUser);
+    }
+
+    // Registrar Usuario
+    public UserResponseDTO registerUser(User user) {
+        // Validar si el email ya está registrado
+        if (iUserRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("El correo ya está registrado.");
+        }
+
+        // Validar si la ubicación está presente
+        if (user.getLocation() == null || user.getLocation().getId() == null) {
+            throw new RuntimeException("El ID de la ubicación del usuario no puede ser nulo.");
+        }
+
+        // Buscar la ubicación en la base de datos
+        Location location = iLocationRepository.findById(user.getLocation().getId())
+                .orElseThrow(() -> new RuntimeException("Ubicación no encontrada con ID: " + user.getLocation().getId()));
+        user.setLocation(location);
+        user.createAudit(user.getCreatedBy());
+        User savedUser = iUserRepository.save(user);
+        return userMapper.toResponseDTO(savedUser);
+
+
     }
 
     // Actualizar usuario
