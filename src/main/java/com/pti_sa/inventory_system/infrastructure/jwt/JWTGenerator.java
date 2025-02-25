@@ -33,9 +33,9 @@ public class JWTGenerator {
                         .collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME))
-                .signWith(getSignedKey(SUPER_SECRET_KEY), SignatureAlgorithm.HS512)
+                .signWith(SUPER_SECRET_KEY, SignatureAlgorithm.HS512)
                 .compact();
 
-        return "Bearer "+token;
+        return token;
     }
 }

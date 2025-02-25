@@ -29,13 +29,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf( csrf -> csrf.disable())
+        httpSecurity
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 🔥 Habilitar CORS aquí
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(aut -> aut
-                    // Rutas accesibles solo por ADMIN o TECHNICIAN
-                    .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
-                    .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
-                    .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/api/v1/security/login").permitAll()
+                        .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
+                        .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/security/login").permitAll()
+                        .anyRequest().authenticated()
 
                         // Rutas accesibles por ADMIN y TECHNICIAN ( buscar y crear usuarios)
 
@@ -44,8 +46,9 @@ public class SecurityConfig {
                         // Ruta pública para login
 
                         // Cualquier otra petición requiere autenticación
-                        .anyRequest().authenticated()
+
         ).addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return httpSecurity.build();
     }
@@ -60,7 +63,7 @@ public class SecurityConfig {
         org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
         org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
 
-        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
@@ -68,6 +71,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 
 }

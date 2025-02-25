@@ -44,7 +44,7 @@ public class UserController {
     }
 
     // Registrar Usuario
-    @PreAuthorize("hasRole('ADMIN', 'TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> registerUser (@Valid @RequestBody User user){
         String defaultPassword = "123";

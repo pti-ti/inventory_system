@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/security")
 @Slf4j // Para ver que rol tiene el usuario autenticado.
@@ -28,7 +31,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserRequestDTO userRequestDTO){
+    public ResponseEntity<Map<String, String>> login(@RequestBody UserRequestDTO userRequestDTO){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userRequestDTO.email(), userRequestDTO.password())
         );
@@ -43,6 +46,11 @@ public class LoginController {
                 .toString());
 
         String token = jwtGenerator.getToken(userRequestDTO.email());
-        return new ResponseEntity<>("Usuario logueado satisfactoriamente: "+ token, HttpStatus.OK);
+
+        // ✅ Devolvemos un JSON válido
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Usuario logueado satisfactoriamente");
+        response.put("token", "Bearer " + token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

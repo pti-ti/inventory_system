@@ -26,7 +26,7 @@ public class JWTValidate {
         String jwtToken = request.getHeader(HEADER_AUTHORIZATION).replace(TOKEN_BEARER_PREFIX, "");
 
         return Jwts.parserBuilder()
-                .setSigningKey(getSignedKey(SUPER_SECRET_KEY))
+                .setSigningKey(SUPER_SECRET_KEY)
                 .build()
                 .parseClaimsJws(jwtToken)
                 .getBody();
