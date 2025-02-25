@@ -30,7 +30,8 @@ public class CustomUserDetailService implements UserDetailsService {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getUserType().name());
 
         // Retornar el UserDetails con el rol asignado
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
+                user.getId(),
                 user.getEmail(),
                 user.getPassword(),
                 Collections.singletonList(authority) // Asignar el rol dinámicamente

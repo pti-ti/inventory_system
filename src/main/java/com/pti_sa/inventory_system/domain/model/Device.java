@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,9 +15,10 @@ public class Device {
     private String code;
     private String name;
     private String serial;
-    private String Type;
+    private String type;
     private String specification;
     private Status status;
+    private BigDecimal price;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer createdBy;

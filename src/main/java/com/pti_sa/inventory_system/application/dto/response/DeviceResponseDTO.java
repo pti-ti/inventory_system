@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,6 +16,7 @@ public class DeviceResponseDTO {
     private String type;
     private String specification;
     private String status;
+    private BigDecimal price;
 
 
 }

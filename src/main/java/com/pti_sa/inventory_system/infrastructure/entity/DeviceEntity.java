@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -41,6 +42,9 @@ public class DeviceEntity {
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
+
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
