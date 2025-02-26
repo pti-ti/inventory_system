@@ -30,24 +30,36 @@ public class LogbookService {
     public LogbookResponseDTO saveLogbook(Logbook logbook) {
         logbook.createAudit(logbook.getCreatedBy()); // Auditoría
 
-        // Buscar el dispositivo asociado al logbook
-        Optional<Device> optionalDevice = iDeviceRepository.findById(logbook.getDevice().getId());
+        // Buscar dispositivo y actualizar estado
+        Device device = iDeviceRepository.findById(logbook.getDevice().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId()));
 
-        if (optionalDevice.isPresent()) {
-            Device device = optionalDevice.get();
+        device.updateStatus(logbook.getStatus());
+        iDeviceRepository.save(device);
 
-            // Actualizar el estado del dispositivo
-            device.updateStatus(logbook.getStatus());
-
-            // Guardar el dispositivo actualizado en la BD
-            iDeviceRepository.save(device);
-        } else {
-            throw new RuntimeException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId());
-        }
-
-        // Guardar el logbook en la BD
+        // Guardar logbook
         Logbook savedLogbook = iLogbookRepository.save(logbook);
         return logbookMapper.toResponseDTO(savedLogbook);
+//        logbook.createAudit(logbook.getCreatedBy()); // Auditoría
+//
+//        // Buscar el dispositivo asociado al logbook
+//        Optional<Device> optionalDevice = iDeviceRepository.findById(logbook.getDevice().getId());
+//
+//        if (optionalDevice.isPresent()) {
+//            Device device = optionalDevice.get();
+//
+//            // Actualizar el estado del dispositivo
+//            device.updateStatus(logbook.getStatus());
+//
+//            // Guardar el dispositivo actualizado en la BD
+//            iDeviceRepository.save(device);
+//        } else {
+//            throw new RuntimeException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId());
+//        }
+//
+//        // Guardar el logbook en la BD
+//        Logbook savedLogbook = iLogbookRepository.save(logbook);
+//        return logbookMapper.toResponseDTO(savedLogbook);
     }
 
 

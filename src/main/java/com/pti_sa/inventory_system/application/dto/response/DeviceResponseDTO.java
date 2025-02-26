@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class DeviceResponseDTO {
 
+    private Integer id;
+    private String name;
     private String code;
     private String serial;
     private String type;

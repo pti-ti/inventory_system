@@ -23,7 +23,7 @@ public class LogbookEntity {
     private DeviceEntity device;
 
     @ManyToOne
-    @JoinColumn(name = "id_user", nullable = false)
+    @JoinColumn(name = "id_user", nullable = true)
     private UserEntity user;
 
     @ManyToOne

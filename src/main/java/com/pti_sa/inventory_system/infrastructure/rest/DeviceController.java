@@ -64,8 +64,26 @@ public class DeviceController {
     }
 
     // Obtener todos los dispositivos
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping
     public ResponseEntity<List<DeviceResponseDTO>> getAllDevices() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Object principal = authentication.getPrincipal();
+        Integer requestedBy = null;
+
+        if (principal instanceof CustomUserDetails) {
+            requestedBy = ((CustomUserDetails) principal).getId();
+        }
+
+        if (requestedBy == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         List<DeviceResponseDTO> devices = deviceService.findAllDevices();
         return devices.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(devices);
     }

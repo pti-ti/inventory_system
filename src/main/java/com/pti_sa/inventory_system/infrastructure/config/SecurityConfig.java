@@ -35,8 +35,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(aut -> aut
                         .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
+                        .requestMatchers("/api/v1/admin/devices").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/devices/register").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/logbooks/register").hasAnyRole("ADMIN", "TECHNICIAN")
+                        .requestMatchers("/api/v1/admin/maintenances/register").hasAnyRole("ADMIN", "TECHNICIAN")
+
+                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/security/login").permitAll()
                         //.requestMatchers("/api/v1/admin/devices/register").permitAll()
                         .requestMatchers("/error").permitAll()
