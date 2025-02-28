@@ -5,10 +5,12 @@ import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.domain.model.UserType;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
+import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -110,8 +112,24 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Object principal = authentication.getPrincipal();
+        Integer requestedBy = null;
+
+        if(principal instanceof CustomUserDetails){
+            requestedBy = ((CustomUserDetails) principal).getId();
+        }
+        if (requestedBy == null){
+            return ResponseEntity.badRequest().build();
+        }
+
         List<UserResponseDTO> users = userService.findAllUsers();
-        return ResponseEntity.ok(users);
+        return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
     }
 
     // Buscar usuario por email (ADMIN Y TECHNICIAN)

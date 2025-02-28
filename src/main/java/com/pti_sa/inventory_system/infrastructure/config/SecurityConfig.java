@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/devices").hasAnyRole("ADMIN", "TECHNICIAN")
+                        .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/devices/register").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/logbooks/register").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/maintenances/register").hasAnyRole("ADMIN", "TECHNICIAN")

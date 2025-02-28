@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MaintenanceResponseDTO {
+    private Integer id;
     private Integer deviceId;
     private String deviceCode;
     private String deviceName;
