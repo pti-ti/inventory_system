@@ -123,7 +123,7 @@ public class UserService {
 
     // Obtener todos los usuarios
     public List<UserResponseDTO> findAllUsers(){
-        return iUserRepository.findAll()
+        return iUserRepository.findAllByDeletedFalse()
                 .stream()
                 .map(userMapper::toResponseDTO)
                 .collect(Collectors.toList());

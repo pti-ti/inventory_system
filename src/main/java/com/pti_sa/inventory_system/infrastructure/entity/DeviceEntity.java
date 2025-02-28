@@ -46,6 +46,9 @@ public class DeviceEntity {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
+    @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean deleted = false;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

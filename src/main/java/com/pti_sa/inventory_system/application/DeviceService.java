@@ -2,7 +2,6 @@ package com.pti_sa.inventory_system.application;
 
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
-import com.pti_sa.inventory_system.domain.model.Status;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.springframework.stereotype.Service;
@@ -79,7 +78,7 @@ public class DeviceService {
 
     // Obtener todos los dispositivos
     public List<DeviceResponseDTO> findAllDevices() {
-        return iDeviceRepository.findAll()
+        return iDeviceRepository.findAllByDeletedFalse()
                 .stream()
                 .map(deviceMapper::toResponseDTO)
                 .collect(Collectors.toList());
@@ -87,6 +86,9 @@ public class DeviceService {
 
     // Eliminar un dispositivo por su ID
     public void deleteDeviceById(Integer id) {
-        iDeviceRepository.deleteById(id);
+        Device device = iDeviceRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+        device.setDeleted(true);
+        iDeviceRepository.save(device);
     }
 }

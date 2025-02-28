@@ -1,5 +1,6 @@
 package com.pti_sa.inventory_system.infrastructure.adapter;
 
+import com.pti_sa.inventory_system.infrastructure.entity.DeviceEntity;
 import com.pti_sa.inventory_system.infrastructure.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 public interface IUserJpaRepository extends JpaRepository<UserEntity, Integer> {
 
-    List<UserEntity> findAllByDeletedFalse(); // Solo usuarios activos
+    List<UserEntity> findByDeletedFalse(); // Solo usuarios activos
     Optional<UserEntity> findByIdAndDeletedFalse(Integer id); // Buscar activo por ID
     boolean existsByEmailAndDeletedFalse(String email); // Validar email solo en activos
     List<UserEntity> findByEmailContainingIgnoreCase(String email);

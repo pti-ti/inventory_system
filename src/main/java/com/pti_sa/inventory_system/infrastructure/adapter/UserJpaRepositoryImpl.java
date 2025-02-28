@@ -58,6 +58,14 @@ public class UserJpaRepositoryImpl implements IUserRepository {
     }
 
     @Override
+    public List<User> findAllByDeletedFalse() {
+        return iUserJpaRepository.findByDeletedFalse()
+                .stream()
+                .map(userMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteById(Integer id) {
         iUserJpaRepository.deleteById(id);
     }

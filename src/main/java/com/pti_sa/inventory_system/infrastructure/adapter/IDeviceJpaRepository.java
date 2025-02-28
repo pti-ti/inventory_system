@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface IDeviceJpaRepository extends JpaRepository<DeviceEntity, Integer> {
     Optional<DeviceEntity> findByCode(String code);
     Optional<DeviceEntity> findBySerial(String serial);
+    List<DeviceEntity> findByDeletedFalse();
     List<DeviceEntity> findByStatusId(Integer statusId);
 }

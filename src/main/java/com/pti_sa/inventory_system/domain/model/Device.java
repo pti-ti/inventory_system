@@ -23,6 +23,7 @@ public class Device {
     private LocalDateTime updatedAt;
     private Integer createdBy;
     private Integer updatedBy;
+    private boolean deleted = false;
 
 
     public void createAudit(Integer createdBy){

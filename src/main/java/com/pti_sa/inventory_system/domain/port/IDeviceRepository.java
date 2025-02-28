@@ -13,6 +13,7 @@ public interface IDeviceRepository {
     Optional<Device>findBySerial(String serial);
     List<Device>findByStatusId(Integer statusId);
     List<Device> findAll();
+    List<Device> findAllByDeletedFalse();
     List<Device> findAllById(List<Integer> ids);
     void deleteById(Integer id);
 }
