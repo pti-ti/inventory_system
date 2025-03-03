@@ -12,9 +12,9 @@ public interface DeviceMapper {
     Device toModel(DeviceEntity entity);
     DeviceEntity toEntity(Device device);
 
-    @Mapping(target = "status", source = "status.name")
+    @Mapping(target = "status", source = "status")
     DeviceResponseDTO toResponseDTO(Device device);
 
-    @Mapping(target = "status", source = "status.name")
+    @Mapping(target = "status", source = "status")
     DeviceResponseDTO toResponseDTO(DeviceEntity deviceEntity);
 }
