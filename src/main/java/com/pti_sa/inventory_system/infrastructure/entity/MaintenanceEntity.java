@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,7 +31,7 @@ public class MaintenanceEntity {
     private String maintenanceType;
 
     @Column(name = "maintenance_date", nullable = false)
-    private LocalDateTime maintenanceDate;
+    private LocalDate maintenanceDate;
 
     @Column(name = "comment")
     private String comment;

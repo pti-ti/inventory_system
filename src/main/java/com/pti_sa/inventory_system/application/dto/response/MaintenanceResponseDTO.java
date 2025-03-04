@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,5 +17,6 @@ public class MaintenanceResponseDTO {
     private String deviceName;
     private String userEmail;
     private String maintenanceType;
+    private LocalDate maintenanceDate;
     private String comment;
 }

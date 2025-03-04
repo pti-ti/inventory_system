@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +15,7 @@ public class Maintenance {
     private Device device;
     private User user;
     private String maintenanceType;
-    private LocalDateTime maintenanceDate;
+    private LocalDate maintenanceDate;
     private String comment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
