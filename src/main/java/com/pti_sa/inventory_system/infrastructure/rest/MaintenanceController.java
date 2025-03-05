@@ -83,10 +83,40 @@ public class MaintenanceController {
 
         // Actualizar mantenimiento
     @PutMapping("/{id}")
-    public ResponseEntity<MaintenanceResponseDTO> updateMaintenance(@PathVariable Integer id, @RequestBody Maintenance maintenance) {
+    public ResponseEntity<?> updateMaintenance(@PathVariable Integer id, @RequestBody Maintenance maintenance) {
         maintenance.setId(id);
+
+        //Obtener usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("Error: Usuario no autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado.");
+
+        }
+
+        Object principal = authentication.getPrincipal();
+        Integer updatedBy = null;
+
+
+        if (principal instanceof CustomUserDetails) {
+            updatedBy = ((CustomUserDetails) principal).getId();
+        }
+
+        if (updatedBy == null) {
+            System.out.println("❌ Error: No se pudo obtener el usuario autenticado.");
+            return ResponseEntity.badRequest().body("No se pudo obtener el usuario autenticado.");
+        }
+
+        System.out.println("🔍 Usuario autenticado para updateBy: " + updatedBy);
+
+        // Asignar el usuario autenticado
+        maintenance.setUpdatedBy(updatedBy);
+
+        // Llamar al servicio para actualizar
         MaintenanceResponseDTO updatedMaintenance = maintenanceService.updateMaintenance(maintenance);
         return ResponseEntity.ok(updatedMaintenance);
+    
     }
 
     // Obtener Mantenimiento por ID del dispositivo

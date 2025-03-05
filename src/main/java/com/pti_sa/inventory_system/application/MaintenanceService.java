@@ -31,10 +31,34 @@ public class MaintenanceService {
 
     // Actualizar un mantenimiento
     public MaintenanceResponseDTO updateMaintenance(Maintenance maintenance) {
+        // 1️⃣ Buscar el mantenimiento existente
+        Maintenance existingMaintenance = iMaintenanceRepository.findById(maintenance.getId())
+                .orElseThrow(() -> new RuntimeException("Mantenimiento no encontrado"));
+
+        // 2️⃣ Asignar los nuevos valores (evitar sobrescribir valores nulos)
+        existingMaintenance.setMaintenanceType(maintenance.getMaintenanceType());
+        existingMaintenance.setMaintenanceDate(maintenance.getMaintenanceDate());
+        existingMaintenance.setComment(maintenance.getComment());
+        existingMaintenance.updateAudit(maintenance.getUpdatedBy());
+
+        // 3️⃣ Asegurar que `device` y `user` no sean nulos
+        if (maintenance.getDevice() != null && maintenance.getDevice().getId() != null) {
+            existingMaintenance.setDevice(maintenance.getDevice());
+        }
+        if (maintenance.getUser() != null && maintenance.getUser().getId() != null) {
+            existingMaintenance.setUser(maintenance.getUser());
+        }
+
+        // 4️⃣ Guardar los cambios y devolver el DTO
+        Maintenance updated = iMaintenanceRepository.update(existingMaintenance);
+        return maintenanceMapper.toDto(updated);
+    }
+
+    /*public MaintenanceResponseDTO updateMaintenance(Maintenance maintenance) {
         maintenance.updateAudit(maintenance.getUpdatedBy());
         Maintenance updated = iMaintenanceRepository.update(maintenance);
         return maintenanceMapper.toDto(updated);
-    }
+    }*/
 
     // Buscar un mantenimiento por su ID
     public Optional<MaintenanceResponseDTO> findMaintenanceById(Integer id) {
