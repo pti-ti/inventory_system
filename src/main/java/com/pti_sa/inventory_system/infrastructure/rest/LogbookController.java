@@ -82,51 +82,45 @@ public class LogbookController {
         }
     }
 
+    // Actualizar logbook
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateLogbook(@PathVariable Integer id, @RequestBody Logbook logbook) {
+        logbook.setId(id);
 
 
-    // Crear logbook
-//    @PostMapping
-//    public ResponseEntity<LogbookResponseDTO> createLogbook(@RequestBody Logbook logbook) {
-//        LogbookResponseDTO createdLogbook = logbookService.saveLogbook(logbook);
-//        return ResponseEntity.ok(createdLogbook);
-//    }
-    /*@PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
-    @PostMapping("/register")
-    public ResponseEntity<LogbookResponseDTO> createLogbook(@RequestBody Logbook logbook) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if(authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("Error: Usuario no autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado.");
         }
 
         Object principal = authentication.getPrincipal();
-        Integer createdBy = null;
+        Integer updatedBy = null;
 
-        if (principal instanceof CustomUserDetails) {
-            createdBy = ((CustomUserDetails) principal).getId();
+        if(principal instanceof CustomUserDetails){
+            updatedBy = ((CustomUserDetails) principal).getId();
         }
 
-        if (createdBy == null) {
-            return ResponseEntity.badRequest().body(null);
+        if(updatedBy == null){
+            System.out.println("Error: No se pudo obtener el usuario autenticado.");
+            return ResponseEntity.badRequest().body("No se pudo obtener el usuario autenticado.");
         }
 
-        logbook.createAudit(createdBy);
-        return ResponseEntity.ok(logbookService.saveLogbook(logbook));
-    }*/
+        System.out.println(" Usuario autenticado para updateBy: " + updatedBy);
 
+        logbook.setUpdatedBy(updatedBy);
 
-    // Actualizar logbook
-    @PutMapping("/{id}")
-    public ResponseEntity<LogbookResponseDTO> updateLogbook(@PathVariable Integer id, @RequestBody Logbook logbook) {
-        logbook.setId(id);
         LogbookResponseDTO updatedLogbook = logbookService.updateLogbook(logbook);
-        return ResponseEntity.ok(updatedLogbook);
+        return ResponseEntity.ok((updatedLogbook));
     }
+
+
 
     // Obtener todas las bitácoras
     @GetMapping
     public ResponseEntity<List<LogbookResponseDTO>> getAllLogbooks() {
-        List<LogbookResponseDTO> logbooks = logbookService.findAllLogbooks();
+        List<LogbookResponseDTO> logbooks = logbookService.findAllByDeletedFalse();
         return ResponseEntity.ok(logbooks);
     }
 
@@ -148,9 +142,10 @@ public class LogbookController {
     }
 
     // Eliminar un logbook
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<LogbookResponseDTO> getLogbookById(@PathVariable Integer id) {
-        Optional<LogbookResponseDTO> logbook = logbookService.findLogbookById(id);
-        return logbook.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<String> deleteLogbook(@PathVariable Integer id) {
+        logbookService.deleteLogbookById(id);
+        return ResponseEntity.ok("Bitácora con ID " + id + " eliminado exitosamente.");
     }
 }

@@ -3,6 +3,7 @@ package com.pti_sa.inventory_system.application;
 import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.model.Logbook;
+import com.pti_sa.inventory_system.domain.model.Maintenance;
 import com.pti_sa.inventory_system.domain.model.Status;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.domain.port.ILogbookRepository;
@@ -41,51 +42,22 @@ public class LogbookService {
         Logbook savedLogbook = iLogbookRepository.save(logbook);
         return logbookMapper.toResponseDTO(savedLogbook);
 //        logbook.createAudit(logbook.getCreatedBy()); // Auditoría
-//
-//        // Buscar el dispositivo asociado al logbook
-//        Optional<Device> optionalDevice = iDeviceRepository.findById(logbook.getDevice().getId());
-//
-//        if (optionalDevice.isPresent()) {
-//            Device device = optionalDevice.get();
-//
-//            // Actualizar el estado del dispositivo
-//            device.updateStatus(logbook.getStatus());
-//
-//            // Guardar el dispositivo actualizado en la BD
-//            iDeviceRepository.save(device);
-//        } else {
-//            throw new RuntimeException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId());
-//        }
-//
-//        // Guardar el logbook en la BD
-//        Logbook savedLogbook = iLogbookRepository.save(logbook);
-//        return logbookMapper.toResponseDTO(savedLogbook);
     }
 
 
-//    public LogbookResponseDTO saveLogbook(Logbook logbook){
-//        Device device = iDeviceRepository.findById(logbook.getDevice().getId())
-//                .orElseThrow(() -> new IllegalArgumentException("El dispositivo no existe"));
-//
-//        if(logbook.getStatus() == null){
-//            logbook.setStatus(new Status(1));
-//        }
-//
-//        logbook.createAudit(logbook.getCreatedBy());
-//        Logbook savedLogbook = iLogbookRepository.save(logbook);
-//        return logbookMapper.toResponseDTO(savedLogbook);
-//    }
-//    public LogbookResponseDTO saveLogbook(Logbook logbook) {
-//        logbook.createAudit(logbook.getCreatedBy()); // Auditoría
-//        Logbook savedLogbook = iLogbookRepository.save(logbook);
-//        return logbookMapper.toResponseDTO(savedLogbook);
-//    }
-
     // Actualizar un registro de bitácora
     public LogbookResponseDTO updateLogbook(Logbook logbook) {
-        logbook.updateAudit(logbook.getUpdatedBy()); // Auditoría
-        Logbook updatedLogbook = iLogbookRepository.update(logbook);
-        return logbookMapper.toResponseDTO(updatedLogbook);
+
+        Logbook existingLogbook = iLogbookRepository.findById(logbook.getId())
+                .orElseThrow(() -> new RuntimeException("Bitácora no encontrado"));
+
+        //
+        existingLogbook.setNote(logbook.getNote());
+        existingLogbook.setCreatedAt(logbook.getCreatedAt());
+        existingLogbook.updateAudit(logbook.getUpdatedBy());
+
+        Logbook updated = iLogbookRepository.update(existingLogbook);
+        return logbookMapper.toResponseDTO(updated);
     }
 
     // Actualizar el estado del dispositivo
@@ -97,8 +69,8 @@ public class LogbookService {
     }
 
     // Obtener todos los registros de bitácora
-    public List<LogbookResponseDTO> findAllLogbooks() {
-        return iLogbookRepository.findAll().stream()
+    public List<LogbookResponseDTO> findAllByDeletedFalse() {
+        return iLogbookRepository.findAllByDeletedFalse().stream()
                 .map(logbookMapper::toResponseDTO)
                 .toList();
     }
@@ -143,7 +115,11 @@ public class LogbookService {
 
     // Eliminar un registro de bitácora por su ID
     public void deleteLogbookById(Integer id) {
-        iLogbookRepository.deleteById(id);
+        Logbook logbook = iLogbookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bitácora no encontrada"));
+
+        logbook.setDeleted(true);
+        iLogbookRepository.save(logbook);
 
     }
 }

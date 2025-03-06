@@ -53,6 +53,14 @@ public class LogbookJpaRepositoryImpl implements ILogbookRepository {
     }
 
     @Override
+    public List<Logbook> findAllByDeletedFalse() {
+        return iLogbookJpaRepository.findAllByDeletedFalse()
+                .stream()
+                .map(logbookMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Logbook> findByDeviceId(Integer deviceId) {
         return iLogbookJpaRepository.findByDeviceId(deviceId)
                 .stream()

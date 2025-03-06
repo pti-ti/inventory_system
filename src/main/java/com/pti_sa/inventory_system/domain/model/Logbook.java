@@ -17,6 +17,7 @@ public class Logbook {
     private Location location;
     private String type;
     private String note;
+    private boolean deleted = false;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer createdBy;

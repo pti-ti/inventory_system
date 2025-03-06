@@ -40,6 +40,9 @@ public class LogbookEntity {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean deleted = false; // Eliminación lógica
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

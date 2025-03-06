@@ -12,4 +12,5 @@ public interface ILogbookJpaRepository extends JpaRepository<LogbookEntity, Inte
     List<LogbookEntity> findByUserId(Integer userId);
     List<LogbookEntity> findByStatusName(String statusName);
     List<LogbookEntity> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+    List<LogbookEntity> findAllByDeletedFalse();
 }

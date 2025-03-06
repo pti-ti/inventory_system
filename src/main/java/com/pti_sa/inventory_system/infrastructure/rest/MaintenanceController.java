@@ -104,11 +104,11 @@ public class MaintenanceController {
         }
 
         if (updatedBy == null) {
-            System.out.println("❌ Error: No se pudo obtener el usuario autenticado.");
+            System.out.println(" Error: No se pudo obtener el usuario autenticado.");
             return ResponseEntity.badRequest().body("No se pudo obtener el usuario autenticado.");
         }
 
-        System.out.println("🔍 Usuario autenticado para updateBy: " + updatedBy);
+        System.out.println(" Usuario autenticado para updateBy: " + updatedBy);
 
         // Asignar el usuario autenticado
         maintenance.setUpdatedBy(updatedBy);
@@ -116,7 +116,7 @@ public class MaintenanceController {
         // Llamar al servicio para actualizar
         MaintenanceResponseDTO updatedMaintenance = maintenanceService.updateMaintenance(maintenance);
         return ResponseEntity.ok(updatedMaintenance);
-    
+
     }
 
     // Obtener Mantenimiento por ID del dispositivo
