@@ -7,6 +7,7 @@ import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -90,5 +91,12 @@ public class DeviceService {
                         .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
         device.setDeleted(true);
         iDeviceRepository.save(device);
+    }
+
+    // Método para obtener la cantidad de dispositivos por tipo
+    public Map<String, Long> getDeviceCountsByType() {
+        return iDeviceRepository.findAllByDeletedFalse()
+                .stream()
+                .collect(Collectors.groupingBy(Device::getType, Collectors.counting()));
     }
 }

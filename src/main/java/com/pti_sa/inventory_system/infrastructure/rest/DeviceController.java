@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/admin/devices")
@@ -94,6 +95,16 @@ public class DeviceController {
         List<DeviceResponseDTO> devices = deviceService.findDevicesByStatus(statusId);
         return devices.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(devices);
     }
+
+    // Obtener la cantidad de dispositivos por tipo
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @GetMapping("/count-by-type")
+    public ResponseEntity<Map<String, Long>> getDeviceCountByType() {
+        Map<String, Long> counts = deviceService.getDeviceCountsByType();
+        return counts.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(counts);
+    }
+
+
 
     // Eliminar un dispositivo
     @DeleteMapping("/{id}")

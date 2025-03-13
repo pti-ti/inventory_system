@@ -45,12 +45,23 @@ public class LoginController {
                 .get()
                 .toString());
 
+        String userType = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .findFirst()
+                .get()
+                .toString();
+
+        log.info("Rol de User: {}", userType);
+
         String token = jwtGenerator.getToken(userRequestDTO.email());
 
         // ✅ Devolvemos un JSON válido
         Map<String, String> response = new HashMap<>();
         response.put("message", "Usuario logueado satisfactoriamente");
         response.put("token", "Bearer " + token);
+        response.put("userType", userType);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

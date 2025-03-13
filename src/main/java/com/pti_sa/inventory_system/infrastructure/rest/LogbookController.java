@@ -148,4 +148,5 @@ public class LogbookController {
         logbookService.deleteLogbookById(id);
         return ResponseEntity.ok("Bitácora con ID " + id + " eliminado exitosamente.");
     }
+
 }

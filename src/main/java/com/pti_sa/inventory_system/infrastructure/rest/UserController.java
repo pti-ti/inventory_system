@@ -1,6 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.UserService;
+import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.domain.model.UserType;
@@ -48,13 +49,38 @@ public class UserController {
     // Registrar Usuario
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser (@Valid @RequestBody User user){
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
         String defaultPassword = "123";
-        String defaultUserType = "USER";
         user.setPassword(passwordEncoder.encode(defaultPassword));
         user.setUserType(UserType.USER);
-        return ResponseEntity.ok(userService.registerUser(user));
+
+        // Obtener usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado.");
+        }
+
+        Object principal = authentication.getPrincipal();
+        Integer createdBy = null;
+        if (principal instanceof CustomUserDetails) {
+            createdBy = ((CustomUserDetails) principal).getId();
+        }
+
+        if (createdBy == null) {
+            return ResponseEntity.badRequest().body("No se pudo obtener el usuario creador.");
+        }
+
+        // Crear auditoría antes de guardar el usuario
+        user.createAudit(createdBy);
+
+        try {
+            UserResponseDTO savedUser = userService.registerUser(user);
+            return ResponseEntity.ok(savedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
 
 
     // Actualizar usuario (Solo ADMIN)

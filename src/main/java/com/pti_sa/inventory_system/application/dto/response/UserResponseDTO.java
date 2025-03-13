@@ -14,7 +14,7 @@ import java.util.List;
 public class UserResponseDTO {
     private Integer id;
     private String email;
-    // private UserType userType; Muestra el tipo de usuario
+    private UserType userType;
     private LocationResponseDTO location;
     //private List<DeviceResponseDTO> devices;
 

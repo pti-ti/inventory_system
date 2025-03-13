@@ -7,6 +7,7 @@ import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,16 @@ public class DeviceJpaRepositoryImpl implements IDeviceRepository {
                 .stream()
                 .map(deviceMapper::toModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, Long> getDeviceCountsByType() {
+        return iDeviceJpaRepository.countDevicesByType()
+                .stream()
+                .collect(Collectors.toMap(
+                        obj -> (String) obj[0],  // Tipo de dispositivo
+                        obj -> (Long) obj[1]     // Cantidad
+                ));
     }
 
     @Override

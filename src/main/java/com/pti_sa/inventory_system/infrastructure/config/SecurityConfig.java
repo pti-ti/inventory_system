@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -30,12 +29,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 🔥 Habilitar CORS aquí
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS aquí
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(aut -> aut
                         .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/devices").hasAnyRole("ADMIN", "TECHNICIAN")
+                        .requestMatchers("/api/v1/admin/devices/**").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/devices/register").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/logbooks/register").hasAnyRole("ADMIN", "TECHNICIAN")

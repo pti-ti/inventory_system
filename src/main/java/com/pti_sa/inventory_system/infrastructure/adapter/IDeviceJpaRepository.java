@@ -2,8 +2,10 @@ package com.pti_sa.inventory_system.infrastructure.adapter;
 
 import com.pti_sa.inventory_system.infrastructure.entity.DeviceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface IDeviceJpaRepository extends JpaRepository<DeviceEntity, Integer> {
@@ -11,4 +13,9 @@ public interface IDeviceJpaRepository extends JpaRepository<DeviceEntity, Intege
     Optional<DeviceEntity> findBySerial(String serial);
     List<DeviceEntity> findByDeletedFalse();
     List<DeviceEntity> findByStatusId(Integer statusId);
+
+    @Query("SELECT d.type, COUNT(d) FROM DeviceEntity d GROUP BY d.type")
+    List<Object[]> countDevicesByType();
+
+
 }
