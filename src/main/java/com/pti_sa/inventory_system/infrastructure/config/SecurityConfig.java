@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS aquí
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(aut -> aut
+                        .requestMatchers("/api/v1/admin/items/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
                         .requestMatchers("/api/v1/admin/devices").hasAnyRole("ADMIN", "TECHNICIAN")

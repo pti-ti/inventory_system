@@ -1,6 +1,5 @@
 package com.pti_sa.inventory_system.domain.port;
 
-import com.pti_sa.inventory_system.domain.model.Logbook;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
 
 import java.time.LocalDateTime;
@@ -16,5 +15,4 @@ public interface IMaintenanceRepository {
     List<Maintenance> findByDeviceId(Integer deviceId);
     List<Maintenance> findByType(String maintenanceType);
     List<Maintenance> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
-
 }

@@ -41,4 +41,9 @@ public class BeanConfiguration {
     public StatusService statusService(IStatusRepository iStatusRepository, StatusMapper statusMapper){
         return new StatusService(iStatusRepository, statusMapper);
     }
+
+    @Bean
+    public ItemService itemService(IItemRepository iItemRepository, ItemMapper itemMapper) {
+        return new ItemService(iItemRepository, itemMapper);
+    }
 }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name= "maintenances")
@@ -35,6 +37,14 @@ public class MaintenanceEntity {
 
     @Column(name = "comment")
     private String comment;
+
+    @ManyToMany
+    @JoinTable(
+            name = "maintenance_items",
+            joinColumns = @JoinColumn(name = "maintenance_id"),
+            inverseJoinColumns = @JoinColumn(name = "item_id")
+    )
+    private List<ItemEntity> actions;
 
     @Column(name = "createdAt", nullable = false, updatable = false)
     private LocalDateTime createdAt;
