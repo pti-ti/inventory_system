@@ -33,8 +33,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public MaintenanceService maintenanceService(IMaintenanceRepository iMaintenanceRepository, IUserRepository iUserRepository,IDeviceRepository iDeviceRepository, MaintenanceMapper maintenanceMapper){
-        return new MaintenanceService(iMaintenanceRepository, maintenanceMapper,iUserRepository,iDeviceRepository);
+    public MaintenanceService maintenanceService(IMaintenanceRepository iMaintenanceRepository, IUserRepository iUserRepository,IDeviceRepository iDeviceRepository, IItemRepository iItemRepository,  MaintenanceMapper maintenanceMapper){
+        return new MaintenanceService(iMaintenanceRepository, maintenanceMapper,iUserRepository,iDeviceRepository, iItemRepository);
     }
 
     @Bean

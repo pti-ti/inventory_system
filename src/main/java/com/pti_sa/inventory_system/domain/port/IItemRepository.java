@@ -9,6 +9,7 @@ public interface IItemRepository {
     Item save(Item item);
     Optional<Item> findById(Integer id);
     List<Item> findAll();
+    List<Item> findAllById(List<Integer> ids);
     void deleteById(Integer id);
     boolean existsById(Integer id);
 }

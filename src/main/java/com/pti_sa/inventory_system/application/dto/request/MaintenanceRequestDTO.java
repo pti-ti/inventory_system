@@ -19,4 +19,5 @@ public class MaintenanceRequestDTO {
     private LocalDate maintenanceDate;
     private String comment;
     private Integer updatedBy;
+    private List<Integer> items;
 }

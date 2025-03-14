@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ItemJpaRepositoryImpl implements IItemRepository {
@@ -34,6 +35,13 @@ public class ItemJpaRepositoryImpl implements IItemRepository {
     @Override
     public List<Item> findAll() {
         return itemMapper.toModelList(iItemJpaRepository.findAll());
+    }
+
+    @Override
+    public List<Item> findAllById(List<Integer> ids) {
+        return iItemJpaRepository.findAllById(ids).stream()
+                .map(itemMapper::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override

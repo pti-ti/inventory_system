@@ -2,9 +2,11 @@ package com.pti_sa.inventory_system.application;
 
 import com.pti_sa.inventory_system.application.dto.response.MaintenanceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
+import com.pti_sa.inventory_system.domain.model.Item;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
+import com.pti_sa.inventory_system.domain.port.IItemRepository;
 import com.pti_sa.inventory_system.domain.port.IMaintenanceRepository;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.MaintenanceMapper;
@@ -22,12 +24,14 @@ public class MaintenanceService {
     private final MaintenanceMapper maintenanceMapper;
     private final IUserRepository iUserRepository;
     private final IDeviceRepository iDeviceRepository;
+    private final IItemRepository iItemRepository;
 
-    public MaintenanceService(IMaintenanceRepository iMaintenanceRepository, MaintenanceMapper maintenanceMapper, IUserRepository iUserRepository, IDeviceRepository iDeviceRepository) {
+    public MaintenanceService(IMaintenanceRepository iMaintenanceRepository, MaintenanceMapper maintenanceMapper, IUserRepository iUserRepository, IDeviceRepository iDeviceRepository, IItemRepository iItemRepository) {
         this.iMaintenanceRepository = iMaintenanceRepository;
         this.maintenanceMapper = maintenanceMapper;
         this.iUserRepository = iUserRepository;
         this.iDeviceRepository = iDeviceRepository;
+        this.iItemRepository = iItemRepository;
     }
 
     /*// Guardar un mantenimiento
@@ -38,22 +42,31 @@ public class MaintenanceService {
     }*/
 
     public MaintenanceResponseDTO saveMaintenance(Maintenance maintenance) {
-        // Recuperar el usuario desde la base de datos antes de asignarlo
         User user = iUserRepository.findById(maintenance.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + maintenance.getUser().getId()));
 
-        // Recuperar el dispositivo desde la base de datos
         Device device = iDeviceRepository.findById(maintenance.getDevice().getId())
                 .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado con ID: " + maintenance.getDevice().getId()));
 
-        // Asignar entidades recuperadas
+        // Obtener los ítems desde la base de datos
+        List<Item> items = iItemRepository.findAllById(
+                maintenance.getItems().stream().map(Item::getId).toList()
+        );
+
+        // Validar que todos los ítems existen
+        if (items.size() != maintenance.getItems().size()) {
+            throw new RuntimeException("Algunos ítems no existen en la base de datos.");
+        }
+
+        // Asignar relaciones al mantenimiento
         maintenance.setUser(user);
         maintenance.setDevice(device);
+        maintenance.setItems(items);
 
         // Establecer auditoría
         maintenance.createAudit(maintenance.getCreatedBy());
 
-        // Guardar el mantenimiento
+        // Guardar el mantenimiento con los ítems
         Maintenance saved = iMaintenanceRepository.save(maintenance);
 
         return maintenanceMapper.toDto(saved);
