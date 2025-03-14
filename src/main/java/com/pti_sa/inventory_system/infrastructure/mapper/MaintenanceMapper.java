@@ -3,10 +3,15 @@ package com.pti_sa.inventory_system.infrastructure.mapper;
 import com.pti_sa.inventory_system.application.dto.response.MaintenanceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
 import com.pti_sa.inventory_system.infrastructure.entity.MaintenanceEntity;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Mapper(componentModel = "spring", uses = {ItemMapper.class})
 public interface MaintenanceMapper {
 
     Maintenance toModel(MaintenanceEntity entity);
@@ -16,5 +21,7 @@ public interface MaintenanceMapper {
     @Mapping(source = "device.code", target = "deviceCode")
     @Mapping(source = "device.name", target = "deviceName")
     @Mapping(source = "user.email", target = "userEmail")
+    @Mapping(source = "items", target = "items", qualifiedByName = "toItemResponseList")
     MaintenanceResponseDTO toDto(Maintenance maintenance);
 }
+

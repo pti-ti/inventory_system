@@ -18,6 +18,7 @@ public class Maintenance {
     private String maintenanceType;
     private LocalDate maintenanceDate;
     private String comment;
+    private List<Item> items;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer createdBy;

@@ -21,4 +21,6 @@ public class MaintenanceResponseDTO {
     private String maintenanceType;
     private LocalDate maintenanceDate;
     private String comment;
+    //private List<String> itemIds;
+    private List<ItemResponseDTO> items;
 }

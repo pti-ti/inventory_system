@@ -44,7 +44,8 @@ public class MaintenanceEntity {
             joinColumns = @JoinColumn(name = "maintenance_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id")
     )
-    private List<ItemEntity> actions;
+
+    private List<ItemEntity> items = new ArrayList<>();
 
     @Column(name = "createdAt", nullable = false, updatable = false)
     private LocalDateTime createdAt;
