@@ -10,6 +10,7 @@ import com.pti_sa.inventory_system.domain.port.IItemRepository;
 import com.pti_sa.inventory_system.domain.port.IMaintenanceRepository;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.MaintenanceMapper;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,13 +34,6 @@ public class MaintenanceService {
         this.iDeviceRepository = iDeviceRepository;
         this.iItemRepository = iItemRepository;
     }
-
-    /*// Guardar un mantenimiento
-    public MaintenanceResponseDTO saveMaintenance(Maintenance maintenance) {
-        maintenance.createAudit(maintenance.getCreatedBy());
-        Maintenance saved = iMaintenanceRepository.save(maintenance);
-        return maintenanceMapper.toDto(saved);
-    }*/
 
     public MaintenanceResponseDTO saveMaintenance(Maintenance maintenance) {
         User user = iUserRepository.findById(maintenance.getUser().getId())
@@ -116,6 +110,15 @@ public class MaintenanceService {
                 .map(maintenanceMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    // Obtener los mantenimientos con los items...
+    public List<Item> findItemsByMaintenanceId(Integer maintenanceId) {
+        Maintenance maintenance = iMaintenanceRepository.findById(maintenanceId)
+                .orElseThrow(() -> new RuntimeException("Mantenimiento no encontrado con ID: " + maintenanceId));
+
+        return maintenance.getItems(); // Asegurar que la relación está bien configurada
+    }
+
 
     // Buscar mantenimientos por el ID del dispositivo
     public List<MaintenanceResponseDTO> findMaintenancesByDeviceId(Integer deviceId) {

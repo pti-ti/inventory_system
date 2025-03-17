@@ -2,6 +2,7 @@ package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.MaintenanceService;
 import com.pti_sa.inventory_system.application.dto.response.MaintenanceResponseDTO;
+import com.pti_sa.inventory_system.domain.model.Item;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -139,6 +140,16 @@ public class MaintenanceController {
     public ResponseEntity<List<MaintenanceResponseDTO>> getAllMaintenances() {
         List<MaintenanceResponseDTO> maintenances = maintenanceService.findAllMaintenances();
         return ResponseEntity.ok(maintenances);
+    }
+
+    // Obtener los ítems de un mantenimiento
+    public ResponseEntity<?> getItemsByMaintenanceId(@PathVariable Integer id) {
+        try {
+            List<Item> items = maintenanceService.findItemsByMaintenanceId(id);
+            return ResponseEntity.ok(items);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     // Obtener los mantenimientos por tipo
