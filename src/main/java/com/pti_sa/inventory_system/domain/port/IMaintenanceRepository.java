@@ -15,4 +15,6 @@ public interface IMaintenanceRepository {
     List<Maintenance> findByDeviceId(Integer deviceId);
     List<Maintenance> findByType(String maintenanceType);
     List<Maintenance> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+    Optional<Maintenance> findLatestMaintenance();
+
 }

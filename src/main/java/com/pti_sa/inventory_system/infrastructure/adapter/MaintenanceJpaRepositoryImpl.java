@@ -75,4 +75,10 @@ public class MaintenanceJpaRepositoryImpl implements IMaintenanceRepository {
                 .map(maintenanceMapper::toModel)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<Maintenance> findLatestMaintenance() {
+        return iMaintenanceJpaRepository.findTopByOrderByMaintenanceDateDesc()
+                .map(maintenanceMapper::toModel);
+    }
 }

@@ -92,11 +92,12 @@ public class MaintenanceService {
         return maintenanceMapper.toDto(updated);
     }
 
-    /*public MaintenanceResponseDTO updateMaintenance(Maintenance maintenance) {
-        maintenance.updateAudit(maintenance.getUpdatedBy());
-        Maintenance updated = iMaintenanceRepository.update(maintenance);
-        return maintenanceMapper.toDto(updated);
-    }*/
+    // Ultimo mantenimiento registrado
+    public MaintenanceResponseDTO findLatestMaintenance() {
+        return iMaintenanceRepository.findLatestMaintenance()
+                .map(maintenanceMapper::toDto)
+                .orElseThrow(() -> new RuntimeException("No hay mantenimientos registrados."));
+    }
 
     // Buscar un mantenimiento por su ID
     public Optional<MaintenanceResponseDTO> findMaintenanceById(Integer id) {

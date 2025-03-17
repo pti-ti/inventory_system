@@ -23,4 +23,5 @@ public class MaintenanceResponseDTO {
     private String comment;
     //private List<String> itemIds;
     private List<ItemResponseDTO> items;
+    private Integer createdBy;
 }

@@ -114,6 +114,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public String getEmailByUserId(Integer userId) {
+        return iUserRepository.findById(userId)
+                .map(User::getEmail)
+                .orElse("Desconocido");
+    }
+
     // Buscar email para el login
     public Optional<User> findByEmail(String email){
         return iUserRepository.findByEmailLogin(email);
