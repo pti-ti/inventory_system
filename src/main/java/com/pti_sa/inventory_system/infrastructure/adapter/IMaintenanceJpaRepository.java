@@ -11,5 +11,6 @@ public interface IMaintenanceJpaRepository extends JpaRepository<MaintenanceEnti
     List<MaintenanceEntity> findByDeviceId(Integer deviceId);
     List<MaintenanceEntity> findByMaintenanceType(String maintenanceType);
     List<MaintenanceEntity> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
-    Optional<MaintenanceEntity> findTopByOrderByMaintenanceDateDesc();
+
+    Optional<MaintenanceEntity> findFirstByOrderByIdDesc();
 }

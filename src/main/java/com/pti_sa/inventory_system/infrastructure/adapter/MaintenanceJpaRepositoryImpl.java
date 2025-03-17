@@ -78,7 +78,7 @@ public class MaintenanceJpaRepositoryImpl implements IMaintenanceRepository {
 
     @Override
     public Optional<Maintenance> findLatestMaintenance() {
-        return iMaintenanceJpaRepository.findTopByOrderByMaintenanceDateDesc()
+        return iMaintenanceJpaRepository.findFirstByOrderByIdDesc()
                 .map(maintenanceMapper::toModel);
     }
 }
