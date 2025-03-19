@@ -21,6 +21,7 @@ public interface MaintenanceMapper {
     @Mapping(source = "device.code", target = "deviceCode")
     @Mapping(source = "device.name", target = "deviceName")
     @Mapping(source = "user.email", target = "userEmail")
+    @Mapping(source = "user.location.name", target = "userLocation")
     @Mapping(source = "items", target = "items", qualifiedByName = "toItemResponseList")
     MaintenanceResponseDTO toDto(Maintenance maintenance);
 }

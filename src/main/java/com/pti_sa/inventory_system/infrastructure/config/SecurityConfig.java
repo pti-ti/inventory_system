@@ -29,51 +29,57 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS aquí
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS correctamente
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(aut -> aut
+
+                        // 🔹 Rutas accesibles solo por ADMIN
                         .requestMatchers("/api/v1/admin/items/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/items/**").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/users/register").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/devices").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/devices/**").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/users").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/devices/register").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/logbooks/register").hasAnyRole("ADMIN", "TECHNICIAN")
-                        .requestMatchers("/api/v1/admin/maintenances/register").hasAnyRole("ADMIN", "TECHNICIAN")
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // Esta línea ya cubre todas las rutas admin
 
-                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        // 🔹 Rutas accesibles por ADMIN y TECHNICIAN
+                        .requestMatchers(
+                                "/api/v1/admin/users",
+                                "/api/v1/admin/users/register",
+                                "/api/v1/admin/devices",
+                                "/api/v1/admin/devices/**",
+                                "/api/v1/admin/devices/register",
+                                "/api/v1/admin/logbooks/register",
+                                "/api/v1/admin/maintenances/register",
+                                "/api/v1/admin/locations",
+                                "/api/v1/admin/locations/**",
+                                "/api/v1/admin/status",
+                                "/api/v1/admin/status/**"
+
+                        ).hasAnyRole("ADMIN", "TECHNICIAN")
+
+                        // Rutas públicas
                         .requestMatchers("/api/v1/security/login").permitAll()
-                        //.requestMatchers("/api/v1/admin/devices/register").permitAll()
+                        .requestMatchers("/api/v1/locations/create").permitAll()
+                        .requestMatchers("/api/v1/status/create").permitAll()
+
+                        //.requestMatchers("/api/v1/users/create").permitAll() activar para crear un admin
                         .requestMatchers("/error").permitAll()
+
+                        // 🔹 Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
-
-                        // Rutas accesibles por ADMIN y TECHNICIAN ( buscar y crear usuarios)
-
-                        // Permitir que cualquiera (sin autenticación) pueda crear usuarios
-                        //.requestMatchers("/api/v1/users").permitAll()
-                        // Ruta pública para login
-
-                        // Cualquier otra petición requiere autenticación
-
-        ).addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-
+                )
+                .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource(){
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
         org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
 
-        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("http://localhost:5173"); // Frontend permitidos
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
@@ -81,5 +87,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }

@@ -16,6 +16,7 @@ public class MaintenanceResponseDTO {
     private String deviceCode;
     private String deviceName;
     private String userEmail;
+    private String userLocation;
     private String maintenanceType;
     private LocalDate maintenanceDate;
     private String comment;

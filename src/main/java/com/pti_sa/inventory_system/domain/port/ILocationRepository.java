@@ -14,3 +14,4 @@ public interface ILocationRepository {
     boolean existsByName(String name);
     List<Location>findAll();
 }
+

@@ -12,5 +12,9 @@ public interface LocationMapper {
     Location toModel(LocationEntity entity);
     LocationEntity toEntity(Location location);
 
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "createdBy", target = "createdBy")
+    @Mapping(source = "createdAt", target = "createdAt")
     LocationResponseDTO toDTO(Location location);
 }

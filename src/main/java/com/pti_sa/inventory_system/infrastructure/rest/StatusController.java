@@ -1,16 +1,22 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.StatusService;
+import com.pti_sa.inventory_system.application.dto.response.LocationResponseDTO;
 import com.pti_sa.inventory_system.application.dto.response.StatusResponseDTO;
+import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.model.Status;
+import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/status")
+@RequestMapping("/api/v1/admin/status")
 public class StatusController {
 
     private final StatusService statusService;
@@ -20,20 +26,54 @@ public class StatusController {
     }
 
     // Crear un nuevo Status
-    @PostMapping
-    public ResponseEntity<StatusResponseDTO> createStatus(@RequestBody Status status){
-        Status createdStatus = statusService.saveStatus(status);
-        StatusResponseDTO responseDTO = new StatusResponseDTO(createdStatus.getName());
-        return ResponseEntity.ok(responseDTO);
+    @PostMapping("/create")
+    public ResponseEntity<StatusResponseDTO> createLocation(@RequestBody Status status) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Object principal = authentication.getPrincipal();
+        Integer createdBy = null;
+        if (principal instanceof CustomUserDetails) {
+            createdBy = ((CustomUserDetails) principal).getId();
+        }
+
+        if (createdBy == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        StatusResponseDTO savedStatus = statusService.saveStatus(status, createdBy);
+        return ResponseEntity.ok(savedStatus);
     }
 
     // Actualizar un Status
     @PutMapping("/{id}")
-    public ResponseEntity<Status> updateStatus(@PathVariable Integer id, @RequestBody Status status){
+    public ResponseEntity<Status> updateStatus(@PathVariable Integer id, @RequestBody Status status) {
+        // Obtener usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Object principal = authentication.getPrincipal();
+        Integer updatedBy = null;
+        if (principal instanceof CustomUserDetails) {
+            updatedBy = ((CustomUserDetails) principal).getId();
+        }
+
+        if (updatedBy == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Asignar el ID del usuario que está actualizando
         status.setId(id);
+        status.setUpdatedBy(updatedBy);
+
         Status updatedStatus = statusService.updateStatus(status);
         return ResponseEntity.ok(updatedStatus);
     }
+
 
     // Obtener Status por ID
     @GetMapping("/{id}")

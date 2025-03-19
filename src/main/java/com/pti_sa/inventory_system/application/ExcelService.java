@@ -34,6 +34,7 @@ public class ExcelService {
         String maintenanceType = maintenanceDTO.getMaintenanceType(); // "Preventivo", "Correctivo" o "Garantía"
         String deviceCode = maintenanceDTO.getDeviceCode(); // Código del equipo en mantenimiento
         String userEmail = maintenanceDTO.getUserEmail(); // Email del usuario
+        String userLocation = maintenanceDTO.getUserLocation(); // Localización del usuario
         String comment = maintenanceDTO.getComment(); // Comentarios
         List<ItemResponseDTO> items = maintenanceDTO.getItems(); // Lista de ítems seleccionados
 
@@ -43,10 +44,10 @@ public class ExcelService {
         System.out.println("📌 Email antes de actualizar Excel: " + userEmail);
         System.out.println("📌 Email del creador antes de actualizar Excel: " + createdByEmail);
 
-        return updateExcelFile(maintenanceDate, maintenanceType, deviceCode, userEmail, comment, items, createdByEmail);
+        return updateExcelFile(maintenanceDate, maintenanceType, deviceCode, userEmail, userLocation, comment, items, createdByEmail);
     }
 
-    private byte[] updateExcelFile(String maintenanceDate, String maintenanceType, String deviceCode, String userEmail, String comment, List<ItemResponseDTO> items, String createdByEmail) throws IOException {
+    private byte[] updateExcelFile(String maintenanceDate, String maintenanceType, String deviceCode, String userEmail, String userLocation, String comment, List<ItemResponseDTO> items, String createdByEmail) throws IOException {
         System.out.println("📌 Valores al actualizar Excel:");
         System.out.println(" - Fecha: " + maintenanceDate);
         System.out.println(" - Tipo: " + maintenanceType);
@@ -73,6 +74,8 @@ public class ExcelService {
 
             // 🔹 Agregar el `userEmail` en la celda D10
             updateCell(sheet, 9, 3, userEmail); // D10 = fila 9, columna 3 (base 0)
+
+            updateCell(sheet, 10, 3, userLocation);
 
             // 🔹 Agregar los comentarios en la celda D29
             updateCell(sheet, 28, 3, comment); // D29 = fila 28, columna 3 (base 0)

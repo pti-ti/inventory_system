@@ -3,6 +3,7 @@ package com.pti_sa.inventory_system.application;
 import com.pti_sa.inventory_system.application.dto.response.LocationResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.port.ILocationRepository;
+import com.pti_sa.inventory_system.infrastructure.entity.LocationEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +23,17 @@ public class LocationService {
     }
 
     // Guardar una ubicación
-    public LocationResponseDTO saveLocation(Location location){
-        location.createAudit(location.getCreatedBy());
+    public LocationResponseDTO saveLocation(Location location, Integer userId) {
+        if (location.getCreatedBy() == null) {
+            location.setCreatedBy(userId);  // 🔹 Asegurar que `createdBy` nunca sea `null`
+        }
+
+        location.createAudit(userId);  // 🔹 Ahora `createdBy` tiene un valor seguro
+
         Location savedLocation = iLocationRepository.save(location);
         return locationMapper.toDTO(savedLocation);
     }
+
 
     // Actualizar ubicación
     public LocationResponseDTO updateLocation(Location location){

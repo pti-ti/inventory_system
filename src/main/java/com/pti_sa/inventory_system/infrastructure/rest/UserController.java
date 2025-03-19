@@ -1,10 +1,14 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
+import com.pti_sa.inventory_system.application.LocationService;
 import com.pti_sa.inventory_system.application.UserService;
+import com.pti_sa.inventory_system.application.dto.response.LocationResponseDTO;
 import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import com.pti_sa.inventory_system.application.dto.response.UserResponseDTO;
+import com.pti_sa.inventory_system.domain.model.Location;
 import com.pti_sa.inventory_system.domain.model.User;
 import com.pti_sa.inventory_system.domain.model.UserType;
+import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -38,9 +42,8 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    // Crear usuario (ADMIN Y TECHNICIAN pueden usar este endpoint)
     @PreAuthorize("hasAnyRole('ADMIN' , 'TECHNICIAN')")
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Encriptar de la clave
         return ResponseEntity.ok(userService.saveUser(user));

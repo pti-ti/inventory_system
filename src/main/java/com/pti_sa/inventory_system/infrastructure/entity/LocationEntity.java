@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LocationEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,23 +25,19 @@ public class LocationEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @Column(name = "created_by", nullable = false, updatable = false)
     private Integer createdBy;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Column(name = "updated_by")
     private Integer updatedBy;
 
     @PrePersist
     public void prePersist() {
-        if (this.createdBy == null) {
-            this.createdBy = 1;  // Asigna el valor del ID de un usuario predeterminado (ejemplo 1).
-        }
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
         }
     }
-
 }
