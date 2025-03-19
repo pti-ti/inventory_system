@@ -63,6 +63,8 @@ public class MaintenanceService {
         // Guardar el mantenimiento con los ítems
         Maintenance saved = iMaintenanceRepository.save(maintenance);
 
+        MaintenanceResponseDTO response = maintenanceMapper.toDto(saved);
+
         return maintenanceMapper.toDto(saved);
     }
 
