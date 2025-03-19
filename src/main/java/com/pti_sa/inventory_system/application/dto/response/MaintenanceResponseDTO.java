@@ -23,4 +23,5 @@ public class MaintenanceResponseDTO {
     //private List<String> itemIds;
     private List<ItemResponseDTO> items;
     private Integer createdBy;
+    private String createdByEmail;
 }

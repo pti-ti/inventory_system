@@ -37,15 +37,16 @@ public class ExcelService {
         String userEmail = maintenanceDTO.getUserEmail(); // Email del usuario
         String userLocation = maintenanceDTO.getUserLocation(); // Localización del usuario
         String comment = maintenanceDTO.getComment(); // Comentarios
+        String createdByEmail = maintenanceDTO.getCreatedByEmail(); // Correo del creador del mantenimiento
         List<ItemResponseDTO> items = maintenanceDTO.getItems(); // Lista de ítems seleccionados
-
 
         System.out.println("📌 Email antes de actualizar Excel: " + userEmail);
 
-        return updateExcelFile(maintenanceDate, maintenanceType, deviceCode, userEmail, userLocation, comment, items);
+        return updateExcelFile(maintenanceDate, maintenanceType, deviceCode, userEmail, userLocation, comment, items, createdByEmail);
     }
 
-    private byte[] updateExcelFile(String maintenanceDate, String maintenanceType, String deviceCode, String userEmail, String userLocation, String comment, List<ItemResponseDTO> items) throws IOException {
+    private byte[] updateExcelFile(String maintenanceDate, String maintenanceType, String deviceCode, String userEmail,
+                                   String userLocation, String comment, List<ItemResponseDTO> items, String createdByEmail) throws IOException {
         System.out.println("📌 Valores al actualizar Excel:");
         System.out.println(" - Fecha: " + maintenanceDate);
         System.out.println(" - Tipo: " + maintenanceType);
@@ -53,7 +54,7 @@ public class ExcelService {
         System.out.println(" - Usuario Email: " + userEmail);
         System.out.println(" - Usuario Localización: " + userLocation);
         System.out.println(" - Comentario: " + comment);
-        //System.out.println(" - Email del Creador: " + createdByEmail);
+        System.out.println(" - Email del Creador: " + createdByEmail);
 
         // Cargar el archivo desde la carpeta `resources/static/`
         ClassPathResource resource = new ClassPathResource(FILE_PATH);
@@ -73,9 +74,12 @@ public class ExcelService {
 
             // 🔹 Agregar el `userEmail` en la celda D10
             updateCell(sheet, 9, 3, userEmail); // D10 = fila 9, columna 3 (base 0)
-
             updateCell(sheet, 33, 9, userEmail); // D10 = fila 9, columna 3 (base 0)
 
+
+            // 🔹 Agregar el email del creador en la celda D34
+            updateCell(sheet, 33, 2, createdByEmail);
+            updateCell(sheet, 33, 3, createdByEmail);
 
             // Agregar la ubicación
             updateMergedCell(sheet, 7, 3, userLocation); // D8 = fila 7, columna 3 (base 0)
@@ -95,10 +99,6 @@ public class ExcelService {
             // 🔹 Agregar los ítems en la columna B (de B16 a B27)
             addItemsToColumn(sheet, items, 15, 1); // B16 = fila 15, columna 1 (base 0)
 
-            // 🔹 Agregar el email del creador en la celda D34
-            //updateCell(sheet, 33, 3, createdByEmail);
-            //updateCell(sheet, 33, 2, createdByEmail);
-
             // Guardar los cambios en el archivo temporal
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 workbook.write(fos);
@@ -108,7 +108,6 @@ public class ExcelService {
         // Leer el archivo modificado y devolverlo como byte[]
         return Files.readAllBytes(tempFile.toPath());
     }
-
 
     private void updateCell(Sheet sheet, int rowIndex, int colIndex, String value) {
         Row row = sheet.getRow(rowIndex);
@@ -132,16 +131,15 @@ public class ExcelService {
         for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
             CellRangeAddress mergedRegion = sheet.getMergedRegion(i);
 
-            // Verifica si la celda D8 está dentro de esta región fusionada
-            if (mergedRegion.isInRange(rowIndex, colIndex)) {
-                int firstRow = mergedRegion.getFirstRow(); // Primera fila del merge
-                int firstCol = mergedRegion.getFirstColumn(); // Primera columna del merge
 
-                // Escribir el valor en la celda principal del merge
+            if (mergedRegion.isInRange(rowIndex, colIndex)) {
+                int firstRow = mergedRegion.getFirstRow();
+                int firstCol = mergedRegion.getFirstColumn();
+
+
                 updateCell(sheet, firstRow, firstCol, value);
-                return; // Salir del loop una vez escrita la celda
+                return; //
             }
         }
     }
-
 }
