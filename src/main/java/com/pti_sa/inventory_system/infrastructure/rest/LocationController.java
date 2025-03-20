@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -66,6 +67,20 @@ public class LocationController {
     @GetMapping
     public ResponseEntity<List<LocationResponseDTO>> getAllLocations() {
         return ResponseEntity.ok(locationService.findAllLocations());
+    }
+
+    // Obtener la cantidad de dispositivos por ubicación
+    @GetMapping("device-location-count")
+    public ResponseEntity<Map<String, Long>> getDeviceCountByLocation(){
+        Map<String, Long> locationCount = locationService.countDevicesByLocation();
+        return ResponseEntity.ok(locationCount);
+    }
+
+    // Obtener la cantidad de dispositivos por ubicación con el tipo
+    @GetMapping("device-location-type-count")
+    public ResponseEntity<Map<String, Map<String, Long>>> getDeviceCountByLocationAndType(){
+        Map<String, Map<String, Long>> locationTypeCount = locationService.countDevicesByLocationAndType();
+        return ResponseEntity.ok(locationTypeCount);
     }
 
     // Eliminar una ubicación

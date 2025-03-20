@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -96,14 +97,19 @@ public class DeviceController {
         return devices.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(devices);
     }
 
-    // Obtener la cantidad de dispositivos por tipo
-    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping("/count-by-type")
     public ResponseEntity<Map<String, Long>> getDeviceCountByType() {
         Map<String, Long> counts = deviceService.getDeviceCountsByType();
         return counts.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(counts);
     }
 
+    @GetMapping("/total-inventory-value")
+    public ResponseEntity<BigDecimal> getTotalInventoryValue() {
+        BigDecimal totalValue = deviceService.getTotalInventoryValue();
+        return totalValue.compareTo(BigDecimal.ZERO) > 0 ?
+                ResponseEntity.ok(totalValue) :
+                ResponseEntity.noContent().build();
+    }
 
 
     // Eliminar un dispositivo

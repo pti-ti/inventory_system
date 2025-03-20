@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -88,6 +89,14 @@ public class StatusController {
         List<StatusResponseDTO> statuses = statusService.findAllStatuses();
         return ResponseEntity.ok(statuses);
     }
+
+    // Obtener la cantidad de dispositivos por estado
+    @GetMapping("/device-status-count")
+    public ResponseEntity<Map<String, Long>> getDeviceCountByStatus() {
+        Map<String, Long> statusCount = statusService.countDevicesByStatus();
+        return ResponseEntity.ok(statusCount);
+    }
+
 
     // Eliminar un Status
     @DeleteMapping("/{id}")

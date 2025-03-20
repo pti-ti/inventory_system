@@ -8,6 +8,7 @@ import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,15 +26,14 @@ public class LocationService {
     // Guardar una ubicación
     public LocationResponseDTO saveLocation(Location location, Integer userId) {
         if (location.getCreatedBy() == null) {
-            location.setCreatedBy(userId);  // 🔹 Asegurar que `createdBy` nunca sea `null`
+            location.setCreatedBy(userId);  // Asegurar que `createdBy` nunca sea `null`
         }
 
-        location.createAudit(userId);  // 🔹 Ahora `createdBy` tiene un valor seguro
+        location.createAudit(userId);  // Ahora `createdBy` tiene un valor seguro
 
         Location savedLocation = iLocationRepository.save(location);
         return locationMapper.toDTO(savedLocation);
     }
-
 
     // Actualizar ubicación
     public LocationResponseDTO updateLocation(Location location){
@@ -58,6 +58,16 @@ public class LocationService {
                 .stream()
                 .map(locationMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    //Contar los dispositivos por su ubicación
+    public Map<String, Long> countDevicesByLocation(){
+        return iLocationRepository.countDevicesByLocation();
+    }
+
+    //Contar los dispositivos por su ubicación y el tipo
+    public Map<String, Map<String, Long>> countDevicesByLocationAndType(){
+        return iLocationRepository.countDevicesByLocationAndType();
     }
 
     // Eliminar una ubicación por ID

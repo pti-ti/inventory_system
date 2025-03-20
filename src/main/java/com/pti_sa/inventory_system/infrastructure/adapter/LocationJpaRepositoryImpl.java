@@ -6,7 +6,9 @@ import com.pti_sa.inventory_system.infrastructure.entity.LocationEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,5 +62,35 @@ public class LocationJpaRepositoryImpl implements ILocationRepository {
                 .stream()
                 .map(locationMapper::toModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, Long> countDevicesByLocation() {
+        return iLocationJpaRepository.countDevicesByLocation()
+                .stream()
+                .collect(Collectors.toMap(
+                        record -> (String) record[0],
+                        record -> (Long) record[1]
+                ));
+    }
+
+    @Override
+    public Map<String, Map<String, Long>> countDevicesByLocationAndType() {
+        List<Object[]> results = iLocationJpaRepository.countDevicesByLocationAndType();
+
+        return results.stream()
+                .collect(Collectors.groupingBy(
+                        record -> (String) record[0], // Ubicación (l.name)
+                        Collectors.toMap(
+                                record -> (String) record[1], // Tipo de dispositivo (lb.device.type)
+                                record -> {
+                                    if (record[2] instanceof Number) {
+                                        return ((Number) record[2]).longValue();
+                                    } else {
+                                        throw new IllegalArgumentException("Error: record[2] no es un número -> " + record[2]);
+                                    }
+                                }
+                        )
+                ));
     }
 }

@@ -9,6 +9,7 @@ import com.pti_sa.inventory_system.infrastructure.mapper.StatusMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class StatusService {
             status.setCreatedBy(userId);
         }
 
-        status.createAudit(userId);  // 🔹 Ahora `createdBy` tiene un valor seguro
+        status.createAudit(userId); // Ahora `createdBy` tiene un valor seguro
 
         Status savedStatus = iStatusRepository.save(status);
         return statusMapper.toDTO(savedStatus);
@@ -44,6 +45,11 @@ public class StatusService {
     public Optional<StatusResponseDTO> findStatusById(Integer id){
         return iStatusRepository.findById(id)
                 .map(statusMapper::toDTO);
+    }
+
+    // Contar los dispositivos por su estado
+    public Map<String, Long> countDevicesByStatus(){
+        return iStatusRepository.countDevicesByStatus();
     }
 
     // Obtener todos los estados

@@ -6,6 +6,7 @@ import com.pti_sa.inventory_system.infrastructure.entity.DeviceEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,16 +85,16 @@ public class DeviceJpaRepositoryImpl implements IDeviceRepository {
 
     @Override
     public Map<String, Long> getDeviceCountsByType() {
-        return iDeviceJpaRepository.countDevicesByType()
-                .stream()
-                .collect(Collectors.toMap(
-                        obj -> (String) obj[0],  // Tipo de dispositivo
-                        obj -> (Long) obj[1]     // Cantidad
-                ));
+        return iDeviceJpaRepository.countDevicesByType();
     }
 
     @Override
     public void deleteById(Integer id) {
         iDeviceJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public BigDecimal getTotalInventoryValue() {
+        return iDeviceJpaRepository.getTotalInventoryValue();
     }
 }

@@ -6,6 +6,7 @@ import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -99,4 +100,10 @@ public class DeviceService {
                 .stream()
                 .collect(Collectors.groupingBy(Device::getType, Collectors.counting()));
     }
+
+    // Método para calcular el valor total del inventario
+    public BigDecimal getTotalInventoryValue() {
+        return iDeviceRepository.getTotalInventoryValue();
+    }
+
 }

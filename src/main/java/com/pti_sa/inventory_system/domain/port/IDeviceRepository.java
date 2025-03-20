@@ -2,6 +2,7 @@ package com.pti_sa.inventory_system.domain.port;
 
 import com.pti_sa.inventory_system.domain.model.Device;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,4 +19,5 @@ public interface IDeviceRepository {
     List<Device> findAllById(List<Integer> ids);
     Map<String, Long> getDeviceCountsByType();
     void deleteById(Integer id);
+    BigDecimal getTotalInventoryValue();
 }

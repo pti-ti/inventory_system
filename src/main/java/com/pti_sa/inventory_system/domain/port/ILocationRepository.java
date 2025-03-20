@@ -3,6 +3,7 @@ package com.pti_sa.inventory_system.domain.port;
 import com.pti_sa.inventory_system.domain.model.Location;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ILocationRepository {
@@ -13,5 +14,8 @@ public interface ILocationRepository {
     void deleteById(Integer id);
     boolean existsByName(String name);
     List<Location>findAll();
+    Map<String, Long> countDevicesByLocation();
+    Map<String, Map<String, Long>> countDevicesByLocationAndType();
+
 }
 
