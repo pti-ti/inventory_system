@@ -21,7 +21,7 @@ public class MaintenanceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_device", nullable = false)
     private DeviceEntity device;
 

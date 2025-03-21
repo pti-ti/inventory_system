@@ -18,6 +18,7 @@ public class Device {
     private String type;
     private String specification;
     private Status status;
+    private Location location;
     private BigDecimal price;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

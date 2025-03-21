@@ -43,6 +43,10 @@ public class DeviceEntity {
     @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = false)
+    private LocationEntity location;
+
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 

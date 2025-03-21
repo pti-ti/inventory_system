@@ -35,7 +35,9 @@ public class LogbookService {
         Device device = iDeviceRepository.findById(logbook.getDevice().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId()));
 
+        // Actualizar estado y ubicación si han cambiado
         device.updateStatus(logbook.getStatus());
+        device.setLocation(logbook.getLocation()); // Asegurar que la ubicación se actualice
         iDeviceRepository.save(device);
 
         // Guardar logbook
@@ -47,14 +49,22 @@ public class LogbookService {
 
     // Actualizar un registro de bitácora
     public LogbookResponseDTO updateLogbook(Logbook logbook) {
-
         Logbook existingLogbook = iLogbookRepository.findById(logbook.getId())
-                .orElseThrow(() -> new RuntimeException("Bitácora no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Bitácora no encontrada"));
 
-        //
+        // Actualizar la bitácora
         existingLogbook.setNote(logbook.getNote());
         existingLogbook.setCreatedAt(logbook.getCreatedAt());
         existingLogbook.updateAudit(logbook.getUpdatedBy());
+
+        // Verificar si cambió la ubicación
+        if (!existingLogbook.getLocation().equals(logbook.getLocation())) {
+            Device device = iDeviceRepository.findById(existingLogbook.getDevice().getId())
+                    .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado"));
+
+            device.setLocation(logbook.getLocation()); // Actualizar la ubicación en el dispositivo
+            iDeviceRepository.save(device);
+        }
 
         Logbook updated = iLogbookRepository.update(existingLogbook);
         return logbookMapper.toResponseDTO(updated);
@@ -117,9 +127,7 @@ public class LogbookService {
     public void deleteLogbookById(Integer id) {
         Logbook logbook = iLogbookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bitácora no encontrada"));
-
         logbook.setDeleted(true);
         iLogbookRepository.save(logbook);
-
     }
 }
