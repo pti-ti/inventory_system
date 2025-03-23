@@ -47,30 +47,67 @@ public class LogbookService {
     }
 
 
-    // Actualizar un registro de bitácora
     public LogbookResponseDTO updateLogbook(Logbook logbook) {
         Logbook existingLogbook = iLogbookRepository.findById(logbook.getId())
                 .orElseThrow(() -> new RuntimeException("Bitácora no encontrada"));
 
-        // Actualizar la bitácora
-        existingLogbook.setNote(logbook.getNote());
-        existingLogbook.setCreatedAt(logbook.getCreatedAt());
-        existingLogbook.updateAudit(logbook.getUpdatedBy());
+        System.out.println("📌 Datos recibidos en updateLogbook: " + logbook);
 
-        // Verificar si cambió la ubicación
-        if (!existingLogbook.getLocation().equals(logbook.getLocation())) {
-            Device device = iDeviceRepository.findById(existingLogbook.getDevice().getId())
-                    .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado"));
-
-            device.setLocation(logbook.getLocation()); // Actualizar la ubicación en el dispositivo
-            iDeviceRepository.save(device);
+        // Recuperar el dispositivo si está ausente
+        if (logbook.getDevice() == null) {
+            logbook.setDevice(existingLogbook.getDevice());
+            System.out.println("⚠️ Dispositivo recuperado del logbook existente: " + logbook.getDevice().getId());
         }
 
+        // Recuperar el dispositivo desde la base de datos
+        Device device = iDeviceRepository.findById(logbook.getDevice().getId())
+                .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId()));
+
+        // 🔹 Actualizar estado
+        if (logbook.getStatus() != null && logbook.getStatus().getId() != null) {
+            existingLogbook.setStatus(logbook.getStatus());
+        }
+
+        // 🔹 Actualizar ubicación
+        if (logbook.getLocation() != null && logbook.getLocation().getId() != null) {
+            existingLogbook.setLocation(logbook.getLocation());
+        }
+
+        // 🔹 Actualizar nota (Asegurar que se está actualizando correctamente)
+        if (logbook.getNote() != null) {
+            existingLogbook.setNote(logbook.getNote());
+            System.out.println("✅ Nota actualizada: " + logbook.getNote());
+        }
+
+        // 🔹 Verificar si cambió el estado o la ubicación del dispositivo
+        boolean statusChanged = !device.getStatus().getId().equals(logbook.getStatus().getId());
+        boolean locationChanged = !device.getLocation().getId().equals(logbook.getLocation().getId());
+
+        System.out.println("📌 Estado actual del dispositivo: " + device.getStatus().getId());
+        System.out.println("📌 Nuevo estado recibido: " + logbook.getStatus().getId());
+
+        // 🔹 Actualizar el estado y ubicación del dispositivo si cambian
+        if (statusChanged) {
+            device.setStatus(logbook.getStatus());
+            System.out.println("✅ Estado del dispositivo actualizado.");
+        }
+
+        if (locationChanged) {
+            device.setLocation(logbook.getLocation());
+            System.out.println("✅ Ubicación del dispositivo actualizada.");
+        }
+
+        if (statusChanged || locationChanged) {
+            iDeviceRepository.save(device);
+            System.out.println("✅ Dispositivo actualizado en la BD.");
+        }
+
+        // 🔹 Guardar cambios en la bitácora
         Logbook updated = iLogbookRepository.update(existingLogbook);
         return logbookMapper.toResponseDTO(updated);
     }
 
-    // Actualizar el estado del dispositivo
+
 
 
     // Buscar un registro de bitácora por su id
