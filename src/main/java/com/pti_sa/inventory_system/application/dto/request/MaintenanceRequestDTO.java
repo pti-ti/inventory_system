@@ -14,7 +14,7 @@ public class MaintenanceRequestDTO {
 
     private Integer id;
     private DeviceRequestDTO device;
-    private UserRequestDTO user;
+    //private UserRequestDTO user;
     private String maintenanceType;
     private LocalDate maintenanceDate;
     private String comment;

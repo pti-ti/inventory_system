@@ -82,7 +82,7 @@ public class MaintenanceController {
         return ResponseEntity.ok(createdMaintenance);
     }*/
 
-        // Actualizar mantenimiento
+    // Actualizar mantenimiento
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMaintenance(@PathVariable Integer id, @RequestBody Maintenance maintenance) {
         maintenance.setId(id);

@@ -17,7 +17,7 @@ public class Constants {
     public static final SecretKey SUPER_SECRET_KEY = Keys.hmacShaKeyFor(
             Base64.getEncoder().encode(SECRET_STRING.getBytes())
     );
-    public static final long TOKEN_EXPIRATION_TIME = 1500000; // 15 MINUTOS de validación del token
+    public static final long TOKEN_EXPIRATION_TIME = 3600000; // 60 MINUTOS de validación del token
 
     public static Key getSignedKey(String secretKey){
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));

@@ -109,7 +109,6 @@ public class LogbookService {
 
 
 
-
     // Buscar un registro de bitácora por su id
     public Optional<LogbookResponseDTO> findLogbookById(Integer id) {
         return iLogbookRepository.findById(id).map(logbookMapper::toResponseDTO);
