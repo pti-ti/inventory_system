@@ -10,17 +10,21 @@ import java.util.Optional;
 public interface ILocationJpaRepository extends JpaRepository<LocationEntity, Integer> {
     Optional<LocationEntity> findByName(String name);
     boolean existsByName(String name);
-    @Query("SELECT l.name, COUNT(DISTINCT lb.device) FROM LogbookEntity lb " +
-            "JOIN lb.location l " +
-            "WHERE lb.deleted = false " +
-            "GROUP BY l.name")
+
+    @Query("SELECT l.name, COUNT(d.id) " +
+            "FROM DeviceEntity d " +
+            "JOIN d.location l " +
+            "WHERE d.deleted = false " +
+            "GROUP BY l.name " +
+            "ORDER BY l.name")
     List<Object[]> countDevicesByLocation();
 
-    @Query("SELECT l.name, lb.device.type, COUNT(DISTINCT lb.device) FROM LogbookEntity lb " +
-            "JOIN lb.location l " +
-            "JOIN lb.device d " +
-            "WHERE lb.deleted = false " +
-            "GROUP BY l.name, lb.device.type")
+    @Query("SELECT l.name, d.type, COUNT(DISTINCT d.id) " +
+            "FROM DeviceEntity d " +
+            "JOIN d.location l " +
+            "WHERE d.deleted = false " +
+            "GROUP BY l.name, d.type " +
+            "ORDER BY l.name, d.type")
     List<Object[]> countDevicesByLocationAndType();
 
 }

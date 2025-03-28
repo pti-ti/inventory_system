@@ -15,11 +15,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-public class ExcelService {
+public class ExcelServiceMaintenance {
     private final MaintenanceService maintenanceService;
     private static final String FILE_PATH = "static/FO-GTI-01.xlsx"; // Ruta dentro de resources
 
-    public ExcelService(MaintenanceService maintenanceService) {
+    public ExcelServiceMaintenance(MaintenanceService maintenanceService) {
         this.maintenanceService = maintenanceService;
     }
 

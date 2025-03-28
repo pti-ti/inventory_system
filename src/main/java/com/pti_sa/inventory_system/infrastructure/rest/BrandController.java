@@ -1,10 +1,9 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
-import com.pti_sa.inventory_system.application.StatusService;
-import com.pti_sa.inventory_system.application.dto.response.LocationResponseDTO;
+import com.pti_sa.inventory_system.application.BrandService;
+import com.pti_sa.inventory_system.application.dto.response.BrandResponseDTO;
 import com.pti_sa.inventory_system.application.dto.response.StatusResponseDTO;
-import com.pti_sa.inventory_system.domain.model.Location;
-import com.pti_sa.inventory_system.domain.model.Status;
+import com.pti_sa.inventory_system.domain.model.Brand;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +16,18 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/admin/status")
-public class StatusController {
+@RequestMapping("/api/v1/admin/brands")
+public class BrandController {
 
-    private final StatusService statusService;
+    private final BrandService brandService;
 
-    public StatusController(StatusService statusService) {
-        this.statusService = statusService;
+    public BrandController(BrandService brandService) {
+        this.brandService = brandService;
     }
 
-    // Crear un nuevo Status
+    //Crear una nueva marca
     @PostMapping("/create")
-    public ResponseEntity<StatusResponseDTO> createStatus(@RequestBody Status status) {
+    public ResponseEntity<BrandResponseDTO> createBrand(@RequestBody Brand brand){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -44,13 +43,13 @@ public class StatusController {
             return ResponseEntity.badRequest().build();
         }
 
-        StatusResponseDTO savedStatus = statusService.saveStatus(status, createdBy);
-        return ResponseEntity.ok(savedStatus);
+        BrandResponseDTO savedBrand = brandService.saveBrand(brand, createdBy);
+        return ResponseEntity.ok(savedBrand);
     }
 
-    // Actualizar un Status
+    // Actualizar una marca
     @PutMapping("/{id}")
-    public ResponseEntity<Status> updateStatus(@PathVariable Integer id, @RequestBody Status status) {
+    public ResponseEntity<Brand> updateBrand(@PathVariable Integer id, @RequestBody Brand brand){
         // Obtener usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -68,40 +67,39 @@ public class StatusController {
         }
 
         // Asignar el ID del usuario que está actualizando
-        status.setId(id);
-        status.setUpdatedBy(updatedBy);
+        brand.setId(id);
+        brand.setUpdatedBy(updatedBy);
 
-        Status updatedStatus = statusService.updateStatus(status);
-        return ResponseEntity.ok(updatedStatus);
+        Brand updatedBrand = brandService.updateBrand(brand);
+        return ResponseEntity.ok(updatedBrand);
     }
 
-
-    // Obtener Status por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<StatusResponseDTO>getStatusById(@PathVariable Integer id){
-        Optional<StatusResponseDTO> status = statusService.findStatusById(id);
-        return status.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    // Obtener todos los Status
+    // Obtener brand por ID
     @GetMapping
-    public ResponseEntity<List<StatusResponseDTO>> getAllStatuses(){
-        List<StatusResponseDTO> statuses = statusService.findAllStatuses();
-        return ResponseEntity.ok(statuses);
+    public ResponseEntity<BrandResponseDTO>getBrandById(@PathVariable Integer id){
+        Optional<BrandResponseDTO> brands = brandService.findBrandById(id);
+        return brands.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Obtener la cantidad de dispositivos por estado
-    @GetMapping("/device-status-count")
-    public ResponseEntity<Map<String, Long>> getDeviceCountByStatus() {
-        Map<String, Long> statusCount = statusService.countDevicesByStatus();
-        return ResponseEntity.ok(statusCount);
+    // Obtener todas las marcas
+    @GetMapping
+    public ResponseEntity<List<BrandResponseDTO>> getAllBrands(){
+        List<BrandResponseDTO> brands = brandService.findAllBrands();
+        return ResponseEntity.ok(brands);
     }
 
+    // Obtener la cantidad de dispositivos por marca
+    @GetMapping("/device-brand-count")
+    public ResponseEntity<Map<String, Long>>getDeviceCountByBrand(){
+        Map<String, Long> brandCount = brandService.countDevicesByBrand();
+        return ResponseEntity.ok(brandCount);
+    }
 
-    // Eliminar un Status
+    // Eliminar un Brand
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStatus(@PathVariable Integer id){
-        statusService.deleteStatusById(id);
+    public ResponseEntity<Void> deleteBrand(@PathVariable Integer id){
+        brandService.deleteBrandById(id);
         return ResponseEntity.noContent().build();
     }
 }
+

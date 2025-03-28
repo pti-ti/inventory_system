@@ -55,9 +55,11 @@ public class SecurityConfig {
                                 "/api/v1/admin/locations",
                                 "/api/v1/admin/locations/**",
                                 "/api/v1/admin/status",
-                                "/api/v1/admin/status/**"
+                                "/api/v1/admin/status/**",
+                                "/api/v1/admin/brands",
+                                "/api/v1/admin/brands/**"
 
-                        ).hasAnyRole("ADMIN", "TECHNICIAN")
+                                ).hasAnyRole("ADMIN", "TECHNICIAN")
 
                         // Rutas públicas
                         .requestMatchers("/api/v1/security/login").permitAll()

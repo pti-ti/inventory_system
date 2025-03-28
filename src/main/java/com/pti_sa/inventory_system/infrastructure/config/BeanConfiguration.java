@@ -43,6 +43,11 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public BrandService brandService(IBrandRepository iBrandRepository, BrandMapper brandMapper){
+        return new BrandService(iBrandRepository, brandMapper);
+    }
+
+    @Bean
     public ItemService itemService(IItemRepository iItemRepository, ItemMapper itemMapper) {
         return new ItemService(iItemRepository, itemMapper);
     }
