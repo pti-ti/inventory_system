@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 public class Device {
     private Integer id;
     private String code;
-    private String name;
+    private Brand brand;
+    private Model model;
     private String serial;
     private String type;
     private String specification;

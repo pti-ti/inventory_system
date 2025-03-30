@@ -18,7 +18,8 @@ public abstract class MaintenanceMapper {
 
     @Mapping(source = "device.id", target = "deviceId")
     @Mapping(source = "device.code", target = "deviceCode")
-    @Mapping(source = "device.name", target = "deviceName")
+    @Mapping(source = "device.brand.name", target = "deviceBrand")
+    @Mapping(source = "device.model.name", target = "deviceModel")
     @Mapping(source = "user.email", target = "userEmail")
     @Mapping(source = "user.location.name", target = "userLocation")
     @Mapping(source = "items", target = "items", qualifiedByName = "toItemResponseList")

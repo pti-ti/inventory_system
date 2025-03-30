@@ -14,7 +14,8 @@ public class MaintenanceResponseDTO {
     private Integer id;
     private Integer deviceId;
     private String deviceCode;
-    private String deviceName;
+    private String deviceBrand;
+    private String deviceModel;
     private String userEmail;
     private String userLocation;
     private String maintenanceType;

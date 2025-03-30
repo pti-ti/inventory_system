@@ -33,11 +33,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(aut -> aut
 
+                        .requestMatchers("/api/v1/admin/users/create").permitAll()
+                        .requestMatchers("/api/v1/admin/locations/create").permitAll()
                         .requestMatchers("/api/v1/admin/status/device-status-count").permitAll()
                         .requestMatchers("/api/v1/admin/locations/device-location-count").permitAll()
                         .requestMatchers("/api/v1/admin/locations/device-location-type-count").permitAll()
                         .requestMatchers("/api/v1/admin/devices/count-by-type").permitAll()
                         .requestMatchers("/api/v1/admin/devices/total-inventory-value").permitAll()
+
 
                         // 🔹 Rutas accesibles solo por ADMIN
                         .requestMatchers("/api/v1/admin/items/**").hasRole("ADMIN")

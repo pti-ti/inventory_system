@@ -14,7 +14,8 @@ public interface LogbookMapper {
     LogbookEntity toEntity(Logbook logbook);
 
     @Mapping(target = "deviceCode", source = "device.code")
-    @Mapping(target = "deviceName", source = "device.name")
+    @Mapping(target = "deviceBrand", source = "device.brand.name")
+    @Mapping(target = "deviceModel", source = "device.model.name")
     @Mapping(target = "userEmail", source = "user.email")
     @Mapping(target = "statusName", source = "status.name")
     @Mapping(target = "locationName", source = "location.name")

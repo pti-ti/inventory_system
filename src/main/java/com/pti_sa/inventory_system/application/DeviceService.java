@@ -1,5 +1,6 @@
 package com.pti_sa.inventory_system.application;
 
+import com.pti_sa.inventory_system.application.dto.request.DeviceRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
@@ -23,17 +24,17 @@ public class DeviceService {
     }
 
     // Guardar un dispositivo
-    public DeviceResponseDTO saveDevice(Device device) {
+    public DeviceRequestDTO saveDevice(Device device) {
         device.createAudit(device.getCreatedBy());
         Device savedDevice = iDeviceRepository.save(device);
-        return deviceMapper.toResponseDTO(savedDevice);
+        return deviceMapper.toRequestDTO(savedDevice);
     }
 
     // Actualizar un dispositivo
-    public DeviceResponseDTO updateDevice(Device device) {
+    public DeviceRequestDTO updateDevice(Device device) {
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
-        return deviceMapper.toResponseDTO(updatedDevice);
+        return deviceMapper.toRequestDTO(updatedDevice);
     }
 
 //    // Actualizar el status del dispositivo
@@ -52,28 +53,28 @@ public class DeviceService {
 //    }
 
     // Buscar un dispositivo por ID
-    public Optional<DeviceResponseDTO> findDeviceById(Integer id) {
+    public Optional<DeviceRequestDTO> findDeviceById(Integer id) {
         return iDeviceRepository.findById(id)
-                .map(deviceMapper::toResponseDTO);
+                .map(deviceMapper::toRequestDTO);
     }
 
     // Buscar un dispositivo por código
-    public Optional<DeviceResponseDTO> findDeviceByCode(String code) {
+    public Optional<DeviceRequestDTO> findDeviceByCode(String code) {
         return iDeviceRepository.findByCode(code)
-                .map(deviceMapper::toResponseDTO);
+                .map(deviceMapper::toRequestDTO);
     }
 
     // Buscar un dispositivo por serial
-    public Optional<DeviceResponseDTO> findDeviceBySerial(String serial) {
+    public Optional<DeviceRequestDTO> findDeviceBySerial(String serial) {
         return iDeviceRepository.findBySerial(serial)
-                .map(deviceMapper::toResponseDTO);
+                .map(deviceMapper::toRequestDTO);
     }
 
     // Buscar un dispositivo por su estado
-    public List<DeviceResponseDTO> findDevicesByStatus(Integer statusId) {
+    public List<DeviceRequestDTO> findDevicesByStatus(Integer statusId) {
         return iDeviceRepository.findByStatusId(statusId)
                 .stream()
-                .map(deviceMapper::toResponseDTO)
+                .map(deviceMapper::toRequestDTO)
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +83,7 @@ public class DeviceService {
     public List<DeviceResponseDTO> findAllDevices() {
         return iDeviceRepository.findAllByDeletedFalse()
                 .stream()
-                .map(deviceMapper::toResponseDTO)
+                .map(deviceMapper::toResponseDTO) // ✅ Asegúrate de que este método acepte DeviceEntity
                 .collect(Collectors.toList());
     }
 

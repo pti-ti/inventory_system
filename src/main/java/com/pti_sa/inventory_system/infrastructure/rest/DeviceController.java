@@ -1,6 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.DeviceService;
+import com.pti_sa.inventory_system.application.dto.request.DeviceRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
@@ -28,7 +29,7 @@ public class DeviceController {
     // Crear dispositivo
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
-    public ResponseEntity<DeviceResponseDTO> createDevice(@RequestBody Device device) {
+    public ResponseEntity<DeviceRequestDTO> createDevice(@RequestBody Device device) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -52,14 +53,14 @@ public class DeviceController {
 
     // Actualizar dispositivo
     @PutMapping("/{id}")
-    public ResponseEntity<DeviceResponseDTO>updateDevice(@PathVariable Integer id, @RequestBody Device device){
+    public ResponseEntity<DeviceRequestDTO>updateDevice(@PathVariable Integer id, @RequestBody Device device){
         device.setId(id);
         return ResponseEntity.ok(deviceService.updateDevice(device));
     }
 
     // Obtener dispositivo por id
     @GetMapping("/{id}")
-    public ResponseEntity<DeviceResponseDTO> getDeviceById(@PathVariable Integer id) {
+    public ResponseEntity<DeviceRequestDTO> getDeviceById(@PathVariable Integer id) {
         return deviceService.findDeviceById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -92,8 +93,8 @@ public class DeviceController {
 
     // Obtener dispositivos por estado
     @GetMapping("/status/{statusId}")
-    public ResponseEntity<List<DeviceResponseDTO>> getDevicesByStatus(@PathVariable Integer statusId) {
-        List<DeviceResponseDTO> devices = deviceService.findDevicesByStatus(statusId);
+    public ResponseEntity<List<DeviceRequestDTO>> getDevicesByStatus(@PathVariable Integer statusId) {
+        List<DeviceRequestDTO> devices = deviceService.findDevicesByStatus(statusId);
         return devices.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(devices);
     }
 

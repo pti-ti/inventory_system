@@ -23,8 +23,13 @@ public class DeviceEntity {
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private BrandEntity brand;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id", nullable = false)
+    private ModelEntity model;
 
     @Column(name = "serial", nullable = false, unique = true)
     private String serial;

@@ -1,5 +1,7 @@
 package com.pti_sa.inventory_system.application.dto.response;
 
+import com.pti_sa.inventory_system.domain.model.Brand;
+import com.pti_sa.inventory_system.domain.model.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,8 @@ import java.time.LocalDateTime;
 public class LogbookResponseDTO {
     private Integer id;
     private String deviceCode;
-    private String deviceName;
+    private String deviceBrand;
+    private String deviceModel;
     private String userEmail;
     private String statusName;
     private String locationName;

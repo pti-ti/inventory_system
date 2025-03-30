@@ -1,5 +1,6 @@
 package com.pti_sa.inventory_system.infrastructure.mapper;
 
+import com.pti_sa.inventory_system.application.dto.request.DeviceRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.infrastructure.entity.DeviceEntity;
@@ -12,9 +13,10 @@ public interface DeviceMapper {
     Device toModel(DeviceEntity entity);
     DeviceEntity toEntity(Device device);
 
-    @Mapping(target = "status", source = "status")
-    DeviceResponseDTO toResponseDTO(Device device);
+    DeviceRequestDTO toRequestDTO(Device device);
+
+    DeviceRequestDTO toRequestDTO(DeviceEntity deviceEntity);
 
     @Mapping(target = "status", source = "status")
-    DeviceResponseDTO toResponseDTO(DeviceEntity deviceEntity);
+    DeviceResponseDTO toResponseDTO(Device device);
 }

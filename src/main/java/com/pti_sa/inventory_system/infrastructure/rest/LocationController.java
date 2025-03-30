@@ -26,7 +26,7 @@ public class LocationController {
     }
 
     // Crear ubicación
-    @PreAuthorize("hasAnyRole('ADMIN' , 'TECHNICIAN')")
+    //@PreAuthorize("hasAnyRole('ADMIN' , 'TECHNICIAN')")
     @PostMapping("/create")
     public ResponseEntity<LocationResponseDTO> createLocation(@RequestBody Location location) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

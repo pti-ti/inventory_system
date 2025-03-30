@@ -42,7 +42,7 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN' , 'TECHNICIAN')")
+    //@PreAuthorize("hasAnyRole('ADMIN' , 'TECHNICIAN')")
     @PostMapping("/create")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Encriptar de la clave
