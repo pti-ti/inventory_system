@@ -18,9 +18,23 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DeviceService deviceService(IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper){
-        return new DeviceService(iDeviceRepository, deviceMapper);
+    public DeviceService deviceService(
+            IDeviceRepository iDeviceRepository,
+            IBrandRepository iBrandRepository,
+            IModelRepository iModelRepository,
+            IStatusRepository iStatusRepository,
+            ILocationRepository iLocationRepository,
+            DeviceMapper deviceMapper) {
+
+        return new DeviceService(
+                iBrandRepository,
+                iLocationRepository,
+                iStatusRepository,
+                iModelRepository,
+                iDeviceRepository,
+                deviceMapper);
     }
+
 
     @Bean
     public LocationService locationService(ILocationRepository iLocationRepository, LocationMapper locationMapper){

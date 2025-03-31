@@ -29,7 +29,7 @@ public class DeviceController {
     // Crear dispositivo
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
-    public ResponseEntity<DeviceRequestDTO> createDevice(@RequestBody Device device) {
+    public ResponseEntity<DeviceResponseDTO> createDevice(@RequestBody Device device) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -48,7 +48,8 @@ public class DeviceController {
         }
 
         device.createAudit(createdBy);
-        return ResponseEntity.ok(deviceService.saveDevice(device));
+        DeviceResponseDTO savedDevice = deviceService.saveDevice(device);
+        return ResponseEntity.ok(savedDevice);
     }
 
     // Actualizar dispositivo

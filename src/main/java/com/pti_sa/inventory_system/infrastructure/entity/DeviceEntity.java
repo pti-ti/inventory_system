@@ -23,13 +23,22 @@ public class DeviceEntity {
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "brand_id", nullable = false)
     private BrandEntity brand;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "model_id", nullable = false)
     private ModelEntity model;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id", nullable = false)
+    private StatusEntity status;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id", nullable = false)
+    private LocationEntity location;
+
 
     @Column(name = "serial", nullable = false, unique = true)
     private String serial;
@@ -41,16 +50,9 @@ public class DeviceEntity {
     private String type;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id", nullable = false)
-    private StatusEntity status;
-
-    @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
-    private LocationEntity location;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;

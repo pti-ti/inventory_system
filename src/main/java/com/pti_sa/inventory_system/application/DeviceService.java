@@ -2,9 +2,11 @@ package com.pti_sa.inventory_system.application;
 
 import com.pti_sa.inventory_system.application.dto.request.DeviceRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
-import com.pti_sa.inventory_system.domain.model.Device;
-import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
+import com.pti_sa.inventory_system.domain.model.*;
+import com.pti_sa.inventory_system.domain.port.*;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,20 +17,54 @@ import java.util.stream.Collectors;
 
 @Service
 public class DeviceService {
+    private static final Logger logger = LoggerFactory.getLogger(DeviceService.class);
+    private final IBrandRepository iBrandRepository;
+    private final ILocationRepository iLocationRepository;
+    private final IStatusRepository iStatusRepository;
+    private final IModelRepository iModelRepository;
     private final IDeviceRepository iDeviceRepository;
     private final DeviceMapper deviceMapper;
 
-    public DeviceService(IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper) {
+    public DeviceService(IBrandRepository iBrandRepository, ILocationRepository iLocationRepository, IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper) {
+        this.iBrandRepository = iBrandRepository;
+        this.iLocationRepository = iLocationRepository;
+        this.iStatusRepository = iStatusRepository;
+        this.iModelRepository = iModelRepository;
         this.iDeviceRepository = iDeviceRepository;
         this.deviceMapper = deviceMapper;
     }
 
     // Guardar un dispositivo
-    public DeviceRequestDTO saveDevice(Device device) {
+    public DeviceResponseDTO saveDevice(Device device) {
+        // Obtener entidades completas desde la base de datos antes de asignarlas
+        Brand brand = iBrandRepository.findById(device.getBrand().getId())
+                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+
+        Model model = iModelRepository.findById(device.getModel().getId())
+                .orElseThrow(() -> new RuntimeException("Modelo no encontrado"));
+
+        Status status = iStatusRepository.findById(device.getStatus().getId())
+                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+
+        Location location = iLocationRepository.findById(device.getLocation().getId())
+                .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
+
+        // Asignar entidades recuperadas al dispositivo
+        device.setBrand(brand);
+        device.setModel(model);
+        device.setStatus(status);
+        device.setLocation(location);
+
+        // Asignar auditoría
         device.createAudit(device.getCreatedBy());
+
+        // Guardar el dispositivo en la base de datos
         Device savedDevice = iDeviceRepository.save(device);
-        return deviceMapper.toRequestDTO(savedDevice);
+
+        logger.info("🚀 savedDevice: {}", savedDevice);
+        return deviceMapper.toResponseDTO(savedDevice);
     }
+
 
     // Actualizar un dispositivo
     public DeviceRequestDTO updateDevice(Device device) {

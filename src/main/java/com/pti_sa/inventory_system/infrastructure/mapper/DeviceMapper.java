@@ -14,9 +14,11 @@ public interface DeviceMapper {
     DeviceEntity toEntity(Device device);
 
     DeviceRequestDTO toRequestDTO(Device device);
-
     DeviceRequestDTO toRequestDTO(DeviceEntity deviceEntity);
 
-    @Mapping(target = "status", source = "status")
+    @Mapping(target = "brandName", source = "device.brand.name")
+    @Mapping(target = "modelName", source = "device.model.name")
+    @Mapping(target = "locationName", source = "device.location.name")
+    @Mapping(target = "statusName", source = "device.status.name")
     DeviceResponseDTO toResponseDTO(Device device);
 }

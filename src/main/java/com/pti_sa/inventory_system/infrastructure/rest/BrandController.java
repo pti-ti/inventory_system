@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/admin/brand")
+@RequestMapping("/api/v1/admin/brands")
 public class BrandController {
 
     private final BrandService brandService;
@@ -29,7 +29,7 @@ public class BrandController {
         this.brandService = brandService;
     }
 
-    // Crear un nuevo Status
+    // Crear una nueva marca
     @PostMapping("/create")
     public ResponseEntity<BrandResponseDTO> createBrand(@RequestBody Brand brand) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -79,7 +79,7 @@ public class BrandController {
     }
 
 
-    // Obtener Status por ID
+    // Obtener Marca por ID
     @GetMapping("/{id}")
     public ResponseEntity<StatusResponseDTO>getStatusById(@PathVariable Integer id){
         Optional<StatusResponseDTO> status = statusService.findStatusById(id);
