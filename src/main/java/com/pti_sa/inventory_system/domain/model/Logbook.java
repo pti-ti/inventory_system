@@ -14,6 +14,8 @@ public class Logbook {
     private Device device;
     private User user;
     private Status status;
+    private Brand brand;
+    private Model model;
     private Location location;
     private String type;
     private String note;

@@ -19,16 +19,25 @@ public class LogbookEntity {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "id_device", nullable = false)
+    @JoinColumn(name = "device_id", nullable = false)
     private DeviceEntity device;
 
     @ManyToOne
-    @JoinColumn(name = "id_user", nullable = true)
+    @JoinColumn(name = "user_id", nullable = true)
     private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private BrandEntity brand;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id", nullable = false)
+    private ModelEntity model;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private StatusEntity status;
+
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)

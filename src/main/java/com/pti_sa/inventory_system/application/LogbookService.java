@@ -1,49 +1,95 @@
 package com.pti_sa.inventory_system.application;
 
+import com.pti_sa.inventory_system.application.dto.request.LogbookRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
-import com.pti_sa.inventory_system.domain.model.Device;
-import com.pti_sa.inventory_system.domain.model.Logbook;
-import com.pti_sa.inventory_system.domain.model.Maintenance;
-import com.pti_sa.inventory_system.domain.model.Status;
-import com.pti_sa.inventory_system.domain.port.IDeviceRepository;
-import com.pti_sa.inventory_system.domain.port.ILogbookRepository;
+import com.pti_sa.inventory_system.domain.model.*;
+import com.pti_sa.inventory_system.domain.port.*;
 import com.pti_sa.inventory_system.infrastructure.mapper.LogbookMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class LogbookService {
+
+    private static final Logger logger = LoggerFactory.getLogger(LogbookService.class);
+
+
     private final ILogbookRepository iLogbookRepository;
     private final IDeviceRepository iDeviceRepository;
+    private final IBrandRepository iBrandRepository;
+    private final IModelRepository iModelRepository;
+    private final IStatusRepository iStatusRepository;
+    private final ILocationRepository iLocationRepository;
+    private final IUserRepository iUserRepository;
     private final LogbookMapper logbookMapper;
 
-    public LogbookService(ILogbookRepository iLogbookRepository, IDeviceRepository iDeviceRepository, LogbookMapper logbookMapper) {
+    public LogbookService(ILogbookRepository iLogbookRepository, IDeviceRepository iDeviceRepository, IBrandRepository iBrandRepository, IModelRepository iModelRepository, IStatusRepository iStatusRepository, ILocationRepository iLocationRepository, IUserRepository iUserRepository, LogbookMapper logbookMapper) {
         this.iLogbookRepository = iLogbookRepository;
         this.iDeviceRepository = iDeviceRepository;
+        this.iBrandRepository = iBrandRepository;
+        this.iModelRepository = iModelRepository;
+        this.iStatusRepository = iStatusRepository;
+        this.iLocationRepository = iLocationRepository;
+        this.iUserRepository = iUserRepository;
         this.logbookMapper = logbookMapper;
     }
 
-    // Guardar un registro de bitácora
+
     public LogbookResponseDTO saveLogbook(Logbook logbook) {
-        logbook.createAudit(logbook.getCreatedBy()); // Auditoría
+        log.info("Guardando logbook...");
 
-        // Buscar dispositivo y actualizar estado
+        // Validar que logbook.getDevice() no sea nulo
+        if (logbook.getDevice() == null) {
+            throw new IllegalArgumentException("El dispositivo no puede ser nulo.");
+        }
+
+        // Recuperar entidades de la base de datos
         Device device = iDeviceRepository.findById(logbook.getDevice().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Dispositivo no encontrado con ID: " + logbook.getDevice().getId()));
+                .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado"));
 
-        // Actualizar estado y ubicación si han cambiado
-        device.updateStatus(logbook.getStatus());
-        device.setLocation(logbook.getLocation()); // Asegurar que la ubicación se actualice
-        iDeviceRepository.save(device);
+        Brand brand = iBrandRepository.findById(logbook.getBrand().getId())
+                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
 
-        // Guardar logbook
+        Model model = iModelRepository.findById(logbook.getModel().getId())
+                .orElseThrow(() -> new RuntimeException("Modelo no encontrado"));
+
+        Status status = iStatusRepository.findById(logbook.getStatus().getId())
+                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+
+        Location location = iLocationRepository.findById(logbook.getLocation().getId())
+                .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
+
+        User user = iUserRepository.findById(logbook.getUser().getId()) // 🔥 FIXED!
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 🔥 Asignar el dispositivo recuperado correctamente
+        logbook.setDevice(device);
+
+        // Asignar otras entidades recuperadas
+        logbook.setBrand(brand);
+        logbook.setModel(model);
+        logbook.setStatus(status);
+        logbook.setLocation(location);
+        logbook.setUser(user);
+
+        // Asignar auditoría
+        logbook.createAudit(logbook.getCreatedBy());
+
+        // Guardar en la base de datos
         Logbook savedLogbook = iLogbookRepository.save(logbook);
+
+        logger.info("🚀 savedLogbook: {}", savedLogbook);
+
         return logbookMapper.toResponseDTO(savedLogbook);
-//        logbook.createAudit(logbook.getCreatedBy()); // Auditoría
     }
 
 

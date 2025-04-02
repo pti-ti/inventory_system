@@ -1,11 +1,14 @@
 package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.LogbookService;
+import com.pti_sa.inventory_system.application.dto.request.LogbookRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
-import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.model.Logbook;
+import com.pti_sa.inventory_system.infrastructure.mapper.LogbookMapper;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,39 +19,28 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/admin/logbooks")
 public class LogbookController {
 
+    private static final Logger logger = LoggerFactory.getLogger(LogbookController.class);
+
     private final LogbookService logbookService;
 
-    public LogbookController(LogbookService logbookService) {
+    public LogbookController(LogbookService logbookService, LogbookMapper logbookMapper) {
         this.logbookService = logbookService;
     }
 
     // Crear Bitácora
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
-    public ResponseEntity<?> createLogbook(@RequestBody Logbook logbook) {
+    public ResponseEntity<LogbookResponseDTO> createLogbook(@RequestBody Logbook logbook) {
 
-        System.out.println("Logbook recibido: " + logbook);
-
-
-        if (logbook.getDevice() == null || logbook.getDevice().getId() == null) {
-            System.out.println("Error: El dispositivo es requerido.");
-
-            return ResponseEntity.badRequest().body("El dispositivo es requerido.");
-        }
-
-        // Obtener usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            System.out.println("Error: Usuario no autenticado.");
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Object principal = authentication.getPrincipal();
@@ -59,27 +51,12 @@ public class LogbookController {
         }
 
         if (createdBy == null) {
-            System.out.println("Error: No se pudo obtener el usuario creador.");
-
-            return ResponseEntity.badRequest().body("No se pudo obtener el usuario creador.");
+            return ResponseEntity.badRequest().body(null);
         }
 
-        System.out.println("Usuario autenticado ID: " + createdBy);
-
-
-        // Crear auditoría
         logbook.createAudit(createdBy);
-
-        try {
-            LogbookResponseDTO savedLogbook = logbookService.saveLogbook(logbook);
-            System.out.println("Bitácora registrada con éxito: " + savedLogbook);
-
-            return ResponseEntity.ok(savedLogbook);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error al guardar la bitácora: " + e.getMessage());
-
-            return ResponseEntity.badRequest().body(e.getMessage()); // Manejo de error si el dispositivo no existe
-        }
+        LogbookResponseDTO savedLogbook = logbookService.saveLogbook(logbook);
+        return ResponseEntity.ok(savedLogbook);
     }
 
     // Actualizar logbook

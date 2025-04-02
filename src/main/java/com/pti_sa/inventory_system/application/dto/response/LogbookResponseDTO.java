@@ -1,6 +1,7 @@
 package com.pti_sa.inventory_system.application.dto.response;
 
 import com.pti_sa.inventory_system.domain.model.Brand;
+import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.domain.model.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,9 +17,10 @@ public class LogbookResponseDTO {
     private String deviceCode;
     private String deviceBrand;
     private String deviceModel;
+    private String deviceStatus;
+    private String deviceLocation;
     private String userEmail;
-    private String statusName;
-    private String locationName;
+    private String type;
     private String note;
     private LocalDateTime createdAt;
 }

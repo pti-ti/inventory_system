@@ -30,6 +30,7 @@ public class DeviceController {
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
     public ResponseEntity<DeviceResponseDTO> createDevice(@RequestBody Device device) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
