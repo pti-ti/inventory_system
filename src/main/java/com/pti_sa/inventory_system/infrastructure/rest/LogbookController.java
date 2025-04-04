@@ -7,6 +7,7 @@ import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Logbook;
 import com.pti_sa.inventory_system.infrastructure.mapper.LogbookMapper;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/admin/logbooks")
 public class LogbookController {
@@ -36,7 +38,7 @@ public class LogbookController {
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
     public ResponseEntity<LogbookResponseDTO> createLogbook(@RequestBody Logbook logbook) {
-
+        log.info("📌 Datos recibidos en la API: {}", logbook);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {

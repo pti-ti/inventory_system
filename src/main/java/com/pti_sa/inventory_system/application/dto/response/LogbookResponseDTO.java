@@ -20,7 +20,7 @@ public class LogbookResponseDTO {
     private String deviceStatus;
     private String deviceLocation;
     private String userEmail;
-    private String type;
+    //private String type;
     private String note;
     private LocalDateTime createdAt;
 }

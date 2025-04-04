@@ -62,7 +62,7 @@ public class DeviceController {
 
     // Obtener dispositivo por id
     @GetMapping("/{id}")
-    public ResponseEntity<DeviceRequestDTO> getDeviceById(@PathVariable Integer id) {
+    public ResponseEntity<DeviceResponseDTO> getDeviceById(@PathVariable Integer id) {
         return deviceService.findDeviceById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

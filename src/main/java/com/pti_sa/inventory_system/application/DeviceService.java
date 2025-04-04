@@ -89,9 +89,9 @@ public class DeviceService {
 //    }
 
     // Buscar un dispositivo por ID
-    public Optional<DeviceRequestDTO> findDeviceById(Integer id) {
+    public Optional<DeviceResponseDTO> findDeviceById(Integer id) {
         return iDeviceRepository.findById(id)
-                .map(deviceMapper::toRequestDTO);
+                .map(deviceMapper::toResponseDTO);
     }
 
     // Buscar un dispositivo por código
