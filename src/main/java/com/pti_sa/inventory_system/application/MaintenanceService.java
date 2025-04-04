@@ -64,6 +64,7 @@ public class MaintenanceService {
         Maintenance saved = iMaintenanceRepository.save(maintenance);
 
         MaintenanceResponseDTO response = maintenanceMapper.toDto(saved);
+        System.out.println("Fecha de mantenimiento recibida: " + maintenance.getMaintenanceDate());
 
         return maintenanceMapper.toDto(saved);
     }

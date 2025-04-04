@@ -76,11 +76,6 @@ public class MaintenanceController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    /*@PostMapping
-    public ResponseEntity<MaintenanceResponseDTO> createMaintenance(@RequestBody Maintenance maintenance) {
-        MaintenanceResponseDTO createdMaintenance = maintenanceService.saveMaintenance(maintenance);
-        return ResponseEntity.ok(createdMaintenance);
-    }*/
 
     // Actualizar mantenimiento
     @PutMapping("/{id}")

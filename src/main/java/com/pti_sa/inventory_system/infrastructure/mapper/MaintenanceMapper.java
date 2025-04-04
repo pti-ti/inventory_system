@@ -24,6 +24,7 @@ public abstract class MaintenanceMapper {
     @Mapping(source = "user.location.name", target = "userLocation")
     @Mapping(source = "items", target = "items", qualifiedByName = "toItemResponseList")
     @Mapping(source = "createdBy", target = "createdByEmail", qualifiedByName = "mapCreatedByEmail")
+    @Mapping(source = "maintenanceDate", target = "maintenanceDate")
     public abstract MaintenanceResponseDTO toDto(Maintenance maintenance);
 
     @Named("mapCreatedByEmail")
