@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -65,6 +67,16 @@ public class SecurityConfig {
                                 ).hasAnyRole("ADMIN", "TECHNICIAN")
 
                         // Rutas públicas
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/assets/**",
+                                "/favicon.ico",
+                                "/auth/login",
+                                "/dashboard",
+                                "/**/*.js",
+                                "/**/*.css"
+                        ).permitAll()
                         .requestMatchers("/api/v1/security/login").permitAll()
                         .requestMatchers("/api/v1/locations/create").permitAll()
                         .requestMatchers("/api/v1/status/create").permitAll()
@@ -90,12 +102,18 @@ public class SecurityConfig {
         org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
         org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
 
-        config.addAllowedOrigin("http://localhost:5173"); // Frontend permitidos
-        config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
+        //config.addAllowedOrigin("http://localhost:5173"); // Frontend permitidos
+
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                "http://192.168.128.148:*"
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
 
         source.registerCorsConfiguration("/**", config);
         return source;
+
     }
 }

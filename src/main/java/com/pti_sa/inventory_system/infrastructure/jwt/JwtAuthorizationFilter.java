@@ -61,24 +61,34 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 */
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try{
-            if (tokenExists(request,response)){
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String path = request.getRequestURI();
+        System.out.println("🔍 Path solicitado: " + path);
+
+        try {
+            if (path.equals("/api/v1/security/login")) {
+                System.out.println("⚠️ Ignorando token en login");
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if (tokenExists(request, response)) {
                 Claims claims = JWTValid(request);
-                if (claims.get("authorities") != null){
+                if (claims.get("authorities") != null) {
                     setAuthentication(claims, customUserDetailService);
-                }else{
+                } else {
                     SecurityContextHolder.clearContext();
                 }
-            } else{
+            } else {
                 SecurityContextHolder.clearContext();
             }
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e){
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
+            System.out.println("❌ Token inválido: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
         }
-
     }
+
 }
