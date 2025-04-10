@@ -14,6 +14,7 @@ public interface IDeviceJpaRepository extends JpaRepository<DeviceEntity, Intege
     Optional<DeviceEntity> findBySerial(String serial);
     List<DeviceEntity> findByDeletedFalse();
     List<DeviceEntity> findByStatusId(Integer statusId);
+    boolean existsBySerial(String serial);
 
     @Query("SELECT d.type, COUNT(d) FROM DeviceEntity d GROUP BY d.type")
     Map<String, Long> countDevicesByType();

@@ -20,4 +20,5 @@ public interface IDeviceRepository {
     Map<String, Long> getDeviceCountsByType();
     void deleteById(Integer id);
     BigDecimal getTotalInventoryValue();
+    boolean existsBySerial(String serial);
 }

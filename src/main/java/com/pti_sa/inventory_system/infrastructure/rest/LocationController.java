@@ -48,6 +48,13 @@ public class LocationController {
         return ResponseEntity.ok(savedLocation);
     }
 
+    // Crear el usuario sin autenticación
+    /*public ResponseEntity<LocationResponseDTO> createLocation(@RequestBody Location location) {
+        // Simulación de un usuario autenticado con id 1
+        Integer createdBy = 1;
+        LocationResponseDTO savedLocation = locationService.saveLocation(location, createdBy);
+        return ResponseEntity.ok(savedLocation);
+    }*/
 
     // Actualizar ubicación
     @PutMapping("/{id}")

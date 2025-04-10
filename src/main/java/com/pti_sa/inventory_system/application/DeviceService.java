@@ -36,6 +36,7 @@ public class DeviceService {
 
     // Guardar un dispositivo
     public DeviceResponseDTO saveDevice(Device device) {
+
         // Obtener entidades completas desde la base de datos antes de asignarlas
         Brand brand = iBrandRepository.findById(device.getBrand().getId())
                 .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
@@ -64,6 +65,7 @@ public class DeviceService {
         logger.info("🚀 savedDevice: {}", savedDevice);
         return deviceMapper.toResponseDTO(savedDevice);
     }
+
 
 
     // Actualizar un dispositivo

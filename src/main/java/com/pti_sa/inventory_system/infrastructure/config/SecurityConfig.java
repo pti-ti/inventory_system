@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
 
@@ -24,31 +27,45 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS correctamente
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(aut -> aut
+                .authorizeHttpRequests(auth -> auth
 
+                        // 🔓 Rutas públicas (sin autenticación)
+                        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico", "/auth/login", "/dashboard").permitAll()
+                        .requestMatchers("/**/*.js", "/**/*.css").permitAll()
+                        .requestMatchers("/api/v1/security/login").permitAll()
+                        .requestMatchers("/api/v1/locations/create").permitAll()
+                        .requestMatchers("/api/v1/status/create").permitAll()
+                        .requestMatchers("/error").permitAll()
+
+                        // ⚠️ Ruta abierta solo temporalmente para crear el primer usuario
                         .requestMatchers("/api/v1/admin/users/create").permitAll()
-                        .requestMatchers("/api/v1/admin/locations/create").permitAll()
-                        .requestMatchers("/api/v1/admin/status/device-status-count").permitAll()
-                        .requestMatchers("/api/v1/admin/locations/device-location-count").permitAll()
-                        .requestMatchers("/api/v1/admin/locations/device-location-type-count").permitAll()
-                        .requestMatchers("/api/v1/admin/devices/count-by-type").permitAll()
-                        .requestMatchers("/api/v1/admin/devices/total-inventory-value").permitAll()
+                        // 🔒 Luego puedes comentar la línea de arriba y dejar solo esta para protegerla:
+                        // .requestMatchers("/api/v1/admin/users/create").hasRole("ADMIN")
 
+                        // 🔓 Datos estadísticos que no requieren autenticación
+                        .requestMatchers(
+                                "/api/v1/admin/locations/create",
+                                "/api/v1/admin/status/device-status-count",
+                                "/api/v1/admin/locations/device-location-count",
+                                "/api/v1/admin/locations/device-location-type-count",
+                                "/api/v1/admin/devices/count-by-type",
+                                "/api/v1/admin/devices/total-inventory-value"
+                        ).permitAll()
 
-                        // 🔹 Rutas accesibles solo por ADMIN
+                        // 🔒 Rutas solo para ADMIN
                         .requestMatchers("/api/v1/admin/items/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // Esta línea ya cubre todas las rutas admin
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
-                        // 🔹 Rutas accesibles por ADMIN y TECHNICIAN
+                        // 🔒 Rutas compartidas por ADMIN y TECHNICIAN
                         .requestMatchers(
                                 "/api/v1/admin/users",
                                 "/api/v1/admin/users/register",
@@ -63,33 +80,14 @@ public class SecurityConfig {
                                 "/api/v1/admin/status/**",
                                 "/api/v1/admin/brands",
                                 "/api/v1/admin/brands/**"
+                        ).hasAnyRole("ADMIN", "TECHNICIAN")
 
-                                ).hasAnyRole("ADMIN", "TECHNICIAN")
-
-                        // Rutas públicas
-                        .requestMatchers(
-                                "/",
-                                "/index.html",
-                                "/assets/**",
-                                "/favicon.ico",
-                                "/auth/login",
-                                "/dashboard",
-                                "/**/*.js",
-                                "/**/*.css"
-                        ).permitAll()
-                        .requestMatchers("/api/v1/security/login").permitAll()
-                        .requestMatchers("/api/v1/locations/create").permitAll()
-                        .requestMatchers("/api/v1/status/create").permitAll()
-
-                        //.requestMatchers("/api/v1/users/create").permitAll() activar para crear un admin
-                        .requestMatchers("/error").permitAll()
-
-                        // 🔹 Cualquier otra petición requiere autenticación
+                        // 🔒 Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return httpSecurity.build();
+        return http.build();
     }
 
     @Bean
@@ -98,11 +96,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-        org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
-
-        //config.addAllowedOrigin("http://localhost:5173"); // Frontend permitidos
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
@@ -112,8 +107,8 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
-
     }
 }

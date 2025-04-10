@@ -40,7 +40,7 @@ public class DeviceEntity {
     private LocationEntity location;
 
 
-    @Column(name = "serial", nullable = false, unique = true)
+    @Column(name = "serial", nullable = false)
     private String serial;
 
     @Column(name = "specification")

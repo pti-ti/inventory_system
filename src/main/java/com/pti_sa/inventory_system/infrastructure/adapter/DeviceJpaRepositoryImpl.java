@@ -97,4 +97,9 @@ public class DeviceJpaRepositoryImpl implements IDeviceRepository {
     public BigDecimal getTotalInventoryValue() {
         return iDeviceJpaRepository.getTotalInventoryValue();
     }
+
+    @Override
+    public boolean existsBySerial(String serial) {
+        return iDeviceJpaRepository.existsBySerial(serial);
+    }
 }

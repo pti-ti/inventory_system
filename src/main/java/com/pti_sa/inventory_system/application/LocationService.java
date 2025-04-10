@@ -25,6 +25,7 @@ public class LocationService {
 
     // Guardar una ubicación
     public LocationResponseDTO saveLocation(Location location, Integer userId) {
+
         if (location.getCreatedBy() == null) {
             location.setCreatedBy(userId);  // Asegurar que `createdBy` nunca sea `null`
         }
