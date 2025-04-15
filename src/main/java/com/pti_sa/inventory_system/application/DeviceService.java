@@ -56,6 +56,8 @@ public class DeviceService {
         device.setStatus(status);
         device.setLocation(location);
 
+        device.setType(device.getType().trim());
+
         // Asignar auditoría
         device.createAudit(device.getCreatedBy());
 
