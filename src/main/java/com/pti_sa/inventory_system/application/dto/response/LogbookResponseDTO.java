@@ -19,6 +19,7 @@ public class LogbookResponseDTO {
     private String deviceModel;
     private String deviceStatus;
     private String deviceLocation;
+    private String deviceSerial;
     private String userEmail;
     //private String type;
     private String note;

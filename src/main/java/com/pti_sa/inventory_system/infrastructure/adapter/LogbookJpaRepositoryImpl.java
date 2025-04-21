@@ -96,4 +96,11 @@ public class LogbookJpaRepositoryImpl implements ILogbookRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<Logbook> findLatestLogbook() {
+        return iLogbookJpaRepository.findFirstByOrderByIdDesc()
+                .map(logbookMapper::toModel);
+
+    }
+
 }

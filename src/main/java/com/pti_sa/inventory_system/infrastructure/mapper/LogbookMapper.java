@@ -19,6 +19,7 @@ public interface LogbookMapper {
     @Mapping(target = "deviceCode", source = "device.code")
     @Mapping(target = "deviceBrand", source = "brand.name")
     @Mapping(target = "deviceModel", source = "model.name")
+    @Mapping(target = "deviceSerial", source = "device.serial")
     @Mapping(target = "deviceStatus", source = "status.name")
     @Mapping(target = "deviceLocation", source = "location.name")
     @Mapping(target = "userEmail", source = "user.email")

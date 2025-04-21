@@ -27,10 +27,6 @@ public class ExcelServiceMaintenance {
         // Obtener la información del mantenimiento
         MaintenanceResponseDTO maintenanceDTO = maintenanceService.findLatestMaintenance();
 
-        System.out.println("📌 MaintenanceResponseDTO: " + maintenanceDTO);
-        System.out.println("📌 Email del usuario: " + maintenanceDTO.getUserEmail());
-        System.out.println("📌 Email del creador: " + maintenanceDTO.getCreatedBy());
-
         String maintenanceDate = maintenanceDTO.getMaintenanceDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String maintenanceType = maintenanceDTO.getMaintenanceType(); // "Preventivo", "Correctivo" o "Garantía"
         String deviceCode = maintenanceDTO.getDeviceCode(); // Código del equipo en mantenimiento
@@ -47,14 +43,6 @@ public class ExcelServiceMaintenance {
 
     private byte[] updateExcelFile(String maintenanceDate, String maintenanceType, String deviceCode, String userEmail,
                                    String userLocation, String comment, List<ItemResponseDTO> items, String createdByEmail) throws IOException {
-        System.out.println("📌 Valores al actualizar Excel:");
-        System.out.println(" - Fecha: " + maintenanceDate);
-        System.out.println(" - Tipo: " + maintenanceType);
-        System.out.println(" - Código: " + deviceCode);
-        System.out.println(" - Usuario Email: " + userEmail);
-        System.out.println(" - Usuario Localización: " + userLocation);
-        System.out.println(" - Comentario: " + comment);
-        System.out.println(" - Email del Creador: " + createdByEmail);
 
         // Cargar el archivo desde la carpeta `resources/static/`
         ClassPathResource resource = new ClassPathResource(FILE_PATH);

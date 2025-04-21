@@ -21,4 +21,5 @@ public interface ILogbookRepository {
     List<Logbook> findByLocationId(Integer locationId);
     List<Logbook> findByStatusName(String statusName);
     List<Logbook> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+    Optional<Logbook> findLatestLogbook();
 }

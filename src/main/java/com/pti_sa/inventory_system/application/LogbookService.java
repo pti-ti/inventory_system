@@ -159,6 +159,11 @@ public class LogbookService {
         return response;
     }
 
+    public LogbookResponseDTO findLatestLogbook(){
+        return iLogbookRepository.findLatestLogbook()
+                .map(logbookMapper::toResponseDTO)
+                .orElseThrow(() -> new RuntimeException("No hay bitácoras registradas."));
+    }
 
     // Buscar un registro de bitácora por su id
     public Optional<LogbookResponseDTO> findLogbookById(Integer id) {
