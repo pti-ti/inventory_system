@@ -54,6 +54,8 @@ public class BrandJpaRepositoryImpl implements IBrandRepository {
         return Map.of();
     }
 
+
+
     /*@Override
     public Map<String, Long> countDevicesByBrand() {
         return iBrandJpaRepository.countDevicesByBrand()
