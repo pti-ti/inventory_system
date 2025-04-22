@@ -51,6 +51,14 @@ public class DeviceJpaRepositoryImpl implements IDeviceRepository {
     }
 
     @Override
+    public List<Device> findByCodeContainingIgnoreCase(String code) {
+        return iDeviceJpaRepository.findByCodeContainingIgnoreCase(code)
+                .stream()
+                .map(deviceMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Device> findByStatusId(Integer statusId) {
         return iDeviceJpaRepository.findByStatusId(statusId)
                 .stream()

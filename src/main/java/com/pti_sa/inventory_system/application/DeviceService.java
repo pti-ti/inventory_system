@@ -135,6 +135,15 @@ public class DeviceService {
         iDeviceRepository.save(device);
     }
 
+    // Método para obtener el dispositivo por su código ...
+    public List<DeviceResponseDTO> findDevicesByCode(String code) {
+        return iDeviceRepository.findByCodeContainingIgnoreCase(code)
+                .stream()
+                .map(deviceMapper::toResponseDTO)
+                .toList();
+    }
+
+
     // Método para obtener la cantidad de dispositivos por tipo
     public Map<String, Long> getDeviceCountsByType() {
         return iDeviceRepository.findAllByDeletedFalse()

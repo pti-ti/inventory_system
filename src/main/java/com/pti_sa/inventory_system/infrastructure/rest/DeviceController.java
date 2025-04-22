@@ -114,6 +114,12 @@ public class DeviceController {
                 ResponseEntity.noContent().build();
     }
 
+    // Buscar dispositivos por código (para el autocomplete)
+    @GetMapping("/search")
+    public ResponseEntity<List<DeviceResponseDTO>> searchDevicesByCode(@RequestParam("code") String code) {
+        List<DeviceResponseDTO> devices = deviceService.findDevicesByCode(code);
+        return devices.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(devices);
+    }
 
     // Eliminar un dispositivo
     @DeleteMapping("/{id}")

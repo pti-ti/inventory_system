@@ -15,7 +15,7 @@ public interface IDeviceJpaRepository extends JpaRepository<DeviceEntity, Intege
     List<DeviceEntity> findByDeletedFalse();
     List<DeviceEntity> findByStatusId(Integer statusId);
     boolean existsBySerial(String serial);
-
+    List<DeviceEntity> findByCodeContainingIgnoreCase(String code);
     @Query("SELECT d.type, COUNT(d) FROM DeviceEntity d GROUP BY d.type")
     Map<String, Long> countDevicesByType();
     @Query("SELECT SUM(d.price) FROM DeviceEntity d WHERE d.deleted = false")
