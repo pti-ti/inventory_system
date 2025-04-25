@@ -106,6 +106,7 @@ public class DeviceController {
         return counts.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(counts);
     }
 
+
     @GetMapping("/total-inventory-value")
     public ResponseEntity<BigDecimal> getTotalInventoryValue() {
         BigDecimal totalValue = deviceService.getTotalInventoryValue();

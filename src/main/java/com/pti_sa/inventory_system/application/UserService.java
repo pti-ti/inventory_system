@@ -36,15 +36,16 @@ public class UserService {
             throw new RuntimeException("El correo ya está registrado.");
         }
 
-        // Validar si la ubicación está presente
+        // Asignar ubicación por defecto si no viene
         if (user.getLocation() == null || user.getLocation().getId() == null) {
-            throw new RuntimeException("El ID de la ubicación del usuario no puede ser nulo.");
+            user.setLocation(new Location(23)); // <-- aquí está el cambio
         }
 
         // Buscar la ubicación en la base de datos
         Location location = iLocationRepository.findById(user.getLocation().getId())
                 .orElseThrow(() -> new RuntimeException("Ubicación no encontrada con ID: " + user.getLocation().getId()));
         user.setLocation(location);
+
         user.createAudit(user.getCreatedBy());
         User savedUser = iUserRepository.save(user);
         return userMapper.toResponseDTO(savedUser);
