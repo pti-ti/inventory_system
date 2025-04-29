@@ -23,7 +23,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/admin/logbooks")
+@RequestMapping("/api/v1/logbooks")
 public class LogbookController {
 
     private static final Logger logger = LoggerFactory.getLogger(LogbookController.class);

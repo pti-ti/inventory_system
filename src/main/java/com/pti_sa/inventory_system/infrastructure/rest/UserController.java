@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @RestController
 // http://localhost:8085
-@RequestMapping("/api/v1/admin/users")
+@RequestMapping("/api/v1/users")
 //@RequestMapping("/api/v1/users")
 
 public class UserController {

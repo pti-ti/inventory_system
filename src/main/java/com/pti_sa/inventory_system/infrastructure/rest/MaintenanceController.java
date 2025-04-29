@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/maintenances")
+@RequestMapping("/api/v1/maintenances")
 public class MaintenanceController {
 
     private final MaintenanceService maintenanceService;

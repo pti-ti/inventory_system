@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/admin/excel")
+@RequestMapping("/api/v1/excel")
 public class ExcelController {
 
     private final ExcelServiceMaintenance excelServiceMaintenance;

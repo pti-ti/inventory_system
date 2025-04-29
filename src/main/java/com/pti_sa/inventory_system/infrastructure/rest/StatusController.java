@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/admin/status")
+@RequestMapping("/api/v1/status")
 public class StatusController {
 
     private final StatusService statusService;

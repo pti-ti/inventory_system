@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/admin/brands")
+@RequestMapping("/api/v1/brands")
 public class BrandController {
 
     private final BrandService brandService;

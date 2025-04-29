@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/admin/devices")
+@RequestMapping("/api/v1/devices")
 public class DeviceController {
 
     private final DeviceService deviceService;
@@ -69,7 +69,7 @@ public class DeviceController {
     }
 
     // Obtener todos los dispositivos
-    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    //@PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping
     public ResponseEntity<List<DeviceResponseDTO>> getAllDevices() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/admin/models")
+@RequestMapping("/api/v1/models")
 public class ModelController {
 
     private final ModelService modelService;

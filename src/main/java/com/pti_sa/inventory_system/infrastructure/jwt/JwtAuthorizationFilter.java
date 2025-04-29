@@ -27,38 +27,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.customUserDetailService = customUserDetailService;
     }
 
-    // Método para crear un usuario admin...
-
-    /*@Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-
-        // 🔹 Evitar validar el token en la creación de usuarios
-        if (path.equals("/api/v1/users/create") && request.getMethod().equalsIgnoreCase("POST")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        try {
-            if (tokenExists(request, response)) {
-                Claims claims = JWTValid(request);
-                if (claims.get("authorities") != null) {
-                    setAuthentication(claims, customUserDetailService);
-                } else {
-                    SecurityContextHolder.clearContext();
-                }
-            } else {
-                SecurityContextHolder.clearContext();
-            }
-            filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Token inválido o expirado");
-        }
-    }
-*/
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

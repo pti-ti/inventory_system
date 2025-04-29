@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/admin/locations")
+@RequestMapping("/api/v1/locations")
 public class LocationController {
 
     private final LocationService locationService;
