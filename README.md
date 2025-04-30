@@ -11,7 +11,7 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
  
 ## Plan de desarrollo Backend
  - Configuración del control de versiones con Git y Github.
- - Configuración del sistema para MySQL
+ - Configuración del sistema para SQL
 	a. Descarga PostgreSQL y PgAdmin
  - Configuración del entorno de desarrollo para Java
 
@@ -23,10 +23,14 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
 
 	d. Instalación IDE intellij versión community.
 
+ - Creación del proyecto en Spring Inizlr
+   a. Librerias usadas en spring
+
 
  - Creación de la base de datos inicial.
  - Creación del proyecto Usando Spring Initialzr agregando librerias necesarias (SPRING BOOT).
  - Estructura del proyecto usando arquitectura hexagonal.
+   Estructura de paquetes del  
  - Conexión a la base de datos PostgreSQL.
  - Creación de las clases modelos de la base de datos.
  - Creación de las interfaces de los repositorios"
