@@ -7,7 +7,9 @@ import com.pti_sa.inventory_system.domain.port.*;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,6 +38,12 @@ public class DeviceService {
 
     // Guardar un dispositivo
     public DeviceResponseDTO saveDevice(Device device) {
+
+        // Verificación del código del dispositivo si ya existe
+        Optional<Device> existingDevice = iDeviceRepository.findByCode(device.getCode());
+        if (existingDevice.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El código del dispositivo ya está registrado.");
+        }
 
         // Obtener entidades completas desde la base de datos antes de asignarlas
         Brand brand = iBrandRepository.findById(device.getBrand().getId())
