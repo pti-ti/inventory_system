@@ -28,13 +28,13 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
 
  ##  Librerias usadas en spring
 
-	a. Lombok
- 	b. Spring Web
-  	c. PostgreSQL Driver
-   	d. Spring Security
-    	e. MapStruct 
-     	f. Spring Boot DevTools
-      	g. Json web token(JWT) 
+-Lombok
+ 	- Spring Web
+  	- PostgreSQL Driver
+   	- Spring Security
+    	- MapStruct 
+     	- Spring Boot DevTools
+      	- Json web token(JWT) 
 
  ##  Creación de la base de datos inicial (RELACIONAL)
  - Nombre del servidor : docker-postgres
