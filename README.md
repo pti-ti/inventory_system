@@ -30,10 +30,15 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
 
 -Lombok
  	- Spring Web
+  
   	- PostgreSQL Driver
+   
    	- Spring Security
+    
     	- MapStruct 
+     
      	- Spring Boot DevTools
+      
       	- Json web token(JWT) 
 
  ##  Creación de la base de datos inicial (RELACIONAL)
