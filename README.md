@@ -51,31 +51,7 @@ Permite **registrar**, **actualizar**, **consultar**, **listar** y **eliminar** 
 
 ---
 
-## 🧱 Estructura del Proyecto (Arquitectura Hexagonal)
-
-inventory_system
-├── application         # Lógica de aplicación (casos de uso, servicios)
-├── domain              # Modelo de dominio (entidades, interfaces de puertos)
-├── infrastructure      # Adaptadores (controladores REST, persistencia, configuraciones)
-
-
-
-
-
-## 🗄️ Base de Datos Inicial
-
-**Tipo**: Relacional (PostgreSQL)
-
-| Parámetro              | Valor              |
-|------------------------|--------------------|
-| Nombre del servidor    | `docker-postgres`  |
-| Usuario                | `postgres`         |
-| Contraseña             | `root`             |
-| Nombre de la BD        | `tech_inventory`   |
-
----
-
-## 🧭 Diagrama de Arquitectura (Hexagonal)
+## 🧱 Diagrama de Arquitectura (Hexagonal)
 
               +---------------------+
               |    Controladores    | ← REST API
@@ -97,6 +73,15 @@ inventory_system
               |   infrastructure    | ← Repositorios, configuración, seguridad
               +---------------------+
 
+## 🗄️ Base de Datos Inicial
 
+**Tipo**: Relacional (PostgreSQL)
 
+| Parámetro              | Valor              |
+|------------------------|--------------------|
+| Nombre del servidor    | `docker-postgres`  |
+| Usuario                | `postgres`         |
+| Contraseña             | `root`             |
+| Nombre de la BD        | `tech_inventory`   |
 
+---
