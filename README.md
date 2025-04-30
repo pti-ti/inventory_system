@@ -13,6 +13,7 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
  - Configuración del control de versiones con Git y Github.
  - Configuración del sistema para SQL
 	a. Descarga PostgreSQL y PgAdmin
+
  - Configuración del entorno de desarrollo para Java
 
 	a. Descarga del JDK(Java development kit)
@@ -31,8 +32,16 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
  	b. Spring Web
   	c. PostgreSQL Driver
    	d. Spring Security
+    	e. MapStruct 
+     	f. Spring Boot DevTools
+      	g. Json web token(JWT) 
 
- - Creación de la base de datos inicial.
+ ##  Creación de la base de datos inicial (RELACIONAL)
+ - Nombre del servidor : docker-postgres
+ - Username del servidor : postgres
+ - Contraseña del servidor : root
+ - Nombre de la base de datos : tech_inventory
+ 
  - Creación del proyecto Usando Spring Initialzr agregando librerias necesarias (SPRING BOOT).
  - Estructura del proyecto usando arquitectura hexagonal.
    Estructura de paquetes del  
