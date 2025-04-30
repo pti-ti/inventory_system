@@ -51,12 +51,14 @@ Permite **registrar**, **actualizar**, **consultar**, **listar** y **eliminar** 
 
 ---
 
-### 5. Estructura de los paquetes del proyecto (Arquitectura hexagonal) 
- 
+## 🧱 Estructura del Proyecto (Arquitectura Hexagonal)
+
 inventory_system
 ├── application         # Lógica de aplicación (casos de uso, servicios)
 ├── domain              # Modelo de dominio (entidades, interfaces de puertos)
 ├── infrastructure      # Adaptadores (controladores REST, persistencia, configuraciones)
+
+
 
 
 
@@ -73,26 +75,28 @@ inventory_system
 
 ---
 
-✅ *Próximas secciones recomendadas:*
-- Documentación de endpoints (Swagger/OpenAPI)
-- Instrucciones para ejecución local y despliegue
-- Manual de usuario y administrador
-- Diagrama de arquitectura (puedo ayudarte a generarlo)
+## 🧭 Diagrama de Arquitectura (Hexagonal)
+
+              +---------------------+
+              |    Controladores    | ← REST API
+              |     (Adapters)      |
+              +---------------------+
+                        |
+                        v
+              +---------------------+
+              |    application      | ← Casos de uso / servicios
+              +---------------------+
+                        |
+                        v
+              +---------------------+
+              |      domain         | ← Entidades y puertos
+              +---------------------+
+                        |
+                        v
+              +---------------------+
+              |   infrastructure    | ← Repositorios, configuración, seguridad
+              +---------------------+
 
 
- 
- - Creación del proyecto Usando Spring Initialzr agregando librerias necesarias (SPRING BOOT).
- - Estructura del proyecto usando arquitectura hexagonal.
-   Estructura de paquetes del  
- - Conexión a la base de datos PostgreSQL.
- - Creación de las clases modelos de la base de datos.
- - Creación de las interfaces de los repositorios"
- - Creación de los puertos (comunicadores con la capa de infraestructura)
- - Creación de las clases de persistencia.
- - Creación de las entidades (Entities)
- - Creación de los adaptadores (interfaces de la implementación). 
- - Creación de los Mappers
- - Creación de las clases de la persistencia JPA y su implementación 
- - Implementación del backend (Java con Spring boot).
- - Desarrollo del frontend  (React- JavaScript).
- - Pruebas y despliegue. 
+
+
