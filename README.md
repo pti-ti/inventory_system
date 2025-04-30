@@ -1,7 +1,7 @@
 # 💻 Inventario de Equipos de Cómputo
 
 Aplicación web para gestionar un inventario de equipos de cómputo.  
-Permite **registrar**, **actualizar**, **consultar** y **eliminar** información sobre los equipos.
+Permite **registrar**, **actualizar**, **consultar**, **listar** y **eliminar** información sobre los equipos.
 
 ---
 
@@ -10,7 +10,6 @@ Permite **registrar**, **actualizar**, **consultar** y **eliminar** información
 - **Control de versiones**: Git
 - **Base de datos**: PostgreSQL
 - **Backend**: Java con Spring Boot
-- **Frontend**: JavaScript, HTML, CSS, React
 
 ---
 
@@ -51,6 +50,15 @@ Permite **registrar**, **actualizar**, **consultar** y **eliminar** información
 - `JSON Web Token (JWT)`: autenticación basada en tokens
 
 ---
+
+### 5. Estructura de los paquetes del proyecto (Arquitectura hexagonal) 
+ 
+inventory_system
+├── application         # Lógica de aplicación (casos de uso, servicios)
+├── domain              # Modelo de dominio (entidades, interfaces de puertos)
+├── infrastructure      # Adaptadores (controladores REST, persistencia, configuraciones)
+
+
 
 ## 🗄️ Base de Datos Inicial
 
