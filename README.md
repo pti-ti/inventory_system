@@ -96,3 +96,24 @@ La carpeta `static/` contiene archivos en formato Excel utilizados como plantill
 
 Estos archivos pueden ser descargados y utilizados por los usuarios del sistema como referencia o para carga masiva de datos.
 
+
+## 🐳 Docker
+
+Este proyecto incluye un `Dockerfile` que permite construir y ejecutar la aplicación Spring Boot dentro de un contenedor.
+
+### 🧱 Etapas del Dockerfile
+
+El `Dockerfile` está dividido en dos etapas:
+
+1. **Etapa de construcción (`build`)**
+   - Imagen base: `maven:3.9.4-eclipse-temurin-21`
+   - Copia el código fuente al contenedor (`COPY . .`)
+   - Compila el proyecto con Maven (`mvn clean package -DskipTests`)
+   - Genera el `.jar` dentro de `/app/target/`
+
+2. **Etapa de ejecución (`runtime`)**
+   - Imagen ligera: `eclipse-temurin:21-jdk-alpine`
+   - Copia el `.jar` generado en la etapa anterior
+   - Expone el puerto `8085`
+   - Ejecuta el archivo `app.jar` con `java -jar`
+
