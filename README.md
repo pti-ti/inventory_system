@@ -83,5 +83,16 @@ Permite **registrar**, **actualizar**, **consultar**, **listar** y **eliminar** 
 | Usuario                | `postgres`         |
 | Contraseña             | `root`             |
 | Nombre de la BD        | `tech_inventory`   |
+| Puerto postgresql      | `5432`   |
 
 ---
+
+## 📁 Recursos Estáticos
+
+La carpeta `static/` contiene archivos en formato Excel utilizados como plantillas para la gestión de documentación:
+
+- 📝 **Bitácoras de uso**: registro del uso diario de los equipos.
+- 🛠️ **Registros de mantenimiento**: historial y control de mantenimientos realizados.
+
+Estos archivos pueden ser descargados y utilizados por los usuarios del sistema como referencia o para carga masiva de datos.
+
