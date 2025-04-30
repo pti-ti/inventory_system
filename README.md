@@ -23,9 +23,14 @@ Permite registrar, actualizar, consultar y eliminar información sobre los equip
 
 	d. Instalación IDE intellij versión community.
 
- - Creación del proyecto en Spring Inizlr
-   a. Librerias usadas en spring
+ - Creación del proyecto en Spring initializr
 
+ ##  Librerias usadas en spring
+
+	a. Lombok
+ 	b. Spring Web
+  	c. PostgreSQL Driver
+   	d. Spring Security
 
  - Creación de la base de datos inicial.
  - Creación del proyecto Usando Spring Initialzr agregando librerias necesarias (SPRING BOOT).
