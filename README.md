@@ -121,3 +121,6 @@ Para levantar el contenedor de docker debes ingresar a la siguiente ruta C:\User
 Dentro de la carpeta 'IdeaProjects' abre el terminal y ejecuta el comando DOCKER-COMPOSE up --build -d
 Este comando iniciará el contenedor que almacena el inventario y la base de datos .
 
+Para detener el contenedor de docker debes ingresar el siguiente comando en la ruta C:\Users\Cristian\IdeaProjects
+DOCKER-COMPOSE down
+
