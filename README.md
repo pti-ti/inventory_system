@@ -127,10 +127,8 @@ Sigue estos pasos para construir y ejecutar la aplicación usando Docker:
    cd "C:\Users\Cristian\IdeaProjects"
 
 **Construye e inicia el contenedor:**
-
-   docker-compose up --build -d
+  - docker-compose up --build -d
 
 **Detiene el contenedor:**
-
-   docker-compose down 
+  - docker-compose down 
 
