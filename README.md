@@ -5,7 +5,7 @@ Permite **registrar**, **actualizar**, **consultar**, **listar** y **eliminar** 
 
 ---
 
-# DESARROLLO BACKEND
+# Desarrollo backend 
 
 ## 🚀 Tecnologías Utilizadas
 
