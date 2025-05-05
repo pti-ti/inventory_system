@@ -117,10 +117,11 @@ El `Dockerfile` está dividido en dos etapas:
    - Expone el puerto `8085`
    - Ejecuta el archivo `app.jar` con `java -jar`
   
-Para levantar el contenedor de docker debes ingresar a la siguiente ruta C:\Users\Cristian\IdeaProjects 
-Dentro de la carpeta 'IdeaProjects' abre el terminal y ejecuta el comando DOCKER-COMPOSE up --build -d
-Este comando iniciará el contenedor que almacena el inventario y la base de datos .
+### 🚀 Cómo dockerizar el proyecto
 
-Para detener el contenedor de docker debes ingresar el siguiente comando en la ruta C:\Users\Cristian\IdeaProjects
-DOCKER-COMPOSE down
+Sigue estos pasos para construir y ejecutar la aplicación usando Docker:
 
+1. **Abre una terminal y navega a tu proyecto:**
+
+   ```bash
+   cd "C:\Users\Cristian\IdeaProjects\NOMBRE_DEL_PROYECTO"
