@@ -116,4 +116,8 @@ El `Dockerfile` está dividido en dos etapas:
    - Copia el `.jar` generado en la etapa anterior
    - Expone el puerto `8085`
    - Ejecuta el archivo `app.jar` con `java -jar`
+  
+Para levantar el contenedor de docker debes ingresar a la siguiente ruta C:\Users\Cristian\IdeaProjects 
+Dentro de la carpeta 'IdeaProjects' abre el terminal y ejecuta el comando DOCKER-COMPOSE up --build -d
+Este comando iniciará el contenedor que almacena el inventario y la base de datos .
 
