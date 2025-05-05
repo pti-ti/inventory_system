@@ -124,4 +124,11 @@ Sigue estos pasos para construir y ejecutar la aplicación usando Docker:
 1. **Abre una terminal y navega a tu proyecto:**
 
    ```bash
-   cd "C:\Users\Cristian\IdeaProjects\NOMBRE_DEL_PROYECTO"
+   cd "C:\Users\Cristian\IdeaProjects"
+
+Construye e inicia el contenedor : 
+   docker-compose up --build -d
+
+Detiene el contenedor :
+   docker-compose down 
+
