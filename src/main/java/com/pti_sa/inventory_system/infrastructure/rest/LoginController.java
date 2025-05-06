@@ -2,6 +2,10 @@ package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.dto.request.UserRequestDTO;
 import com.pti_sa.inventory_system.infrastructure.jwt.JWTGenerator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+@Tag(name = "Controlador del Login", description = "Controlador del login para el acceso de los usuarios segun su rol")
 @RestController
 @RequestMapping("/api/v1/security")
 @Slf4j // Para ver que rol tiene el usuario autenticado.
@@ -30,6 +35,15 @@ public class LoginController {
         this.jwtGenerator = jwtGenerator;
     }
 
+    @Operation(
+            summary = "Login de usuario",
+            description = "Autentica el usuario con su correo electrónico y contraseña. Devuelve un token JWT, el tipo de usuario (rol) y un mensaje."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario autenticado correctamente y token generado."),
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas. No autorizado."),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor.")
+    })
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody UserRequestDTO userRequestDTO){
         Authentication authentication = authenticationManager.authenticate(

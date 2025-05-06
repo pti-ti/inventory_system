@@ -7,6 +7,10 @@ import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Logbook;
 import com.pti_sa.inventory_system.infrastructure.mapper.LogbookMapper;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +27,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Tag(name = "Bitácoras", description = "Operaciones relacionadas con el registro y gestión de las bitácoras")
 @RequestMapping("/api/v1/logbooks")
 public class LogbookController {
 
@@ -34,7 +39,12 @@ public class LogbookController {
         this.logbookService = logbookService;
     }
 
-    // Crear Bitácora
+    @Operation(summary = "Registrar una bitácora", description = "Permite registrar una nueva bitácora en el sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bitácora registrada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario no autenticado"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
     public ResponseEntity<LogbookResponseDTO> createLogbook(@RequestBody Logbook logbook) {
@@ -61,6 +71,12 @@ public class LogbookController {
         return ResponseEntity.ok(savedLogbook);
     }
 
+    @Operation(summary = "Actualizar una bitácora", description = "Actualiza una bitácora existente por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bitácora actualizada correctamente"),
+            @ApiResponse(responseCode = "400", description = "No se pudo obtener el usuario autenticado"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
     // Actualizar logbook
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLogbook(@PathVariable Integer id, @RequestBody Logbook logbook) {
@@ -94,23 +110,28 @@ public class LogbookController {
         return ResponseEntity.ok((updatedLogbook));
     }
 
+    @Operation(summary = "Listar todas las bitácoras", description = "Obtiene todas las bitácoras registradas (sin eliminadas)")
+    @ApiResponse(responseCode = "200", description = "Lista de bitácoras obtenida correctamente")
 
-
-    // Obtener todas las bitácoras
     @GetMapping
     public ResponseEntity<List<LogbookResponseDTO>> getAllLogbooks() {
         List<LogbookResponseDTO> logbooks = logbookService.findAllByDeletedFalse();
         return ResponseEntity.ok(logbooks);
     }
 
-    // Obtener las bitácoras por el status
+    @Operation(summary = "Obtener bitácoras por estado", description = "Filtra bitácoras por su estado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bitácoras filtradas correctamente"),
+            @ApiResponse(responseCode = "404", description = "No se encontraron bitácoras con ese estado")
+    })
     @GetMapping("/status/{statusName}")
     public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByStatus(@PathVariable("statusName") String statusName){
         List<LogbookResponseDTO> logbooks = logbookService.findLogbooksByStatus(statusName);
         return ResponseEntity.ok(logbooks);
     }
 
-    // Buscar registros por rango de fechas
+    @Operation(summary = "Buscar bitácoras por rango de fechas", description = "Recupera bitácoras entre dos fechas específicas")
+    @ApiResponse(responseCode = "200", description = "Bitácoras encontradas dentro del rango de fechas")
     @GetMapping("/by-date-range")
     public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -120,7 +141,11 @@ public class LogbookController {
         return ResponseEntity.ok(logbooks);
     }
 
-    // Eliminar un logbook
+    @Operation(summary = "Eliminar una bitácora", description = "Elimina (lógicamente) una bitácora por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bitácora eliminada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Bitácora no encontrada")
+    })
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteLogbook(@PathVariable Integer id) {

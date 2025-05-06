@@ -5,6 +5,10 @@ import com.pti_sa.inventory_system.application.dto.response.MaintenanceResponseD
 import com.pti_sa.inventory_system.domain.model.Item;
 import com.pti_sa.inventory_system.domain.model.Maintenance;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@Tag(name = "Mantenimientos", description = "Controlador para gestionar las bitácoras de mantenimiento")
 @RequestMapping("/api/v1/maintenances")
 public class MaintenanceController {
 
@@ -25,6 +30,13 @@ public class MaintenanceController {
     public MaintenanceController(MaintenanceService maintenanceService) {
         this.maintenanceService = maintenanceService;
     }
+
+    @Operation(summary = "Registrar nuevo mantenimiento", description = "Permite registrar una nueva bitácora de mantenimiento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mantenimiento registrado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
+            @ApiResponse(responseCode = "401", description = "Usuario no autenticado")
+    })
 
     // Crear Mantenimiento
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
@@ -77,6 +89,13 @@ public class MaintenanceController {
         }
     }
 
+    @Operation(summary = "Actualizar mantenimiento", description = "Actualiza los datos de una bitácora de mantenimiento existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mantenimiento actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+
     // Actualizar mantenimiento
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMaintenance(@PathVariable Integer id, @RequestBody Maintenance maintenance) {
@@ -115,6 +134,11 @@ public class MaintenanceController {
 
     }
 
+    @Operation(summary = "Obtener mantenimientos por ID de dispositivo", description = "Devuelve todas las bitácoras asociadas a un dispositivo específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de mantenimientos encontrado")
+    })
+
     // Obtener Mantenimiento por ID del dispositivo
     @GetMapping("/device/{id}")
     public ResponseEntity<List<MaintenanceResponseDTO>> getMaintenancesByDeviceId(@PathVariable Integer deviceId) {
@@ -130,6 +154,9 @@ public class MaintenanceController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Listar todos los mantenimientos", description = "Devuelve una lista de todas las bitácoras registradas")
+    @ApiResponse(responseCode = "200", description = "Listado completo de mantenimientos")
+
     // Obtener todos los mantenimientos
     @GetMapping
     public ResponseEntity<List<MaintenanceResponseDTO>> getAllMaintenances() {
@@ -137,7 +164,12 @@ public class MaintenanceController {
         return ResponseEntity.ok(maintenances);
     }
 
-    // Obtener los ítems de un mantenimiento
+    @Operation(summary = "Obtener ítems por ID de mantenimiento", description = "Devuelve los ítems asociados a una bitácora de mantenimiento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ítems encontrados exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Bitácora no encontrada")
+    })
+    @GetMapping("/{id}/items")
     public ResponseEntity<?> getItemsByMaintenanceId(@PathVariable Integer id) {
         try {
             List<Item> items = maintenanceService.findItemsByMaintenanceId(id);
@@ -147,12 +179,21 @@ public class MaintenanceController {
         }
     }
 
+
+    @Operation(summary = "Buscar mantenimientos por tipo", description = "Devuelve los mantenimientos registrados según su tipo")
+    @ApiResponse(responseCode = "200", description = "Mantenimientos encontrados")
+
     // Obtener los mantenimientos por tipo
     @GetMapping("/type/{type}")
     public ResponseEntity<List<MaintenanceResponseDTO>> getMaintenancesBYType(@PathVariable String type){
         List<MaintenanceResponseDTO> maintenances = maintenanceService.findMaintenancesByType(type);
         return ResponseEntity.ok(maintenances);
     }
+
+    @Operation(summary = "Buscar por rango de fechas", description = "Obtiene todas las bitácoras dentro del rango de fechas dado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado filtrado por fechas")
+    })
 
     // Buscar Mantenimientos por rango de fechas
     @GetMapping("/by-date-range")
@@ -164,6 +205,11 @@ public class MaintenanceController {
         return ResponseEntity.ok(maintenances);
     }
 
+
+    @Operation(summary = "Eliminar mantenimiento", description = "Elimina una bitácora por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Eliminado exitosamente")
+    })
 
     // Eliminar un mantenimiento
     @DeleteMapping("/{id}")

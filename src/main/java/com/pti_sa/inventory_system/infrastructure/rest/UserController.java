@@ -11,6 +11,10 @@ import com.pti_sa.inventory_system.domain.model.UserType;
 import com.pti_sa.inventory_system.infrastructure.mapper.LocationMapper;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios del inventario")
 // http://localhost:8085
 @RequestMapping("/api/v1/users")
 //@RequestMapping("/api/v1/users")
@@ -42,6 +47,11 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @Operation(summary = "Crea un nuevo usuario", description = "Crea un usuario con constraseña encriptada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
     //@PreAuthorize("hasAnyRole('ADMIN' , 'TECHNICIAN')")
     @PostMapping("/create")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody User user) {
@@ -49,6 +59,12 @@ public class UserController {
         return ResponseEntity.ok(userService.saveUser(user));
     }
 
+    @Operation(summary = "Registrar un nuevo usuario", description = "Registra un usuario con rol User y contraseña predeterminada.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "400", description = "Error de validación o lógica")
+    })
     // Registrar Usuario
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @PostMapping("/register")
@@ -84,8 +100,12 @@ public class UserController {
         }
     }
 
-
-
+    @Operation(summary = "Actualizar usuario", description = "Actualiza un usuario existente por su ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
     // Actualizar usuario (Solo ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
@@ -119,6 +139,12 @@ public class UserController {
     }
 
 
+    @Operation(summary = "Eliminar un usuario", description = "Elimina un usuario existente por su ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario eliminado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
     // Eliminar usuario (Solo ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
@@ -127,6 +153,12 @@ public class UserController {
         return ResponseEntity.ok("Usuario con ID " + id + " eliminado exitosamente.");
     }
 
+    @Operation(summary = "Obtener usuario por ID", description = "Retorna los datos de un usuario por su ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
     // Obtener usuario por ID (ADMIN Y TECHNICIAN)
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping("/{id}")
@@ -137,6 +169,12 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Listar todos los usuarios", description = "Obtiene la lista de todos los usuarios registrados.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente"),
+            @ApiResponse(responseCode = "204", description = "No hay usuarios para mostrar"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
     // Obtener todos los usuarios (ADMIN Y TECHNICIAN)
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping
@@ -161,6 +199,11 @@ public class UserController {
         return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
     }
 
+    @Operation(summary = "Buscar usuarios por email", description = "Busca uno o más usuarios que coincidan con el mail proporcionado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios encotrados"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
     // Buscar usuario por email (ADMIN Y TECHNICIAN)
     @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     @GetMapping("/by-email")
@@ -169,6 +212,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary = "Obtener usuarios por localidad", description = "Obtiene una lista de usuarios asignados a una localidad específica.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos exitosamente"),
+            @ApiResponse(responseCode = "404", description = "No se encontraron usuarios para la localidad")
+    })
     // Obtener los usuarios por Localidad (ADMIN y TECHNICIAN)
     @GetMapping("/location/{locationId}")
     public ResponseEntity<List<UserResponseDTO>> getUsersByLocation(@PathVariable Integer locationId) {
