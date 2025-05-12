@@ -47,6 +47,13 @@ public class SecurityConfig {
                         .requestMatchers("/dashboard").permitAll()
                         .requestMatchers("/error").permitAll()
 
+                        // 🔓 Documentación Swagger
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
                         // 🔓 Estadísticas públicas
                         .requestMatchers(
                                 "/api/v1/locations/device-location-count",
@@ -102,7 +109,7 @@ public class SecurityConfig {
 
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
-                "http://192.168.128.148:*"
+                "http://192.168.128.21:*"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));

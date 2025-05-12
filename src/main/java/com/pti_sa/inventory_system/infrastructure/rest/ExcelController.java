@@ -2,6 +2,11 @@ package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.ExcelServiceLogbook;
 import com.pti_sa.inventory_system.application.ExcelServiceMaintenance;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/excel")
+@Tag(name = "Exportación Excel", description = "Operaciones para generar y descargar archivos Excel")
+@SecurityRequirement(name = "bearerAuth")
 public class ExcelController {
 
     private final ExcelServiceMaintenance excelServiceMaintenance;
@@ -20,6 +27,15 @@ public class ExcelController {
         this.excelServiceMaintenance = excelServiceMaintenance;
         this.excelServiceLogbook = excelServiceLogbook;
     }
+
+    @Operation(
+            summary = "Exportar mantenimiento a Excel",
+            description = "Genera y descarga el archivo Excel con el registro de mantenimento"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Archivo Excel generado correctamente"),
+            @ApiResponse(responseCode = "500", description = "Error al generar el archivo ")
+    })
 
     @GetMapping("/update")
     public ResponseEntity<byte[]> updateMaintenanceExcel() {
@@ -34,6 +50,15 @@ public class ExcelController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @Operation(
+            summary = "Exportar bitácora a Excel",
+            description = "Genera y descarga el archivo Excel con la bitácora del sistema."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Archivo Excel generado correctamente"),
+            @ApiResponse(responseCode = "500", description = "Error al generar el archivo")
+    })
 
     @GetMapping("/logbook")
     public ResponseEntity<byte[]> updateLogbookExcel(){
