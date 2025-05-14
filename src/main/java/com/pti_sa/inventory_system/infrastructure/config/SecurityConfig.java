@@ -38,13 +38,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 
-                        // 🔓 Rutas públicas de frontend
-                        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/**/*.js", "/**/*.css").permitAll()
+                        // 🔓 Archivos estáticos del frontend (React)
+                        .requestMatchers("/", "/index.html", "/favicon.ico", "/assets/**").permitAll()
+                        .requestMatchers("/**/*.js", "/**/*.css", "/**/*.png", "/**/*.jpg").permitAll()
 
-                        // 🔓 Endpoints públicos
+                        // 🔓 Rutas React (todas bajo /app)
+                        .requestMatchers("/app/**").permitAll()
+
+                        // 🔓 Endpoints públicos de login y error
                         .requestMatchers("/auth/login", "/api/v1/security/login").permitAll()
-                        .requestMatchers("/dashboard").permitAll()
                         .requestMatchers("/error").permitAll()
 
                         // 🔓 Documentación Swagger
@@ -63,9 +65,9 @@ public class SecurityConfig {
                                 "/api/v1/devices/total-inventory-value"
                         ).permitAll()
 
-                        // ⚠️ Crear primer usuario (luego protegerlo)
+                        // ⚠️ Crear primer usuario (modificar para producción)
                         .requestMatchers("/api/v1/admin/users/create").permitAll()
-                        // Para producción, cámbialo por:
+                        // En producción:
                         // .requestMatchers("/api/v1/admin/users/create").hasRole("ADMIN")
 
                         // 🔒 Rutas para ADMIN y TECHNICIAN
@@ -108,9 +110,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of(
-                "http://localhost:5173",          // Tu servidor de desarrollo
-                "http://192.168.128.148:*",       // IP local
-                "http://192.168.128.21:8085"      // Tu servidor local
+                "http://localhost:5173",
+                "http://192.168.128.148:*",
+                "http://192.168.128.21:8085"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
