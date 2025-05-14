@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ForwardController {
 
-    @RequestMapping(value = "/{[path:[^\\.]*}")
-    public String forward(){
-        //Redirige cualquier ruta no gestionada por Spring al index.html
+    @RequestMapping(value = {"/{path:[^\\.]*}", "/**/{path:^(?!.*\\.).*}"})
+    public String forward() {
         return "forward:/index.html";
     }
 }
