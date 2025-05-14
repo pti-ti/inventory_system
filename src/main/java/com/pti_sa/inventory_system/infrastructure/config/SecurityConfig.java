@@ -108,8 +108,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of(
-                "http://localhost:5173",
-                "http://192.168.128.148:*"
+                "http://localhost:5173",          // Tu servidor de desarrollo
+                "http://192.168.128.148:*",       // IP local
+                "http://192.168.128.21:8085"      // Tu servidor local
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
