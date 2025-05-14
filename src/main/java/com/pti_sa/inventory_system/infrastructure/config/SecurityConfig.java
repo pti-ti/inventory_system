@@ -38,15 +38,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 
-                        // 🔓 Archivos estáticos del frontend (React)
-                        .requestMatchers("/", "/index.html", "/favicon.ico", "/assets/**").permitAll()
-                        .requestMatchers("/**/*.js", "/**/*.css", "/**/*.png", "/**/*.jpg").permitAll()
+                        // 🔓 Rutas públicas de frontend
+                        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/**/*.js", "/**/*.css").permitAll()
 
-                        // 🔓 Rutas React (todas bajo /app)
-                        .requestMatchers("/app/**").permitAll()
-
-                        // 🔓 Endpoints públicos de login y error
+                        // 🔓 Endpoints públicos
                         .requestMatchers("/auth/login", "/api/v1/security/login").permitAll()
+                        .requestMatchers("/dashboard").permitAll()
                         .requestMatchers("/error").permitAll()
 
                         // 🔓 Documentación Swagger
@@ -65,9 +63,9 @@ public class SecurityConfig {
                                 "/api/v1/devices/total-inventory-value"
                         ).permitAll()
 
-                        // ⚠️ Crear primer usuario (modificar para producción)
+                        // ⚠️ Crear primer usuario (luego protegerlo)
                         .requestMatchers("/api/v1/admin/users/create").permitAll()
-                        // En producción:
+                        // Para producción, cámbialo por:
                         // .requestMatchers("/api/v1/admin/users/create").hasRole("ADMIN")
 
                         // 🔒 Rutas para ADMIN y TECHNICIAN
@@ -111,8 +109,7 @@ public class SecurityConfig {
 
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
-                "http://192.168.128.148:*",
-                "http://192.168.128.21:8085"
+                "http://192.168.128.21:*"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
