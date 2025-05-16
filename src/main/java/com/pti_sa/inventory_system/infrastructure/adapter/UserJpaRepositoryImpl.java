@@ -1,6 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.adapter;
 
 import com.pti_sa.inventory_system.domain.model.User;
+import com.pti_sa.inventory_system.domain.model.UserType;
 import com.pti_sa.inventory_system.domain.port.IUserRepository;
 import com.pti_sa.inventory_system.infrastructure.entity.UserEntity;
 import com.pti_sa.inventory_system.infrastructure.mapper.UserMapper;
@@ -60,6 +61,14 @@ public class UserJpaRepositoryImpl implements IUserRepository {
     @Override
     public List<User> findAllByDeletedFalse() {
         return iUserJpaRepository.findByDeletedFalse()
+                .stream()
+                .map(userMapper::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findByUserTypeNotAndDeletedFalse(UserType userType) {
+        return iUserJpaRepository.findByUserTypeNotAndDeletedFalse(userType)
                 .stream()
                 .map(userMapper::toModel)
                 .collect(Collectors.toList());

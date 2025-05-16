@@ -91,14 +91,7 @@ public class UserService {
         user.updateAudit(user.getUpdatedBy());
 
         return iUserRepository.update(user);
-//    public User updateUser(User user){
-//        Optional<User> existingUser = iUserRepository.findById(user.getId());
-//        if(existingUser.isEmpty()){
-//            throw new RuntimeException("Usuario no encontrado");
-//        }
-//
-//        user.updateAudit(user.getUpdatedBy()); // Auditoría al actualizar
-//        return iUserRepository.update(user);
+
     }
 
     // Buscar usuario por ID
@@ -131,6 +124,14 @@ public class UserService {
     // Obtener todos los usuarios
     public List<UserResponseDTO> findAllUsers(){
         return iUserRepository.findAllByDeletedFalse()
+                .stream()
+                .map(userMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Obtener los usuarios según su rol excepto el user
+    public List<UserResponseDTO> findAllUserExcludingUserType(){
+        return iUserRepository.findByUserTypeNotAndDeletedFalse(UserType.USER)
                 .stream()
                 .map(userMapper::toResponseDTO)
                 .collect(Collectors.toList());

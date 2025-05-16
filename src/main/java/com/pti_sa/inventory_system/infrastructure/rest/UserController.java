@@ -228,8 +228,24 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Listar usuarios excepto los que tienen rol USER", description = "Obtiene todos los usuarios cuyo rol no es USER y que no están marcados como eliminados.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuarios obtenidos exitosamente"),
+            @ApiResponse(responseCode = "204", description = "No hay usuarios que cumplan con el criterio"),
+            @ApiResponse(responseCode = "401", description = "No autorizado")
+    })
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @GetMapping("/exclude-user-role")
+    public ResponseEntity<List<UserResponseDTO>> getUsersExcludingUserRole() {
+        List<UserResponseDTO> users = userService.findAllUserExcludingUserType();
 
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(users);
+    }
 
 }
 

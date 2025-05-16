@@ -1,5 +1,7 @@
 package com.pti_sa.inventory_system.infrastructure.adapter;
 
+import com.pti_sa.inventory_system.domain.model.User;
+import com.pti_sa.inventory_system.domain.model.UserType;
 import com.pti_sa.inventory_system.infrastructure.entity.DeviceEntity;
 import com.pti_sa.inventory_system.infrastructure.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +23,6 @@ public interface IUserJpaRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByIdWithDevices(@Param("id") Integer id);
     Optional<UserEntity> findById(Integer id);
     List<UserEntity> findByLocationId(Integer locationId);
+    List<UserEntity> findByUserTypeNotAndDeletedFalse(UserType userType);
+
 }
