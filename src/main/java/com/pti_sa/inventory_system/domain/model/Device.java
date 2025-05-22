@@ -15,6 +15,7 @@ public class Device {
     private String code;
     private Brand brand;
     private Model model;
+    private User user;
     private String serial;
     private String type;
     private String specification;

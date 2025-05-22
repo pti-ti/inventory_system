@@ -19,6 +19,7 @@ public interface DeviceMapper {
     @Mapping(target = "brandName", source = "device.brand.name")
     @Mapping(target = "modelName", source = "device.model.name")
     @Mapping(target = "locationName", source = "device.location.name")
+    @Mapping(target = "userEmail", source = "device.user.email")
     @Mapping(target = "statusName", source = "device.status.name")
     DeviceResponseDTO toResponseDTO(Device device);
 }

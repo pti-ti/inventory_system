@@ -15,6 +15,7 @@ public class DeviceResponseDTO {
     private String code;
     private String brandName;
     private String modelName;
+    private String userEmail;
     private String serial;
     private String type;
     private String specification;
