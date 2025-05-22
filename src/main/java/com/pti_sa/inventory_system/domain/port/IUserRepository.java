@@ -13,7 +13,7 @@ public interface IUserRepository {
     User update(User user);
     Optional<User> findById(Integer id);
     Optional<User> findByEmailLogin(String email);
-    List<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
     List<User> findAll();
     List<User> findAllByDeletedFalse();
     List<User> findByUserTypeNotAndDeletedFalse(UserType userType);

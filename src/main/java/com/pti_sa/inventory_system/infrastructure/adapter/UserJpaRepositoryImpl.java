@@ -46,11 +46,9 @@ public class UserJpaRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public List<User> findByEmail(String email) {
-        return iUserJpaRepository.findByEmailContainingIgnoreCase(email)
-                .stream()
-                .map(userMapper::toModel)
-                .collect(Collectors.toList());
+    public Optional<User> findByEmail(String email) {
+        return iUserJpaRepository.findByEmail(email)
+                .map(userMapper::toModel);
     }
 
     @Override

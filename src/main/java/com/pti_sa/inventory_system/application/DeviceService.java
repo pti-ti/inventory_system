@@ -26,14 +26,16 @@ public class DeviceService {
     private final IModelRepository iModelRepository;
     private final IDeviceRepository iDeviceRepository;
     private final DeviceMapper deviceMapper;
+    private final IUserRepository iUserRepository;
 
-    public DeviceService(IBrandRepository iBrandRepository, ILocationRepository iLocationRepository, IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper) {
+    public DeviceService(IBrandRepository iBrandRepository, ILocationRepository iLocationRepository, IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper, IUserRepository iUserRepository) {
         this.iBrandRepository = iBrandRepository;
         this.iLocationRepository = iLocationRepository;
         this.iStatusRepository = iStatusRepository;
         this.iModelRepository = iModelRepository;
         this.iDeviceRepository = iDeviceRepository;
         this.deviceMapper = deviceMapper;
+        this.iUserRepository = iUserRepository;
     }
 
     // Guardar un dispositivo
@@ -57,6 +59,11 @@ public class DeviceService {
 
         Location location = iLocationRepository.findById(device.getLocation().getId())
                 .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
+
+        User user = iUserRepository.findById(device.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + device.getUser().getId()));
+
+
 
         // Asignar entidades recuperadas al dispositivo
         device.setBrand(brand);
