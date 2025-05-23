@@ -27,10 +27,11 @@ public class DeviceService {
     private final IDeviceRepository iDeviceRepository;
     private final IUserRepository iUserRepository;
     private final DeviceMapper deviceMapper;
+    private final LogbookService logbookService;
 
     public DeviceService(IBrandRepository iBrandRepository, ILocationRepository iLocationRepository,
-            IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository,
-            IUserRepository iUserRepository, DeviceMapper deviceMapper) {
+                         IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository,
+                         IUserRepository iUserRepository, DeviceMapper deviceMapper, LogbookService logbookService) {
         this.iBrandRepository = iBrandRepository;
         this.iLocationRepository = iLocationRepository;
         this.iStatusRepository = iStatusRepository;
@@ -38,37 +39,57 @@ public class DeviceService {
         this.iDeviceRepository = iDeviceRepository;
         this.iUserRepository = iUserRepository;
         this.deviceMapper = deviceMapper;
+        this.logbookService = logbookService;
     }
 
     // Guardar un dispositivo
     public DeviceResponseDTO saveDevice(Device device) {
+        logger.info("➡️ Recibiendo dispositivo: {}", device);
 
-        // Verificación del código del dispositivo si ya existe
+        // Validación de código duplicado
         Optional<Device> existingDevice = iDeviceRepository.findByCode(device.getCode());
         if (existingDevice.isPresent()) {
-            // Mejorar el mensaje de error mostrando el código recibido
+            logger.warn("❌ Código duplicado: {}", device.getCode());
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "El código del dispositivo \"" + device.getCode() + "\" ya está registrado.");
         }
 
-        // Obtener entidades completas desde la base de datos antes de asignarlas
+        // Validar y asignar entidades relacionadas
         Brand brand = iBrandRepository.findById(device.getBrand().getId())
-                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+                .orElseThrow(() -> {
+                    logger.error("❌ Marca no encontrada: {}", device.getBrand().getId());
+                    return new RuntimeException("Marca no encontrada");
+                });
 
         Model model = iModelRepository.findById(device.getModel().getId())
-                .orElseThrow(() -> new RuntimeException("Modelo no encontrado"));
+                .orElseThrow(() -> {
+                    logger.error("❌ Modelo no encontrado: {}", device.getModel().getId());
+                    return new RuntimeException("Modelo no encontrado");
+                });
 
         Status status = iStatusRepository.findById(device.getStatus().getId())
-                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+                .orElseThrow(() -> {
+                    logger.error("❌ Estado no encontrado: {}", device.getStatus().getId());
+                    return new RuntimeException("Estado no encontrado");
+                });
 
         Location location = iLocationRepository.findById(device.getLocation().getId())
-                .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
+                .orElseThrow(() -> {
+                    logger.error("❌ Ubicación no encontrada: {}", device.getLocation().getId());
+                    return new RuntimeException("Ubicación no encontrada");
+                });
 
         User user = null;
         if (device.getUser() != null && device.getUser().getId() != null) {
             user = iUserRepository.findById(device.getUser().getId())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                    .orElseThrow(() -> {
+                        logger.error("❌ Usuario no encontrado: {}", device.getUser().getId());
+                        return new RuntimeException("Usuario no encontrado");
+                    });
+        } else {
+            logger.error("❌ Usuario no enviado o id nulo");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no enviado o id nulo");
         }
 
         // Asignar entidades recuperadas al dispositivo
@@ -80,38 +101,46 @@ public class DeviceService {
 
         device.setType(device.getType().trim());
 
-        // Asignar auditoría
+        // Auditoría y guardado
         device.createAudit(device.getCreatedBy());
-
-        // Guardar el dispositivo en la base de datos
         Device savedDevice = iDeviceRepository.save(device);
 
-        logger.info("🚀 savedDevice: {}", savedDevice);
+        logger.info("✅ Dispositivo guardado: {}", savedDevice);
         return deviceMapper.toResponseDTO(savedDevice);
     }
 
     // Actualizar un dispositivo
     public DeviceRequestDTO updateDevice(Device device) {
+        Device original = iDeviceRepository.findById(device.getId())
+                .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado."));
+
+        // Detectar cambios
+        boolean statusChanged = !original.getStatus().getId().equals(device.getStatus().getId());
+        boolean locationChanged = !original.getLocation().getId().equals(device.getLocation().getId());
+        boolean userChanged = !original.getUser().getId().equals(device.getUser().getId());
+
+        // Si hay cambios, registrar en bitácora
+        if (statusChanged || locationChanged || userChanged) {
+            Logbook logbook = new Logbook();
+            logbook.setDevice(device);
+            logbook.setBrand(device.getBrand());
+            logbook.setModel(device.getModel());
+            logbook.setStatus(device.getStatus());
+            logbook.setLocation(device.getLocation());
+            logbook.setUser(device.getUser());
+            StringBuilder note = new StringBuilder("Modificación automática en: ");
+            if (statusChanged) note.append("Estado ");
+            if (locationChanged) note.append("Ubicación ");
+            if (userChanged) note.append("Usuario ");
+            logbook.setNote(note.toString().trim());
+            logbook.setCreatedBy(device.getUpdatedBy());
+            logbookService.saveLogbook(logbook);
+        }
+
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
         return deviceMapper.toRequestDTO(updatedDevice);
     }
-
-    // // Actualizar el status del dispositivo
-    // public DeviceResponseDTO updateStatus(Integer deviceId, Integer statusId,
-    // String updatedBy){
-    // Optional<Device> optionalDevice = iDeviceRepository.findById(deviceId);
-    //
-    // if(optionalDevice.isPresent()){
-    // Device device = optionalDevice.get();
-    // device.setStatus(new Status(statusId));
-    // device.updateAudit(Integer.parseInt(updatedBy));
-    // Device updateDevice = iDeviceRepository.update(device);
-    // return deviceMapper.toResponseDTO(updateDevice);
-    // }
-    //
-    // throw new RuntimeException("El dispositivo con el ID: " + deviceId);
-    // }
 
     // Buscar un dispositivo por ID
     public Optional<DeviceResponseDTO> findDeviceById(Integer id) {

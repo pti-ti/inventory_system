@@ -25,7 +25,8 @@ public class BeanConfiguration {
             IStatusRepository iStatusRepository,
             ILocationRepository iLocationRepository,
             IUserRepository iUserRepository,
-            DeviceMapper deviceMapper) {
+            DeviceMapper deviceMapper,
+            LogbookService logbookService) {
 
         return new DeviceService(
                 iBrandRepository,
@@ -34,7 +35,8 @@ public class BeanConfiguration {
                 iModelRepository,
                 iDeviceRepository,
                 iUserRepository,
-                deviceMapper);
+                deviceMapper,
+                logbookService);
     }
 
 
