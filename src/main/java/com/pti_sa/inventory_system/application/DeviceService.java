@@ -25,14 +25,18 @@ public class DeviceService {
     private final IStatusRepository iStatusRepository;
     private final IModelRepository iModelRepository;
     private final IDeviceRepository iDeviceRepository;
+    private final IUserRepository iUserRepository;
     private final DeviceMapper deviceMapper;
 
-    public DeviceService(IBrandRepository iBrandRepository, ILocationRepository iLocationRepository, IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository, DeviceMapper deviceMapper) {
+    public DeviceService(IBrandRepository iBrandRepository, ILocationRepository iLocationRepository,
+            IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository,
+            IUserRepository iUserRepository, DeviceMapper deviceMapper) {
         this.iBrandRepository = iBrandRepository;
         this.iLocationRepository = iLocationRepository;
         this.iStatusRepository = iStatusRepository;
         this.iModelRepository = iModelRepository;
         this.iDeviceRepository = iDeviceRepository;
+        this.iUserRepository = iUserRepository;
         this.deviceMapper = deviceMapper;
     }
 
@@ -42,7 +46,10 @@ public class DeviceService {
         // Verificación del código del dispositivo si ya existe
         Optional<Device> existingDevice = iDeviceRepository.findByCode(device.getCode());
         if (existingDevice.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El código del dispositivo ya está registrado.");
+            // Mejorar el mensaje de error mostrando el código recibido
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "El código del dispositivo \"" + device.getCode() + "\" ya está registrado.");
         }
 
         // Obtener entidades completas desde la base de datos antes de asignarlas
@@ -58,12 +65,18 @@ public class DeviceService {
         Location location = iLocationRepository.findById(device.getLocation().getId())
                 .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
 
+        User user = null;
+        if (device.getUser() != null && device.getUser().getId() != null) {
+            user = iUserRepository.findById(device.getUser().getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        }
 
         // Asignar entidades recuperadas al dispositivo
         device.setBrand(brand);
         device.setModel(model);
         device.setStatus(status);
         device.setLocation(location);
+        device.setUser(user);
 
         device.setType(device.getType().trim());
 
@@ -77,8 +90,6 @@ public class DeviceService {
         return deviceMapper.toResponseDTO(savedDevice);
     }
 
-
-
     // Actualizar un dispositivo
     public DeviceRequestDTO updateDevice(Device device) {
         device.updateAudit(device.getUpdatedBy());
@@ -86,20 +97,21 @@ public class DeviceService {
         return deviceMapper.toRequestDTO(updatedDevice);
     }
 
-//    // Actualizar el status del dispositivo
-//    public DeviceResponseDTO updateStatus(Integer deviceId, Integer statusId, String updatedBy){
-//        Optional<Device> optionalDevice = iDeviceRepository.findById(deviceId);
-//
-//        if(optionalDevice.isPresent()){
-//            Device device = optionalDevice.get();
-//            device.setStatus(new Status(statusId));
-//            device.updateAudit(Integer.parseInt(updatedBy));
-//            Device updateDevice = iDeviceRepository.update(device);
-//            return deviceMapper.toResponseDTO(updateDevice);
-//        }
-//
-//        throw new RuntimeException("El dispositivo con el ID: " + deviceId);
-//    }
+    // // Actualizar el status del dispositivo
+    // public DeviceResponseDTO updateStatus(Integer deviceId, Integer statusId,
+    // String updatedBy){
+    // Optional<Device> optionalDevice = iDeviceRepository.findById(deviceId);
+    //
+    // if(optionalDevice.isPresent()){
+    // Device device = optionalDevice.get();
+    // device.setStatus(new Status(statusId));
+    // device.updateAudit(Integer.parseInt(updatedBy));
+    // Device updateDevice = iDeviceRepository.update(device);
+    // return deviceMapper.toResponseDTO(updateDevice);
+    // }
+    //
+    // throw new RuntimeException("El dispositivo con el ID: " + deviceId);
+    // }
 
     // Buscar un dispositivo por ID
     public Optional<DeviceResponseDTO> findDeviceById(Integer id) {
@@ -127,7 +139,6 @@ public class DeviceService {
                 .collect(Collectors.toList());
     }
 
-
     // Obtener todos los dispositivos
     public List<DeviceResponseDTO> findAllDevices() {
         return iDeviceRepository.findAllByDeletedFalse()
@@ -139,7 +150,7 @@ public class DeviceService {
     // Eliminar un dispositivo por su ID
     public void deleteDeviceById(Integer id) {
         Device device = iDeviceRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
         device.setDeleted(true);
         iDeviceRepository.save(device);
     }
@@ -151,7 +162,6 @@ public class DeviceService {
                 .map(deviceMapper::toResponseDTO)
                 .toList();
     }
-
 
     // Método para obtener la cantidad de dispositivos por tipo
     public Map<String, Long> getDeviceCountsByType() {
