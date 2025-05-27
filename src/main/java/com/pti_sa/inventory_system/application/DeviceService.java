@@ -125,6 +125,18 @@ public class DeviceService {
     public DeviceRequestDTO updateDevice(Device device) {
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
+
+        // Crear bitácora automáticamente al editar el dispositivo
+        Logbook logbook = new Logbook();
+        logbook.setDevice(updatedDevice);
+        logbook.setBrand(updatedDevice.getBrand());
+        logbook.setModel(updatedDevice.getModel());
+        logbook.setStatus(updatedDevice.getStatus());
+        logbook.setLocation(updatedDevice.getLocation());
+        logbook.setUser(updatedDevice.getUser());
+        logbook.setNote("Registro automático de edición de dispositivo");
+        logbook.setCreatedBy(updatedDevice.getUpdatedBy());
+        logbookService.saveLogbook(logbook);
         return deviceMapper.toRequestDTO(updatedDevice);
     }
 
