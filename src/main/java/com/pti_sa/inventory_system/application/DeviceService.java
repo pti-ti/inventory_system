@@ -133,6 +133,13 @@ public class DeviceService {
 
         // Solo crear bitácora si hay cambios en estado, ubicación o email de usuario
         if (statusChanged || locationChanged || userEmailChanged) {
+            logger.info("Intentando crear bitácora. Datos recibidos:");
+            logger.info("Brand: {}", device.getBrand());
+            logger.info("Model: {}", device.getModel());
+            logger.info("Status: {}", device.getStatus());
+            logger.info("Location: {}", device.getLocation());
+            logger.info("User: {}", device.getUser());
+
             // Recuperar entidades completas
             Brand brand = iBrandRepository.findById(device.getBrand().getId())
                     .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
@@ -144,6 +151,13 @@ public class DeviceService {
                     .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
             User user = iUserRepository.findById(device.getUser().getId())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            logger.info("Entidades recuperadas para bitácora:");
+            logger.info("Brand: {}", brand);
+            logger.info("Model: {}", model);
+            logger.info("Status: {}", status);
+            logger.info("Location: {}", location);
+            logger.info("User: {}", user);
 
             Logbook logbook = new Logbook();
             logbook.setDevice(device);
@@ -162,6 +176,7 @@ public class DeviceService {
             logbook.setNote(note.toString().trim());
             logbook.setCreatedBy(device.getUpdatedBy());
             logbookService.saveLogbook(logbook);
+            logger.info("Bitácora creada correctamente.");
         }
 
         device.updateAudit(device.getUpdatedBy());
