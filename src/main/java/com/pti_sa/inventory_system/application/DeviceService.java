@@ -30,8 +30,8 @@ public class DeviceService {
     private final LogbookService logbookService;
 
     public DeviceService(IBrandRepository iBrandRepository, ILocationRepository iLocationRepository,
-                         IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository,
-                         IUserRepository iUserRepository, DeviceMapper deviceMapper, LogbookService logbookService) {
+            IStatusRepository iStatusRepository, IModelRepository iModelRepository, IDeviceRepository iDeviceRepository,
+            IUserRepository iUserRepository, DeviceMapper deviceMapper, LogbookService logbookService) {
         this.iBrandRepository = iBrandRepository;
         this.iLocationRepository = iLocationRepository;
         this.iStatusRepository = iStatusRepository;
@@ -105,6 +105,18 @@ public class DeviceService {
         device.createAudit(device.getCreatedBy());
         Device savedDevice = iDeviceRepository.save(device);
 
+        // Crear bitácora automáticamente al crear el dispositivo
+        Logbook logbook = new Logbook();
+        logbook.setDevice(savedDevice);
+        logbook.setBrand(savedDevice.getBrand());
+        logbook.setModel(savedDevice.getModel());
+        logbook.setStatus(savedDevice.getStatus());
+        logbook.setLocation(savedDevice.getLocation());
+        logbook.setUser(savedDevice.getUser());
+        logbook.setNote("Registro automático de creación de dispositivo");
+        logbook.setCreatedBy(savedDevice.getCreatedBy());
+        logbookService.saveLogbook(logbook);
+
         logger.info("✅ Dispositivo guardado: {}", savedDevice);
         return deviceMapper.toResponseDTO(savedDevice);
     }
@@ -129,9 +141,12 @@ public class DeviceService {
             logbook.setLocation(device.getLocation());
             logbook.setUser(device.getUser());
             StringBuilder note = new StringBuilder("Modificación automática en: ");
-            if (statusChanged) note.append("Estado ");
-            if (locationChanged) note.append("Ubicación ");
-            if (userChanged) note.append("Usuario ");
+            if (statusChanged)
+                note.append("Estado ");
+            if (locationChanged)
+                note.append("Ubicación ");
+            if (userChanged)
+                note.append("Usuario ");
             logbook.setNote(note.toString().trim());
             logbook.setCreatedBy(device.getUpdatedBy());
             logbookService.saveLogbook(logbook);
