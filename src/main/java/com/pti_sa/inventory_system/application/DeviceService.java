@@ -126,6 +126,20 @@ public class DeviceService {
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
 
+        // Obtener usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer updatedBy = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomUserDetails) {
+                updatedBy = ((CustomUserDetails) principal).getId();
+            }
+        }
+        if (updatedBy == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "No se pudo obtener el usuario autenticado para la bitácora");
+        }
+
         // Crear bitácora automáticamente al editar el dispositivo
         Logbook logbook = new Logbook();
         logbook.setDevice(updatedDevice);
@@ -135,7 +149,7 @@ public class DeviceService {
         logbook.setLocation(updatedDevice.getLocation());
         logbook.setUser(updatedDevice.getUser());
         logbook.setNote("Registro automático de edición de dispositivo");
-        logbook.setCreatedBy(device.getUpdatedBy());
+        logbook.setCreatedBy(updatedBy);
         logbookService.saveLogbook(logbook);
         return deviceMapper.toRequestDTO(updatedDevice);
     }
