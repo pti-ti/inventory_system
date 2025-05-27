@@ -5,9 +5,12 @@ import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.*;
 import com.pti_sa.inventory_system.domain.port.*;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
+import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
