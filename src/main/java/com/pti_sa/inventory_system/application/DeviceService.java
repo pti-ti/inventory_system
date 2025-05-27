@@ -126,13 +126,13 @@ public class DeviceService {
         Device original = iDeviceRepository.findById(device.getId())
                 .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado."));
 
-        // Detectar cambios
+        // Detectar cambios relevantes
         boolean statusChanged = !original.getStatus().getId().equals(device.getStatus().getId());
         boolean locationChanged = !original.getLocation().getId().equals(device.getLocation().getId());
-        boolean userChanged = !original.getUser().getId().equals(device.getUser().getId());
+        boolean userEmailChanged = !original.getUser().getEmail().equals(device.getUser().getEmail());
 
-        // Si hay cambios, registrar en bitácora
-        if (statusChanged || locationChanged || userChanged) {
+        // Solo crear bitácora si hay cambios en estado, ubicación o email de usuario
+        if (statusChanged || locationChanged || userEmailChanged) {
             Logbook logbook = new Logbook();
             logbook.setDevice(device);
             logbook.setBrand(device.getBrand());
@@ -145,8 +145,8 @@ public class DeviceService {
                 note.append("Estado ");
             if (locationChanged)
                 note.append("Ubicación ");
-            if (userChanged)
-                note.append("Usuario ");
+            if (userEmailChanged)
+                note.append("Email de Usuario ");
             logbook.setNote(note.toString().trim());
             logbook.setCreatedBy(device.getUpdatedBy());
             logbookService.saveLogbook(logbook);
