@@ -135,7 +135,7 @@ public class DeviceService {
         logbook.setLocation(updatedDevice.getLocation());
         logbook.setUser(updatedDevice.getUser());
         logbook.setNote("Registro automático de edición de dispositivo");
-        logbook.setCreatedBy(updatedDevice.getUpdatedBy());
+        logbook.setCreatedBy(device.getUpdatedBy());
         logbookService.saveLogbook(logbook);
         return deviceMapper.toRequestDTO(updatedDevice);
     }
