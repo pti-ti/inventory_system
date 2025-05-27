@@ -71,6 +71,7 @@ public class DeviceController {
             @ApiResponse(responseCode = "200", description = "Dispositivo actualizado correctamente"),
             @ApiResponse(responseCode = "404", description = "Dispositivo no encontrado")
     })
+
     // Actualizar dispositivo
     @PutMapping("/{id}")
     public ResponseEntity<DeviceRequestDTO>updateDevice(@PathVariable Integer id, @RequestBody Device device){

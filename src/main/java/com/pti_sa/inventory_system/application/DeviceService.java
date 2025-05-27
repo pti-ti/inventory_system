@@ -123,62 +123,6 @@ public class DeviceService {
 
     // Actualizar un dispositivo
     public DeviceRequestDTO updateDevice(Device device) {
-        Device original = iDeviceRepository.findById(device.getId())
-                .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado."));
-
-        // Detectar cambios relevantes
-        boolean statusChanged = !original.getStatus().getId().equals(device.getStatus().getId());
-        boolean locationChanged = !original.getLocation().getId().equals(device.getLocation().getId());
-        boolean userEmailChanged = !original.getUser().getEmail().equals(device.getUser().getEmail());
-
-        // Solo crear bitácora si hay cambios en estado, ubicación o email de usuario
-        if (statusChanged || locationChanged || userEmailChanged) {
-            logger.info("Intentando crear bitácora. Datos recibidos:");
-            logger.info("Brand: {}", device.getBrand());
-            logger.info("Model: {}", device.getModel());
-            logger.info("Status: {}", device.getStatus());
-            logger.info("Location: {}", device.getLocation());
-            logger.info("User: {}", device.getUser());
-
-            // Recuperar entidades completas
-            Brand brand = iBrandRepository.findById(device.getBrand().getId())
-                    .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
-            Model model = iModelRepository.findById(device.getModel().getId())
-                    .orElseThrow(() -> new RuntimeException("Modelo no encontrado"));
-            Status status = iStatusRepository.findById(device.getStatus().getId())
-                    .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
-            Location location = iLocationRepository.findById(device.getLocation().getId())
-                    .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
-            User user = iUserRepository.findById(device.getUser().getId())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-            logger.info("Entidades recuperadas para bitácora:");
-            logger.info("Brand: {}", brand);
-            logger.info("Model: {}", model);
-            logger.info("Status: {}", status);
-            logger.info("Location: {}", location);
-            logger.info("User: {}", user);
-
-            Logbook logbook = new Logbook();
-            logbook.setDevice(device);
-            logbook.setBrand(brand);
-            logbook.setModel(model);
-            logbook.setStatus(status);
-            logbook.setLocation(location);
-            logbook.setUser(user);
-            StringBuilder note = new StringBuilder("Modificación automática en: ");
-            if (statusChanged)
-                note.append("Estado ");
-            if (locationChanged)
-                note.append("Ubicación ");
-            if (userEmailChanged)
-                note.append("Email de Usuario ");
-            logbook.setNote(note.toString().trim());
-            logbook.setCreatedBy(device.getUpdatedBy());
-            logbookService.saveLogbook(logbook);
-            logger.info("Bitácora creada correctamente.");
-        }
-
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
         return deviceMapper.toRequestDTO(updatedDevice);
@@ -245,5 +189,4 @@ public class DeviceService {
     public BigDecimal getTotalInventoryValue() {
         return iDeviceRepository.getTotalInventoryValue();
     }
-
 }
