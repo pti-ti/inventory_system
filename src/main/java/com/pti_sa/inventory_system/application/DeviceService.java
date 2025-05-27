@@ -133,13 +133,25 @@ public class DeviceService {
 
         // Solo crear bitácora si hay cambios en estado, ubicación o email de usuario
         if (statusChanged || locationChanged || userEmailChanged) {
+            // Recuperar entidades completas
+            Brand brand = iBrandRepository.findById(device.getBrand().getId())
+                    .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+            Model model = iModelRepository.findById(device.getModel().getId())
+                    .orElseThrow(() -> new RuntimeException("Modelo no encontrado"));
+            Status status = iStatusRepository.findById(device.getStatus().getId())
+                    .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+            Location location = iLocationRepository.findById(device.getLocation().getId())
+                    .orElseThrow(() -> new RuntimeException("Ubicación no encontrada"));
+            User user = iUserRepository.findById(device.getUser().getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
             Logbook logbook = new Logbook();
             logbook.setDevice(device);
-            logbook.setBrand(device.getBrand());
-            logbook.setModel(device.getModel());
-            logbook.setStatus(device.getStatus());
-            logbook.setLocation(device.getLocation());
-            logbook.setUser(device.getUser());
+            logbook.setBrand(brand);
+            logbook.setModel(model);
+            logbook.setStatus(status);
+            logbook.setLocation(location);
+            logbook.setUser(user);
             StringBuilder note = new StringBuilder("Modificación automática en: ");
             if (statusChanged)
                 note.append("Estado ");
