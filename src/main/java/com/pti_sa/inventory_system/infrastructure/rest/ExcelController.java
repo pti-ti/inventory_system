@@ -2,6 +2,7 @@ package com.pti_sa.inventory_system.infrastructure.rest;
 
 import com.pti_sa.inventory_system.application.ExcelServiceLogbook;
 import com.pti_sa.inventory_system.application.ExcelServiceMaintenance;
+import com.pti_sa.inventory_system.application.dto.response.LogbookResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -58,9 +59,14 @@ public class ExcelController {
     @GetMapping("/logbook")
     public ResponseEntity<byte[]> updateLogbookExcel(@RequestParam Long logbookId) {
         try {
-            byte[] fileBytes = excelServiceLogbook.updateExcel(logbookId); // <-- pásale el ID
+            // Obtén el DTO para acceder al código del dispositivo
+            LogbookResponseDTO dto = excelServiceLogbook.getLogbookDTO(logbookId);
+            String deviceCode = dto.getDeviceCode();
+
+            byte[] fileBytes = excelServiceLogbook.updateExcel(logbookId);
+
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Bitacora_" + logbookId + ".xlsx")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Bitacora_" + deviceCode + ".xlsx")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(fileBytes);
         } catch (Exception e) {

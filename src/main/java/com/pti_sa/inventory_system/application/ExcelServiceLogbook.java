@@ -67,6 +67,10 @@ public class ExcelServiceLogbook {
         return Files.readAllBytes(tempFile.toPath());
     }
 
+    public LogbookResponseDTO getLogbookDTO(Long logbookId) {
+        return logbookService.findById(logbookId);
+    }
+
     private void updateCell(Sheet sheet, int rowIndex, int colIndex, String value) {
         Row row = sheet.getRow(rowIndex);
         if (row == null) {
