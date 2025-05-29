@@ -34,66 +34,77 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
 
-                        // 🔓 Rutas públicas de frontend
-                        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/**/*.js", "/**/*.css").permitAll()
+                // 🔓 Rutas públicas de frontend y React Router
+                .requestMatchers(
+                    "/",
+                    "/index.html",
+                    "/favicon.ico",
+                    "/logo.png",
+                    "/manifest.json",
+                    "/assets/**",
+                    "/static/**",
+                    "/**/*.js",
+                    "/**/*.css",
+                    // Permitir rutas de React Router (sin punto)
+                    "/{path:[^\\.]*}",
+                    "/**/{path:[^\\.]*}"
+                ).permitAll()
 
-                        // 🔓 Endpoints públicos
-                        .requestMatchers("/auth/login", "/api/v1/security/login").permitAll()
-                        .requestMatchers("/dashboard").permitAll()
-                        .requestMatchers("/error").permitAll()
+                // 🔓 Endpoints públicos
+                .requestMatchers("/auth/login", "/api/v1/security/login").permitAll()
+                .requestMatchers("/error").permitAll()
 
-                        // 🔓 Documentación Swagger
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                // 🔓 Documentación Swagger
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+                ).permitAll()
 
-                        // 🔓 Estadísticas públicas
-                        .requestMatchers(
-                                "/api/v1/locations/device-location-count",
-                                "/api/v1/status/device-status-count",
-                                "/api/v1/locations/device-location-type-count",
-                                "/api/v1/devices/count-by-type",
-                                "/api/v1/devices/total-inventory-value"
-                        ).permitAll()
+                // 🔓 Estadísticas públicas
+                .requestMatchers(
+                    "/api/v1/locations/device-location-count",
+                    "/api/v1/status/device-status-count",
+                    "/api/v1/locations/device-location-type-count",
+                    "/api/v1/devices/count-by-type",
+                    "/api/v1/devices/total-inventory-value"
+                ).permitAll()
 
-                        // ⚠️ Crear primer usuario (luego protegerlo)
-                        .requestMatchers("/api/v1/admin/users/create").permitAll()
-                        // Para producción, cámbialo por:
-                        // .requestMatchers("/api/v1/admin/users/create").hasRole("ADMIN")
+                // ⚠️ Crear primer usuario (luego protegerlo)
+                .requestMatchers("/api/v1/admin/users/create").permitAll()
+                // Para producción, cámbialo por:
+                // .requestMatchers("/api/v1/admin/users/create").hasRole("ADMIN")
 
-                        // 🔒 Rutas para ADMIN y TECHNICIAN
-                        .requestMatchers(
-                                "/api/v1/devices",
-                                "/api/v1/devices/**",
-                                "/api/v1/logbooks/register",
-                                "/api/v1/maintenances/register",
-                                "/api/v1/locations",
-                                "/api/v1/locations/**",
-                                "/api/v1/status",
-                                "/api/v1/status/**",
-                                "/api/v1/brands",
-                                "/api/v1/brands/**"
-                        ).hasAnyRole("ADMIN", "TECHNICIAN")
+                // 🔒 Rutas para ADMIN y TECHNICIAN
+                .requestMatchers(
+                    "/api/v1/devices",
+                    "/api/v1/devices/**",
+                    "/api/v1/logbooks/register",
+                    "/api/v1/maintenances/register",
+                    "/api/v1/locations",
+                    "/api/v1/locations/**",
+                    "/api/v1/status",
+                    "/api/v1/status/**",
+                    "/api/v1/brands",
+                    "/api/v1/brands/**"
+                ).hasAnyRole("ADMIN", "TECHNICIAN")
 
-                        // 🔒 Rutas solo para ADMIN
-                        .requestMatchers(
-                                "/api/v1/admin/users",
-                                "/api/v1/admin/users/register",
-                                "/api/v1/admin/items/**",
-                                "/api/v1/admin/**"
-                        ).hasRole("ADMIN")
+                // 🔒 Rutas solo para ADMIN
+                .requestMatchers(
+                    "/api/v1/admin/users",
+                    "/api/v1/admin/users/register",
+                    "/api/v1/admin/items/**",
+                    "/api/v1/admin/**"
+                ).hasRole("ADMIN")
 
-                        // 🔒 Cualquier otra ruta requiere autenticación
-                        .anyRequest().authenticated()
-                )
-                .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                // 🔒 Cualquier otra ruta requiere autenticación
+                .anyRequest().authenticated()
+            )
+            .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -108,9 +119,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of(
-                "http://localhost:5173",
-                "http://192.168.128.21:*",
-                "http://192.168.128.148:*"
+            "http://localhost:5173",
+            "http://192.168.128.21:*",
+            "http://192.168.128.148:*"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
