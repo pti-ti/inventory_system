@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,10 +29,7 @@ public class ExcelController {
         this.excelServiceLogbook = excelServiceLogbook;
     }
 
-    @Operation(
-            summary = "Exportar mantenimiento a Excel",
-            description = "Genera y descarga el archivo Excel con el registro de mantenimento"
-    )
+    @Operation(summary = "Exportar mantenimiento a Excel", description = "Genera y descarga el archivo Excel con el registro de mantenimento")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Archivo Excel generado correctamente"),
             @ApiResponse(responseCode = "500", description = "Error al generar el archivo ")
@@ -51,27 +49,23 @@ public class ExcelController {
         }
     }
 
-    @Operation(
-            summary = "Exportar bitácora a Excel",
-            description = "Genera y descarga el archivo Excel con la bitácora del sistema."
-    )
+    @Operation(summary = "Exportar bitácora a Excel", description = "Genera y descarga el archivo Excel con la bitácora del sistema.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Archivo Excel generado correctamente"),
             @ApiResponse(responseCode = "500", description = "Error al generar el archivo")
     })
 
     @GetMapping("/logbook")
-    public ResponseEntity<byte[]> updateLogbookExcel(){
+    public ResponseEntity<byte[]> updateLogbookExcel(@RequestParam Long logbookId) {
         try {
-            byte[] fileBytes = excelServiceLogbook.updateExcel();
+            byte[] fileBytes = excelServiceLogbook.updateExcel(logbookId); // <-- pásale el ID
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=FO-GTI-02.xlsx")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Bitacora_" + logbookId + ".xlsx")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(fileBytes);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 
 }

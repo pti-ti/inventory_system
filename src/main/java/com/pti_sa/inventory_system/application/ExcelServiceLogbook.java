@@ -26,9 +26,10 @@ public class ExcelServiceLogbook {
         this.logbookService = logbookService;
     }
 
-    public byte[] updateExcel() throws IOException {
-        LogbookResponseDTO logbookResponseDTO = logbookService.findLatestLogbook();
-
+    public byte[] updateExcel(Long logbookId) throws IOException {
+        System.out.println("Generando Excel para logbookId: " + logbookId);
+        LogbookResponseDTO logbookResponseDTO = logbookService.findById(logbookId); // <-- Usa el ID recibido
+        System.out.println("DTO generado: " + logbookResponseDTO);
         String createdAt = logbookResponseDTO.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String userEmail = logbookResponseDTO.getUserEmail();
         String location = logbookResponseDTO.getDeviceLocation();
@@ -39,13 +40,14 @@ public class ExcelServiceLogbook {
         return updateExcelFile(createdAt, userEmail, location, serial, brand, code, note);
     }
 
-    private byte[] updateExcelFile(String createdAt, String userEmail, String location, String serial, String brand, String code, String note) throws IOException {
+    private byte[] updateExcelFile(String createdAt, String userEmail, String location, String serial, String brand,
+            String code, String note) throws IOException {
         ClassPathResource resource = new ClassPathResource(FILE_PATH);
         File tempFile = File.createTempFile("temp_logbook_excel", "xlsx");
         Files.copy(resource.getInputStream(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         try (FileInputStream fis = new FileInputStream(tempFile);
-             Workbook workbook = new XSSFWorkbook(fis)){
+                Workbook workbook = new XSSFWorkbook(fis)) {
             Sheet sheet = workbook.getSheetAt(0);
 
             updateCell(sheet, 5, 9, createdAt);
@@ -56,7 +58,7 @@ public class ExcelServiceLogbook {
             updateCell(sheet, 13, 5, brand);
             updateCell(sheet, 27, 3, note);
 
-            try(FileOutputStream fos = new FileOutputStream(tempFile)){
+            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 workbook.write(fos);
             }
 
@@ -65,13 +67,13 @@ public class ExcelServiceLogbook {
         return Files.readAllBytes(tempFile.toPath());
     }
 
-    private void updateCell(Sheet sheet, int rowIndex, int colIndex, String value){
+    private void updateCell(Sheet sheet, int rowIndex, int colIndex, String value) {
         Row row = sheet.getRow(rowIndex);
-        if(row == null){
+        if (row == null) {
             row = sheet.createRow(rowIndex);
         }
         Cell cell = row.getCell(colIndex);
-        if( cell == null){
+        if (cell == null) {
             cell = row.createCell(colIndex);
         }
         cell.setCellValue(value);

@@ -170,6 +170,20 @@ public class LogbookService {
         return iLogbookRepository.findById(id).map(logbookMapper::toResponseDTO);
     }
 
+    public LogbookResponseDTO findById(Long id) {
+        System.out.println("Buscando bitácora con id: " + id);
+        Optional<Logbook> logbookOpt = iLogbookRepository.findById(id.intValue());
+        if (logbookOpt.isPresent()) {
+            Logbook logbook = logbookOpt.get();
+            System.out.println("Logbook encontrado: " + logbook);
+            LogbookResponseDTO dto = logbookMapper.toResponseDTO(logbook);
+            System.out.println("DTO generado: " + dto);
+            return dto;
+        } else {
+            throw new RuntimeException("Bitácora no encontrada con id: " + id);
+        }
+    }
+
     // Obtener todos los registros de bitácora
     public List<LogbookResponseDTO> findAllByDeletedFalse() {
         return iLogbookRepository.findAllByDeletedFalse().stream()

@@ -14,14 +14,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -151,6 +159,36 @@ public class LogbookController {
     public ResponseEntity<String> deleteLogbook(@PathVariable Integer id) {
         logbookService.deleteLogbookById(id);
         return ResponseEntity.ok("Bitácora con ID " + id + " eliminado exitosamente.");
+    }
+
+    @Operation(summary = "Descargar bitácora Excel por código de dispositivo", description = "Devuelve el archivo Excel de la bitácora para el dispositivo indicado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Archivo encontrado y descargado"),
+            @ApiResponse(responseCode = "404", description = "Archivo no encontrado")
+    })
+    @GetMapping("/excel/{deviceCode}")
+    public ResponseEntity<Resource> downloadLogbookExcel(@PathVariable String deviceCode) {
+        try {
+            // Ruta al archivo Excel en la red
+            String networkPath = "\\\\192.168.128.5\\24_Tecnologia\\1.7 Actas de Entrega\\" + deviceCode + "\\bitacora.xlsx";
+            Path filePath = Paths.get(networkPath);
+
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Resource resource = new UrlResource(filePath.toUri());
+            String fileName = "bitacora_" + deviceCode + ".xlsx";
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(resource);
+        } catch (MalformedURLException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }
