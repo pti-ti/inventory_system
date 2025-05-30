@@ -105,7 +105,7 @@ public class DeviceService {
         device.setUser(user);
 
         device.setType(device.getType().trim());
-        
+
         if (device.getNote() != null) {
             device.setNote(device.getNote().trim());
         }
@@ -122,7 +122,10 @@ public class DeviceService {
         logbook.setStatus(savedDevice.getStatus());
         logbook.setLocation(savedDevice.getLocation());
         logbook.setUser(savedDevice.getUser());
-        logbook.setNote("Registro automático de creación de dispositivo");
+        logbook.setNote(
+                device.getNote() != null && !device.getNote().isBlank()
+                        ? device.getNote()
+                        : "Registro automático de creación de dispositivo");
         logbook.setCreatedBy(savedDevice.getCreatedBy());
         logbookService.saveLogbook(logbook);
 
@@ -135,6 +138,10 @@ public class DeviceService {
         Device originalDevice = iDeviceRepository.findById(device.getId())
                 .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado para bitácora"));
 
+        if (device.getNote() != null) {
+            device.setNote(device.getNote().trim());
+        }
+        
         // 2. Actualizar el dispositivo
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
@@ -171,6 +178,8 @@ public class DeviceService {
             cambios.add("Código");
         if (!Objects.equals(originalDevice.getSerial(), updatedDevice.getSerial()))
             cambios.add("Serial");
+        if (!Objects.equals(originalDevice.getNote(), updatedDevice.getNote()))
+            cambios.add("Nota");
         // Agrega más campos si lo necesitas
 
         String note = cambios.isEmpty()
