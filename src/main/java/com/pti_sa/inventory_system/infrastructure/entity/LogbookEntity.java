@@ -46,6 +46,9 @@ public class LogbookEntity {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "changes", columnDefinition = "TEXT")
+    private String changes;
+
     @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean deleted = false; // Eliminación lógica
 

@@ -21,6 +21,7 @@ public class LogbookResponseDTO {
     private String deviceLocation;
     private String deviceSerial;
     private String userEmail;
+    private String changes;
     //private String type;
     private String note;
     private LocalDateTime createdAt;

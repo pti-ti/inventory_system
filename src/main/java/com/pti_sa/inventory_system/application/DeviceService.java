@@ -1,5 +1,6 @@
 package com.pti_sa.inventory_system.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pti_sa.inventory_system.application.dto.request.DeviceRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
 import com.pti_sa.inventory_system.domain.model.*;
@@ -15,11 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -141,7 +138,7 @@ public class DeviceService {
         if (device.getNote() != null) {
             device.setNote(device.getNote().trim());
         }
-        
+
         // 2. Actualizar el dispositivo
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
@@ -160,31 +157,85 @@ public class DeviceService {
                     "No se pudo obtener el usuario autenticado para la bitácora");
         }
 
-        // 4. Comparar campos y construir la nota de cambios
+        // 4. Comparar campos y construir la nota de cambios y el detalle
         List<String> cambios = new ArrayList<>();
-        if (!Objects.equals(originalDevice.getBrand().getId(), updatedDevice.getBrand().getId()))
+        Map<String, Map<String, String>> cambiosDetalle = new LinkedHashMap<>();
+
+        if (!Objects.equals(originalDevice.getBrand().getId(), updatedDevice.getBrand().getId())) {
             cambios.add("Marca");
-        if (!Objects.equals(originalDevice.getModel().getId(), updatedDevice.getModel().getId()))
+            cambiosDetalle.put("Marca", Map.of(
+                    "antes", originalDevice.getBrand().getName(),
+                    "despues", updatedDevice.getBrand().getName()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getModel().getId(), updatedDevice.getModel().getId())) {
             cambios.add("Modelo");
-        if (!Objects.equals(originalDevice.getStatus().getId(), updatedDevice.getStatus().getId()))
+            cambiosDetalle.put("Modelo", Map.of(
+                    "antes", originalDevice.getModel().getName(),
+                    "despues", updatedDevice.getModel().getName()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getStatus().getId(), updatedDevice.getStatus().getId())) {
             cambios.add("Estado");
-        if (!Objects.equals(originalDevice.getLocation().getId(), updatedDevice.getLocation().getId()))
+            cambiosDetalle.put("Estado", Map.of(
+                    "antes", originalDevice.getStatus().getName(),
+                    "despues", updatedDevice.getStatus().getName()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getLocation().getId(), updatedDevice.getLocation().getId())) {
             cambios.add("Ubicación");
-        if (!Objects.equals(originalDevice.getUser().getId(), updatedDevice.getUser().getId()))
+            cambiosDetalle.put("Ubicación", Map.of(
+                    "antes", originalDevice.getLocation().getName(),
+                    "despues", updatedDevice.getLocation().getName()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getUser().getId(), updatedDevice.getUser().getId())) {
             cambios.add("Usuario");
-        if (!Objects.equals(originalDevice.getType(), updatedDevice.getType()))
+            cambiosDetalle.put("Usuario", Map.of(
+                    "antes", originalDevice.getUser().getEmail(),
+                    "despues", updatedDevice.getUser().getEmail()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getType(), updatedDevice.getType())) {
             cambios.add("Tipo");
-        if (!Objects.equals(originalDevice.getCode(), updatedDevice.getCode()))
+            cambiosDetalle.put("Tipo", Map.of(
+                    "antes", originalDevice.getType(),
+                    "despues", updatedDevice.getType()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getCode(), updatedDevice.getCode())) {
             cambios.add("Código");
-        if (!Objects.equals(originalDevice.getSerial(), updatedDevice.getSerial()))
+            cambiosDetalle.put("Código", Map.of(
+                    "antes", originalDevice.getCode(),
+                    "despues", updatedDevice.getCode()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getSerial(), updatedDevice.getSerial())) {
             cambios.add("Serial");
-        if (!Objects.equals(originalDevice.getNote(), updatedDevice.getNote()))
+            cambiosDetalle.put("Serial", Map.of(
+                    "antes", originalDevice.getSerial(),
+                    "despues", updatedDevice.getSerial()
+            ));
+        }
+        if (!Objects.equals(originalDevice.getNote(), updatedDevice.getNote())) {
             cambios.add("Nota");
-        // Agrega más campos si lo necesitas
+            cambiosDetalle.put("Nota", Map.of(
+                    "antes", originalDevice.getNote() == null ? "" : originalDevice.getNote(),
+                    "despues", updatedDevice.getNote() == null ? "" : updatedDevice.getNote()
+            ));
+        }
 
         String note = cambios.isEmpty()
-                ? "Registro automático de edición de dispositivo. Sin cambios detectados."
-                : "Registro automático de edición de dispositivo. Cambios: " + String.join(", ", cambios) + ".";
+                ? "Registro automático. Sin cambios detectados."
+                : "Registro automático. Cambios: " + String.join(", ", cambios) + ".";
+
+        // Serializar el detalle de cambios a JSON
+        String cambiosJson = "";
+        try {
+            cambiosJson = new ObjectMapper().writeValueAsString(cambiosDetalle);
+        } catch (Exception e) {
+            cambiosJson = "{}";
+        }
 
         // 5. Crear bitácora automáticamente al editar el dispositivo
         Logbook logbook = new Logbook();
@@ -195,6 +246,7 @@ public class DeviceService {
         logbook.setLocation(updatedDevice.getLocation());
         logbook.setUser(updatedDevice.getUser());
         logbook.setNote(note);
+        logbook.setChanges(cambiosJson); // <--- Aquí guardas el detalle
         logbook.setCreatedBy(updatedBy);
         logbookService.saveLogbook(logbook);
 

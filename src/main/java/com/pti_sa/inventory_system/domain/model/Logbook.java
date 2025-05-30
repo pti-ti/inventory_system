@@ -17,7 +17,7 @@ public class Logbook {
     private Brand brand;
     private Model model;
     private Location location;
-    //private String type;
+    private String changes;
     private String note;
     private boolean deleted = false;
     private LocalDateTime createdAt;
