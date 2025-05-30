@@ -19,6 +19,7 @@ public class Device {
     private String serial;
     private String type;
     private String specification;
+    private String note;
     private Status status;
     private Location location;
     private BigDecimal price;

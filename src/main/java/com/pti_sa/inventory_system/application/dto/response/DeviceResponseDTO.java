@@ -18,6 +18,7 @@ public class DeviceResponseDTO {
     private String userEmail;
     private String serial;
     private String type;
+    private String note;
     private String specification;
     private String locationName;
     private String statusName;

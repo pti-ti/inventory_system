@@ -49,6 +49,9 @@ public class DeviceEntity {
     @Column(name = "type", nullable = false)
     private String type;
 
+    @Column(name = "note")
+    private String note;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)
     private UserEntity user;

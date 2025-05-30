@@ -105,6 +105,10 @@ public class DeviceService {
         device.setUser(user);
 
         device.setType(device.getType().trim());
+        
+        if (device.getNote() != null) {
+            device.setNote(device.getNote().trim());
+        }
 
         // Auditoría y guardado
         device.createAudit(device.getCreatedBy());
@@ -127,58 +131,66 @@ public class DeviceService {
     }
 
     public DeviceRequestDTO updateDevice(Device device) {
-    // 1. Obtener el dispositivo original antes de actualizar
-    Device originalDevice = iDeviceRepository.findById(device.getId())
-            .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado para bitácora"));
+        // 1. Obtener el dispositivo original antes de actualizar
+        Device originalDevice = iDeviceRepository.findById(device.getId())
+                .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado para bitácora"));
 
-    // 2. Actualizar el dispositivo
-    device.updateAudit(device.getUpdatedBy());
-    Device updatedDevice = iDeviceRepository.update(device);
+        // 2. Actualizar el dispositivo
+        device.updateAudit(device.getUpdatedBy());
+        Device updatedDevice = iDeviceRepository.update(device);
 
-    // 3. Obtener usuario autenticado
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Integer updatedBy = null;
-    if (authentication != null && authentication.isAuthenticated()) {
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof CustomUserDetails) {
-            updatedBy = ((CustomUserDetails) principal).getId();
+        // 3. Obtener usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer updatedBy = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomUserDetails) {
+                updatedBy = ((CustomUserDetails) principal).getId();
+            }
         }
+        if (updatedBy == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "No se pudo obtener el usuario autenticado para la bitácora");
+        }
+
+        // 4. Comparar campos y construir la nota de cambios
+        List<String> cambios = new ArrayList<>();
+        if (!Objects.equals(originalDevice.getBrand().getId(), updatedDevice.getBrand().getId()))
+            cambios.add("Marca");
+        if (!Objects.equals(originalDevice.getModel().getId(), updatedDevice.getModel().getId()))
+            cambios.add("Modelo");
+        if (!Objects.equals(originalDevice.getStatus().getId(), updatedDevice.getStatus().getId()))
+            cambios.add("Estado");
+        if (!Objects.equals(originalDevice.getLocation().getId(), updatedDevice.getLocation().getId()))
+            cambios.add("Ubicación");
+        if (!Objects.equals(originalDevice.getUser().getId(), updatedDevice.getUser().getId()))
+            cambios.add("Usuario");
+        if (!Objects.equals(originalDevice.getType(), updatedDevice.getType()))
+            cambios.add("Tipo");
+        if (!Objects.equals(originalDevice.getCode(), updatedDevice.getCode()))
+            cambios.add("Código");
+        if (!Objects.equals(originalDevice.getSerial(), updatedDevice.getSerial()))
+            cambios.add("Serial");
+        // Agrega más campos si lo necesitas
+
+        String note = cambios.isEmpty()
+                ? "Registro automático de edición de dispositivo. Sin cambios detectados."
+                : "Registro automático de edición de dispositivo. Cambios: " + String.join(", ", cambios) + ".";
+
+        // 5. Crear bitácora automáticamente al editar el dispositivo
+        Logbook logbook = new Logbook();
+        logbook.setDevice(updatedDevice);
+        logbook.setBrand(updatedDevice.getBrand());
+        logbook.setModel(updatedDevice.getModel());
+        logbook.setStatus(updatedDevice.getStatus());
+        logbook.setLocation(updatedDevice.getLocation());
+        logbook.setUser(updatedDevice.getUser());
+        logbook.setNote(note);
+        logbook.setCreatedBy(updatedBy);
+        logbookService.saveLogbook(logbook);
+
+        return deviceMapper.toRequestDTO(updatedDevice);
     }
-    if (updatedBy == null) {
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                "No se pudo obtener el usuario autenticado para la bitácora");
-    }
-
-    // 4. Comparar campos y construir la nota de cambios
-    List<String> cambios = new ArrayList<>();
-    if (!Objects.equals(originalDevice.getBrand().getId(), updatedDevice.getBrand().getId())) cambios.add("Marca");
-    if (!Objects.equals(originalDevice.getModel().getId(), updatedDevice.getModel().getId())) cambios.add("Modelo");
-    if (!Objects.equals(originalDevice.getStatus().getId(), updatedDevice.getStatus().getId())) cambios.add("Estado");
-    if (!Objects.equals(originalDevice.getLocation().getId(), updatedDevice.getLocation().getId())) cambios.add("Ubicación");
-    if (!Objects.equals(originalDevice.getUser().getId(), updatedDevice.getUser().getId())) cambios.add("Usuario");
-    if (!Objects.equals(originalDevice.getType(), updatedDevice.getType())) cambios.add("Tipo");
-    if (!Objects.equals(originalDevice.getCode(), updatedDevice.getCode())) cambios.add("Código");
-    if (!Objects.equals(originalDevice.getSerial(), updatedDevice.getSerial())) cambios.add("Serial");
-    // Agrega más campos si lo necesitas
-
-    String note = cambios.isEmpty()
-            ? "Registro automático de edición de dispositivo. Sin cambios detectados."
-            : "Registro automático de edición de dispositivo. Cambios: " + String.join(", ", cambios) + ".";
-
-    // 5. Crear bitácora automáticamente al editar el dispositivo
-    Logbook logbook = new Logbook();
-    logbook.setDevice(updatedDevice);
-    logbook.setBrand(updatedDevice.getBrand());
-    logbook.setModel(updatedDevice.getModel());
-    logbook.setStatus(updatedDevice.getStatus());
-    logbook.setLocation(updatedDevice.getLocation());
-    logbook.setUser(updatedDevice.getUser());
-    logbook.setNote(note);
-    logbook.setCreatedBy(updatedBy);
-    logbookService.saveLogbook(logbook);
-
-    return deviceMapper.toRequestDTO(updatedDevice);
-}
 
     // Buscar un dispositivo por ID
     public Optional<DeviceResponseDTO> findDeviceById(Integer id) {
