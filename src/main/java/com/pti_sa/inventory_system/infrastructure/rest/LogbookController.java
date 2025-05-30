@@ -42,9 +42,11 @@ public class LogbookController {
     private static final Logger logger = LoggerFactory.getLogger(LogbookController.class);
 
     private final LogbookService logbookService;
+    private final LogbookMapper logbookMapper;
 
-    public LogbookController(LogbookService logbookService, LogbookMapper logbookMapper) {
+    public LogbookController(LogbookService logbookService, LogbookMapper logbookMapper, LogbookMapper logbookMapper1) {
         this.logbookService = logbookService;
+        this.logbookMapper = logbookMapper1;
     }
 
     @Operation(summary = "Registrar una bitácora", description = "Permite registrar una nueva bitácora en el sistema")
@@ -90,10 +92,9 @@ public class LogbookController {
     public ResponseEntity<?> updateLogbook(@PathVariable Integer id, @RequestBody Logbook logbook) {
         logbook.setId(id);
 
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication == null || !authentication.isAuthenticated()) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             System.out.println("Error: Usuario no autenticado");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado.");
         }
@@ -101,11 +102,11 @@ public class LogbookController {
         Object principal = authentication.getPrincipal();
         Integer updatedBy = null;
 
-        if(principal instanceof CustomUserDetails){
+        if (principal instanceof CustomUserDetails) {
             updatedBy = ((CustomUserDetails) principal).getId();
         }
 
-        if(updatedBy == null){
+        if (updatedBy == null) {
             System.out.println("Error: No se pudo obtener el usuario autenticado.");
             return ResponseEntity.badRequest().body("No se pudo obtener el usuario autenticado.");
         }
@@ -133,7 +134,7 @@ public class LogbookController {
             @ApiResponse(responseCode = "404", description = "No se encontraron bitácoras con ese estado")
     })
     @GetMapping("/status/{statusName}")
-    public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByStatus(@PathVariable("statusName") String statusName){
+    public ResponseEntity<List<LogbookResponseDTO>> getLogbooksByStatus(@PathVariable("statusName") String statusName) {
         List<LogbookResponseDTO> logbooks = logbookService.findLogbooksByStatus(statusName);
         return ResponseEntity.ok(logbooks);
     }
@@ -170,7 +171,8 @@ public class LogbookController {
     public ResponseEntity<Resource> downloadLogbookExcel(@PathVariable String deviceCode) {
         try {
             // Ruta al archivo Excel en la red
-            String networkPath = "\\\\192.168.128.5\\24_Tecnologia\\1.7 Actas de Entrega\\" + deviceCode + "\\bitacora.xlsx";
+            String networkPath = "\\\\192.168.128.5\\24_Tecnologia\\1.7 Actas de Entrega\\" + deviceCode
+                    + "\\bitacora.xlsx";
             Path filePath = Paths.get(networkPath);
 
             if (!Files.exists(filePath)) {
@@ -182,13 +184,28 @@ public class LogbookController {
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .contentType(MediaType
+                            .parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                     .body(resource);
         } catch (MalformedURLException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @Operation(summary = "Historial de cambios de un dispositivo", description = "Devuelve todas las bitácoras (cambios) de un dispositivo por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Historial obtenido correctamente"),
+            @ApiResponse(responseCode = "404", description = "No se encontraron bitácoras para el dispositivo")
+    })
+    @GetMapping("/device/{deviceId}/history")
+    public ResponseEntity<List<LogbookResponseDTO>> getDeviceHistory(@PathVariable Integer deviceId) {
+        List<LogbookResponseDTO> history = logbookService.findLogbookByDeviceId(deviceId);
+        if (history.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(history);
+        }
+        return ResponseEntity.ok(history);
     }
 
 }

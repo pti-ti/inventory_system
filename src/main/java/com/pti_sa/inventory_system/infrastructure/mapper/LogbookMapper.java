@@ -23,6 +23,7 @@ public interface LogbookMapper {
     @Mapping(target = "deviceStatus", source = "status.name")
     @Mapping(target = "deviceLocation", source = "location.name")
     @Mapping(target = "userEmail", source = "user.email")
+    @Mapping(target = "changes", source = "changes")
     LogbookResponseDTO toResponseDTO(Logbook logbook);
 
 }
