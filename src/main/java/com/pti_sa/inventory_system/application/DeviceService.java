@@ -256,7 +256,18 @@ public class DeviceService {
     // Buscar un dispositivo por ID
     public Optional<DeviceResponseDTO> findDeviceById(Integer id) {
         return iDeviceRepository.findById(id)
-                .map(deviceMapper::toResponseDTO);
+                .map(device -> {
+                    DeviceResponseDTO dto = deviceMapper.toResponseDTO(device);
+                    // Busca el correo usando el ID
+                    dto.setCreatedByEmail(
+                            device.getCreatedBy() != null
+                                    ? iUserRepository.findById(device.getCreatedBy())
+                                    .map(User::getEmail)
+                                    .orElse("Desconocido")
+                                    : "Desconocido"
+                    );
+                    return dto;
+                });
     }
 
     // Buscar un dispositivo por código
@@ -283,7 +294,17 @@ public class DeviceService {
     public List<DeviceResponseDTO> findAllDevices() {
         return iDeviceRepository.findAllByDeletedFalse()
                 .stream()
-                .map(deviceMapper::toResponseDTO) // ✅ Asegúrate de que este método acepte DeviceEntity
+                .map(device -> {
+                    DeviceResponseDTO dto = deviceMapper.toResponseDTO(device);
+                    dto.setCreatedByEmail(
+                            device.getCreatedBy() != null
+                                    ? iUserRepository.findById(device.getCreatedBy())
+                                    .map(User::getEmail)
+                                    .orElse("Desconocido")
+                                    : "Desconocido"
+                    );
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

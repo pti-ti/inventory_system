@@ -23,5 +23,6 @@ public class DeviceResponseDTO {
     private String locationName;
     private String statusName;
     private BigDecimal price;
+    private String createdByEmail;
 
 }
