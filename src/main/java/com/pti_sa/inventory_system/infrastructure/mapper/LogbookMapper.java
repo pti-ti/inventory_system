@@ -24,6 +24,7 @@ public interface LogbookMapper {
     @Mapping(target = "deviceLocation", source = "location.name")
     @Mapping(target = "userEmail", source = "user.email")
     @Mapping(target = "changes", source = "changes")
+    @Mapping(target = "updatedByEmail", ignore = true)
     LogbookResponseDTO toResponseDTO(Logbook logbook);
 
 }

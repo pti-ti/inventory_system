@@ -24,5 +24,6 @@ public class LogbookResponseDTO {
     private String changes;
     //private String type;
     private String note;
+    private String updatedByEmail;
     private LocalDateTime createdAt;
 }

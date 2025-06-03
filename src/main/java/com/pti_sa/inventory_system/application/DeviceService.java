@@ -248,6 +248,7 @@ public class DeviceService {
         logbook.setNote(note);
         logbook.setChanges(cambiosJson); // <--- Aquí guardas el detalle
         logbook.setCreatedBy(updatedBy);
+        logbook.setUpdatedBy(updatedBy);
         logbookService.saveLogbook(logbook);
 
         return deviceMapper.toRequestDTO(updatedDevice);

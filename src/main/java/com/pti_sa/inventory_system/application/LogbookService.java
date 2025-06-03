@@ -193,10 +193,21 @@ public class LogbookService {
 
     // Buscar registros de bitácora por DeviceId
     public List<LogbookResponseDTO> findLogbookByDeviceId(Integer deviceId) {
-        return iLogbookRepository.findByDeviceId(deviceId).stream()
-                .map(logbookMapper::toResponseDTO)
-                .toList();
-    }
+    return iLogbookRepository.findByDeviceId(deviceId).stream()
+        .map(logbook -> {
+            LogbookResponseDTO dto = logbookMapper.toResponseDTO(logbook);
+            // Asigna el correo del usuario que hizo el cambio
+            dto.setUpdatedByEmail(
+                logbook.getUpdatedBy() != null
+                    ? iUserRepository.findById(logbook.getUpdatedBy())
+                        .map(User::getEmail)
+                        .orElse("Desconocido")
+                    : "Desconocido"
+            );
+            return dto;
+        })
+        .toList();
+}
 
     public List<LogbookResponseDTO> findLogbooksByStatus(String statusName){
         return iLogbookRepository.findByStatusName(statusName).stream()
