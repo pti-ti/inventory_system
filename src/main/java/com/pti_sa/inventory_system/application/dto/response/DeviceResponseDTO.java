@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +25,6 @@ public class DeviceResponseDTO {
     private String statusName;
     private BigDecimal price;
     private String createdByEmail;
+    private LocalDateTime createdAt;
 
 }
