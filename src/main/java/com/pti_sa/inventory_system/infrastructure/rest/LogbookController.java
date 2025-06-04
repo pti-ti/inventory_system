@@ -202,10 +202,7 @@ public class LogbookController {
     @GetMapping("/device/{deviceId}/history")
     public ResponseEntity<List<LogbookResponseDTO>> getDeviceHistory(@PathVariable Integer deviceId) {
         List<LogbookResponseDTO> history = logbookService.findLogbookByDeviceId(deviceId);
-        if (history.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(history);
-        }
-        return ResponseEntity.ok(history);
+        return ResponseEntity.ok(history); // Siempre 200, aunque esté vacío
     }
 
 }

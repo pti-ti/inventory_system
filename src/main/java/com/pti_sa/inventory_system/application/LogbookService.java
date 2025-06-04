@@ -118,26 +118,26 @@ public class LogbookService {
             existingLogbook.setNote(logbook.getNote());
         }
 
-        // 🔹 Actualizar información del dispositivo en la bitácora
+        //  Actualizar información del dispositivo en la bitácora
         existingLogbook.setDevice(device);
         existingLogbook.setBrand(device.getBrand());
         existingLogbook.setModel(device.getModel());
 
-        // 🔹 Verificar si cambió el estado o la ubicación
+        //  Verificar si cambió el estado o la ubicación
         boolean statusChanged = logbook.getStatus() != null && !logbook.getStatus().getId().equals(device.getStatus().getId());
         boolean locationChanged = logbook.getLocation() != null && !logbook.getLocation().getId().equals(device.getLocation().getId());
 
         if (statusChanged || locationChanged) {
             System.out.println("📌 Actualizando dispositivo en base de datos...");
 
-            // 🔹 Actualizar estado en el dispositivo
+            //  Actualizar estado en el dispositivo
             if (statusChanged) {
                 device.setStatus(logbook.getStatus());
                 existingLogbook.setStatus(logbook.getStatus());
                 System.out.println("✅ Estado del dispositivo actualizado: " + logbook.getStatus().getId());
             }
 
-            // 🔹 Actualizar ubicación en el dispositivo
+            //  Actualizar ubicación en el dispositivo
             if (locationChanged) {
                 device.setLocation(logbook.getLocation());
                 existingLogbook.setLocation(logbook.getLocation());
