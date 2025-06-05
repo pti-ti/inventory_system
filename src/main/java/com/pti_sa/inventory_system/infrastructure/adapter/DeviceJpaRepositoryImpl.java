@@ -110,4 +110,10 @@ public class DeviceJpaRepositoryImpl implements IDeviceRepository {
     public boolean existsBySerial(String serial) {
         return iDeviceJpaRepository.existsBySerial(serial);
     }
+
+    @Override
+    public Optional<Device> findTopByOrderByUpdatedAtDescCreatedAtDesc() {
+        return iDeviceJpaRepository.findTopByOrderByUpdatedAtDescCreatedAtDesc()
+                .map(deviceMapper::toModel);
+    }
 }

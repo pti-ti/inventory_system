@@ -20,4 +20,5 @@ public interface IDeviceJpaRepository extends JpaRepository<DeviceEntity, Intege
     Map<String, Long> countDevicesByType();
     @Query("SELECT SUM(d.price) FROM DeviceEntity d WHERE d.deleted = false")
     BigDecimal getTotalInventoryValue();
+    Optional<DeviceEntity> findTopByOrderByUpdatedAtDescCreatedAtDesc();
 }

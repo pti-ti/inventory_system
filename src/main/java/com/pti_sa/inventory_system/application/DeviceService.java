@@ -336,4 +336,26 @@ public class DeviceService {
     public BigDecimal getTotalInventoryValue() {
         return iDeviceRepository.getTotalInventoryValue();
     }
+
+    public DeviceResponseDTO findLastModifiedDevice() {
+        Optional<Device> lastDeviceOpt = iDeviceRepository.findTopByOrderByUpdatedAtDescCreatedAtDesc();
+        if (lastDeviceOpt.isEmpty()) {
+            return null;
+        }
+        Device device = lastDeviceOpt.get();
+        DeviceResponseDTO deviceResponseDTO = deviceMapper.toResponseDTO(device);
+
+        // Buscar el usuario que realizó la última acción
+        Integer userId = device.getUpdatedBy() != null ? device.getUpdatedBy() : device.getCreatedBy();
+        String userEmail = userId != null
+                ? iUserRepository.findById(userId).map(User::getEmail).orElse("Desconocido")
+                : "Desconocido";
+        deviceResponseDTO.setCreatedByEmail(userEmail);
+
+        // Puedes agregar más campos al DTO si lo necesitas (como acción y fecha)
+        deviceResponseDTO.setLastAction(device.getUpdatedAt() != null ? "Modificado" : "Creado");
+        deviceResponseDTO.setLastActionDate(device.getUpdatedAt() != null ? device.getUpdatedAt() : device.getCreatedAt());
+
+        return deviceResponseDTO;
+    }
 }

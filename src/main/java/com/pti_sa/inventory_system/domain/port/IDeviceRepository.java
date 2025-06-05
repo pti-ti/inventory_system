@@ -22,4 +22,5 @@ public interface IDeviceRepository {
     void deleteById(Integer id);
     BigDecimal getTotalInventoryValue();
     boolean existsBySerial(String serial);
+    Optional<Device> findTopByOrderByUpdatedAtDescCreatedAtDesc();
 }

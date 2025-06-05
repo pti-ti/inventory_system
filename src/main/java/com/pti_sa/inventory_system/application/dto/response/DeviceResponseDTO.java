@@ -26,5 +26,6 @@ public class DeviceResponseDTO {
     private BigDecimal price;
     private String createdByEmail;
     private LocalDateTime createdAt;
-
+    private String lastAction;
+    private LocalDateTime lastActionDate;
 }
