@@ -362,31 +362,29 @@ public class DeviceService {
     }
 
     public LastDeviceActionResponseDTO getLastModifiedDevice() {
-        // Busca el último dispositivo por fecha de actualización o creación
         Optional<Device> lastDeviceOpt = iDeviceRepository.findTopByOrderByUpdatedAtDescCreatedAtDesc();
         if (lastDeviceOpt.isEmpty()) {
             return null;
         }
         Device device = lastDeviceOpt.get();
 
-        // Determina la acción y la fecha
         String action;
         LocalDateTime date;
+        Integer userId;
         if (device.getUpdatedAt() != null && device.getUpdatedAt().isAfter(device.getCreatedAt())) {
             action = "Modificado";
             date = device.getUpdatedAt();
+            userId = device.getUpdatedBy();
         } else {
             action = "Creado";
             date = device.getCreatedAt();
+            userId = device.getCreatedBy();
         }
 
-        // Busca el email del usuario que realizó la acción
-        Integer userId = device.getUpdatedBy() != null ? device.getUpdatedBy() : device.getCreatedBy();
         String email = userId != null
                 ? iUserRepository.findById(userId).map(User::getEmail).orElse("Desconocido")
                 : "Desconocido";
 
-        // Construye el DTO de respuesta
         return new LastDeviceActionResponseDTO(
                 email,
                 action,
