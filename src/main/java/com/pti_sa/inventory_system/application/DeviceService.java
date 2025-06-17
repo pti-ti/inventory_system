@@ -3,6 +3,7 @@ package com.pti_sa.inventory_system.application;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pti_sa.inventory_system.application.dto.request.DeviceRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.LastDeviceActionResponseDTO;
 import com.pti_sa.inventory_system.domain.model.*;
 import com.pti_sa.inventory_system.domain.port.*;
 import com.pti_sa.inventory_system.infrastructure.mapper.DeviceMapper;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -357,5 +359,39 @@ public class DeviceService {
         deviceResponseDTO.setLastActionDate(device.getUpdatedAt() != null ? device.getUpdatedAt() : device.getCreatedAt());
 
         return deviceResponseDTO;
+    }
+
+    public LastDeviceActionResponseDTO getLastModifiedDevice() {
+        // Busca el último dispositivo por fecha de actualización o creación
+        Optional<Device> lastDeviceOpt = iDeviceRepository.findTopByOrderByUpdatedAtDescCreatedAtDesc();
+        if (lastDeviceOpt.isEmpty()) {
+            return null;
+        }
+        Device device = lastDeviceOpt.get();
+
+        // Determina la acción y la fecha
+        String action;
+        LocalDateTime date;
+        if (device.getUpdatedAt() != null && device.getUpdatedAt().isAfter(device.getCreatedAt())) {
+            action = "Modificado";
+            date = device.getUpdatedAt();
+        } else {
+            action = "Creado";
+            date = device.getCreatedAt();
+        }
+
+        // Busca el email del usuario que realizó la acción
+        Integer userId = device.getUpdatedBy() != null ? device.getUpdatedBy() : device.getCreatedBy();
+        String email = userId != null
+                ? iUserRepository.findById(userId).map(User::getEmail).orElse("Desconocido")
+                : "Desconocido";
+
+        // Construye el DTO de respuesta
+        return new LastDeviceActionResponseDTO(
+                email,
+                action,
+                device.getCode(),
+                date
+        );
     }
 }

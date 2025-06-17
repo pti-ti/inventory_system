@@ -3,6 +3,7 @@ package com.pti_sa.inventory_system.infrastructure.rest;
 import com.pti_sa.inventory_system.application.DeviceService;
 import com.pti_sa.inventory_system.application.dto.request.DeviceRequestDTO;
 import com.pti_sa.inventory_system.application.dto.response.DeviceResponseDTO;
+import com.pti_sa.inventory_system.application.dto.response.LastDeviceActionResponseDTO;
 import com.pti_sa.inventory_system.domain.model.Device;
 import com.pti_sa.inventory_system.infrastructure.service.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -181,6 +182,17 @@ public class DeviceController {
     public ResponseEntity<Void> deleteDevice(@PathVariable Integer id){
         deviceService.deleteDeviceById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Obtener último dispositivo gestionado", description = "Devuelve la información del último dispositivo gestionado (modificado o agregado).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Último dispositivo encontrado"),
+            @ApiResponse(responseCode = "404", description = "No se encontró información")
+    })
+    @GetMapping("/last-modified")
+    public ResponseEntity<LastDeviceActionResponseDTO> getLastModifiedDevice() {
+        LastDeviceActionResponseDTO lastDevice = deviceService.getLastModifiedDevice();
+        return lastDevice != null ? ResponseEntity.ok(lastDevice) : ResponseEntity.notFound().build();
     }
 
 }
