@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -132,7 +134,7 @@ public class DeviceService {
         return deviceMapper.toResponseDTO(savedDevice);
     }
 
-    public DeviceRequestDTO updateDevice(Device device) {
+    public DeviceRequestDTO updateDevice(Device device, Integer updatedBy) {
         // 1. Obtener el dispositivo original antes de actualizar
         Device originalDevice = iDeviceRepository.findById(device.getId())
                 .orElseThrow(() -> new RuntimeException("Dispositivo no encontrado para bitácora"));
@@ -145,19 +147,9 @@ public class DeviceService {
         device.updateAudit(device.getUpdatedBy());
         Device updatedDevice = iDeviceRepository.update(device);
 
-        // 3. Obtener usuario autenticado
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer updatedBy = null;
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof CustomUserDetails) {
-                updatedBy = ((CustomUserDetails) principal).getId();
-            }
-        }
-        if (updatedBy == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "No se pudo obtener el usuario autenticado para la bitácora");
-        }
+        // 3.1 Asigna el usuario y la fecha de modificación al dispositivo
+        device.setUpdatedBy(updatedBy);
+        device.setUpdatedAt(OffsetDateTime.now());
 
         // 4. Comparar campos y construir la nota de cambios y el detalle
         List<String> cambios = new ArrayList<>();
@@ -167,64 +159,55 @@ public class DeviceService {
             cambios.add("Marca");
             cambiosDetalle.put("Marca", Map.of(
                     "antes", originalDevice.getBrand().getName(),
-                    "despues", updatedDevice.getBrand().getName()
-            ));
+                    "despues", updatedDevice.getBrand().getName()));
         }
         if (!Objects.equals(originalDevice.getModel().getId(), updatedDevice.getModel().getId())) {
             cambios.add("Modelo");
             cambiosDetalle.put("Modelo", Map.of(
                     "antes", originalDevice.getModel().getName(),
-                    "despues", updatedDevice.getModel().getName()
-            ));
+                    "despues", updatedDevice.getModel().getName()));
         }
         if (!Objects.equals(originalDevice.getStatus().getId(), updatedDevice.getStatus().getId())) {
             cambios.add("Estado");
             cambiosDetalle.put("Estado", Map.of(
                     "antes", originalDevice.getStatus().getName(),
-                    "despues", updatedDevice.getStatus().getName()
-            ));
+                    "despues", updatedDevice.getStatus().getName()));
         }
         if (!Objects.equals(originalDevice.getLocation().getId(), updatedDevice.getLocation().getId())) {
             cambios.add("Ubicación");
             cambiosDetalle.put("Ubicación", Map.of(
                     "antes", originalDevice.getLocation().getName(),
-                    "despues", updatedDevice.getLocation().getName()
-            ));
+                    "despues", updatedDevice.getLocation().getName()));
         }
         if (!Objects.equals(originalDevice.getUser().getId(), updatedDevice.getUser().getId())) {
             cambios.add("Usuario");
             cambiosDetalle.put("Usuario", Map.of(
                     "antes", originalDevice.getUser().getEmail(),
-                    "despues", updatedDevice.getUser().getEmail()
-            ));
+                    "despues", updatedDevice.getUser().getEmail()));
         }
         if (!Objects.equals(originalDevice.getType(), updatedDevice.getType())) {
             cambios.add("Tipo");
             cambiosDetalle.put("Tipo", Map.of(
                     "antes", originalDevice.getType(),
-                    "despues", updatedDevice.getType()
-            ));
+                    "despues", updatedDevice.getType()));
         }
         if (!Objects.equals(originalDevice.getCode(), updatedDevice.getCode())) {
             cambios.add("Código");
             cambiosDetalle.put("Código", Map.of(
                     "antes", originalDevice.getCode(),
-                    "despues", updatedDevice.getCode()
-            ));
+                    "despues", updatedDevice.getCode()));
         }
         if (!Objects.equals(originalDevice.getSerial(), updatedDevice.getSerial())) {
             cambios.add("Serial");
             cambiosDetalle.put("Serial", Map.of(
                     "antes", originalDevice.getSerial(),
-                    "despues", updatedDevice.getSerial()
-            ));
+                    "despues", updatedDevice.getSerial()));
         }
         if (!Objects.equals(originalDevice.getNote(), updatedDevice.getNote())) {
             cambios.add("Nota");
             cambiosDetalle.put("Nota", Map.of(
                     "antes", originalDevice.getNote() == null ? "" : originalDevice.getNote(),
-                    "despues", updatedDevice.getNote() == null ? "" : updatedDevice.getNote()
-            ));
+                    "despues", updatedDevice.getNote() == null ? "" : updatedDevice.getNote()));
         }
 
         String note = cambios.isEmpty()
@@ -265,10 +248,9 @@ public class DeviceService {
                     dto.setCreatedByEmail(
                             device.getCreatedBy() != null
                                     ? iUserRepository.findById(device.getCreatedBy())
-                                    .map(User::getEmail)
-                                    .orElse("Desconocido")
-                                    : "Desconocido"
-                    );
+                                            .map(User::getEmail)
+                                            .orElse("Desconocido")
+                                    : "Desconocido");
                     return dto;
                 });
     }
@@ -302,10 +284,9 @@ public class DeviceService {
                     dto.setCreatedByEmail(
                             device.getCreatedBy() != null
                                     ? iUserRepository.findById(device.getCreatedBy())
-                                    .map(User::getEmail)
-                                    .orElse("Desconocido")
-                                    : "Desconocido"
-                    );
+                                            .map(User::getEmail)
+                                            .orElse("Desconocido")
+                                    : "Desconocido");
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -356,7 +337,8 @@ public class DeviceService {
 
         // Puedes agregar más campos al DTO si lo necesitas (como acción y fecha)
         deviceResponseDTO.setLastAction(device.getUpdatedAt() != null ? "Modificado" : "Creado");
-        deviceResponseDTO.setLastActionDate(device.getUpdatedAt() != null ? device.getUpdatedAt() : device.getCreatedAt());
+        deviceResponseDTO
+                .setLastActionDate(device.getUpdatedAt() != null ? device.getUpdatedAt() : device.getCreatedAt());
 
         return deviceResponseDTO;
     }
@@ -369,15 +351,15 @@ public class DeviceService {
         Device device = lastDeviceOpt.get();
 
         String action;
-        LocalDateTime date;
+        OffsetDateTime date;
         Integer userId;
         if (device.getUpdatedAt() != null && device.getUpdatedAt().isAfter(device.getCreatedAt())) {
             action = "Modificado";
-            date = device.getUpdatedAt();
+            date = device.getUpdatedAt(); // Ya es OffsetDateTime
             userId = device.getUpdatedBy();
         } else {
             action = "Creado";
-            date = device.getCreatedAt();
+            date = device.getCreatedAt(); // Ya es OffsetDateTime
             userId = device.getCreatedBy();
         }
 
@@ -389,7 +371,7 @@ public class DeviceService {
                 email,
                 action,
                 device.getCode(),
-                date
+                date // No hagas más conversiones aquí
         );
     }
 }

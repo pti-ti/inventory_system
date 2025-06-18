@@ -75,9 +75,27 @@ public class DeviceController {
 
     // Actualizar dispositivo
     @PutMapping("/{id}")
-    public ResponseEntity<DeviceRequestDTO>updateDevice(@PathVariable Integer id, @RequestBody Device device){
+    public ResponseEntity<DeviceRequestDTO> updateDevice(@PathVariable Integer id, @RequestBody Device device) {
         device.setId(id);
-        return ResponseEntity.ok(deviceService.updateDevice(device));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Object principal = authentication.getPrincipal();
+        Integer updatedBy = null;
+
+        if (principal instanceof CustomUserDetails) {
+            updatedBy = ((CustomUserDetails) principal).getId();
+        }
+
+        if (updatedBy == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        // Pasa el usuario autenticado al servicio
+        return ResponseEntity.ok(deviceService.updateDevice(device, updatedBy));
     }
 
     @Operation(summary = "Obtener dispositivo por ID", description = "Devuelve la información de un dispositivo por su ID. ")

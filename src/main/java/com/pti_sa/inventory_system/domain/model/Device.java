@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -23,15 +23,15 @@ public class Device {
     private Status status;
     private Location location;
     private BigDecimal price;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
     private Integer createdBy;
     private Integer updatedBy;
     private boolean deleted = false;
 
 
     public void createAudit(Integer createdBy){
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now();
         this.createdAt = now;
         this.updatedAt = now;
         this.createdBy = createdBy;
@@ -39,7 +39,7 @@ public class Device {
     }
 
     public void updateAudit(Integer updatedBy) {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = OffsetDateTime.now();
         this.updatedBy = updatedBy;
     }
 

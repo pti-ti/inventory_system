@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class DeviceResponseDTO {
     private String statusName;
     private BigDecimal price;
     private String createdByEmail;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     private String lastAction;
-    private LocalDateTime lastActionDate;
+    private OffsetDateTime lastActionDate;
 }
