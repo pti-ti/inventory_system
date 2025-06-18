@@ -55,7 +55,7 @@ public class SecurityConfig {
                 ).permitAll()
 
                 // 🔓 Endpoints públicos
-                .requestMatchers("/auth/login", "/api/v1/security/login").permitAll()
+                .requestMatchers("/auth/**", "/api/v1/security/login").permitAll()
                 .requestMatchers("/error").permitAll()
 
                 // 🔓 Documentación Swagger
